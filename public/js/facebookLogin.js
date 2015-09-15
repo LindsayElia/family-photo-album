@@ -1,7 +1,6 @@
 
 //***** Most of this is SAMPLE QUICKSTART CODE FROM FACEBOOK API *****
 
-// require('dotenv').load();
 
 // This function is called when someone finishes with the Login Button.
 // See the onlogin handler attached to it in the sample code below.
@@ -37,7 +36,7 @@ function statusChangeCallback(response) {
 window.fbAsyncInit = function() {
 
 	FB.init({
-		appId      : FACEBOOK_APP_ID,
+		appId      : '1171727296190425',
 		cookie     : true,  // enable cookies to allow the server to access the session
 		xfbml      : true,  // parse social plugins on this page
 		version    : 'v2.2' // use version 2.2
@@ -88,6 +87,10 @@ function getPhotosAPI(){
 	    	if (response && !response.error){
 	    		console.log("response data? ", response.data[50].images[0].source);
 	    		console.log(response);
+
+	    		userPhotoData = JSON.stringify(response);
+
+	    		document.getElementById('facebookPhotoData').innerHTML = userPhotoData;
 	    	}
 	    }
 	);

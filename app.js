@@ -1,5 +1,8 @@
 //***** REQUIRE NODE MODULES *****
 
+// include .env variables
+// require('dotenv').load();
+
 // express - lets us use dynamic data within our views
 var express = require("express");
 var app = express();
