@@ -1,0 +1,27 @@
+{
+  "name": "family-photo-album",
+  "version": "1.0.0",
+  "description": "Application for families to share photos online with other family members who do not use online photo sharing tools",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LindsayElia/family-photo-album.git"
+  },
+  "author": "Lindsay Elia",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LindsayElia/family-photo-album/issues"
+  },
+  "homepage": "https://github.com/LindsayElia/family-photo-album",
+  "dependencies": {
+    "dotenv": "^1.2.0",
+    "ejs": "^2.3.4",
+    "express": "^4.13.3",
+    "method-override": "^2.3.5",
+    "morgan": "^1.6.1",
+    "request": "^2.61.0"
+  }
+}
