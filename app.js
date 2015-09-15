@@ -29,15 +29,38 @@ app.use(morgan("tiny")); // less text in our logs??
 
 
 
+
 //***** ROUTES *****
+
+// ROOT
+app.get("/", function(req, res){
+	res.redirect("/index");
+});
+
+
+// var accessToken = "CAACEdEose0cBAKHuVw9M5ix6Cjb51eOuMHiDgUvCHF929NfX2Cvt62UF5pnZBgmUq32w7InnwP2sxPlmhs0sFUeNgAPl4xgfohDsFEaIv9y0pn4sPP77CD1vZAIXLVUxWjB9Jfe9zizhpIeD6RV9JIM8OGwyaSPMMTdSYM38lShQjToycpqf9IKZCmqHrpOP0uq3MTfFm3wSMgzZAj8F";
+
+// testing...
+app.get('/index', function(req, res){
+
+	var fbData = "hello from app.js fbData pretend";
+	res.render("users/index", {fbData:fbData});
+
+});
+
+
+app.get('/test', function(req, res){
+	res.render("users/test");
+});
 
 
 
 
 // fallback route
 app.get("*", function(req,res){
-	res.render("404");
+	res.render("errors/404");
 });
+
 
 
 

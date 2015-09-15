@@ -1,0 +1,13 @@
+<% include ../partials/header %>
+
+
+<p>Hello! This is the index page.</p>
+
+<!-- Facebook login button & status. 
+This button uses the JavaScript SDK to present a graphical Login button that triggers 
+the FB.login() function when clicked. -->
+<fb:login-button scope="public_profile,email,user_photos" onlogin="checkLoginState();"></fb:login-button>
+<div id="status"></div>
+
+
+<% include ../partials/footer %>
