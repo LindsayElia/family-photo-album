@@ -23,6 +23,6 @@
     "method-override": "^2.3.5",
     "morgan": "^1.6.1",
     "pg": "^4.4.1",
-    "request": "^2.61.0",
+    "request": "^2.61.0"
   }
 }
