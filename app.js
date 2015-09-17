@@ -35,7 +35,7 @@ app.use(morgan("tiny")); // less text in our logs??
 var pg = require("pg");
 
 // tell it where our database is
-var connectionString = process.env.HEROKU_POSTGRESQL_NAVY_URL || "postgres://localhost:5432/family_photos";
+var databaseConnectionLocation = process.env.HEROKU_POSTGRESQL_NAVY_URL || "postgres://localhost:5432/family_photos";
 
 
 

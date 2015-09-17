@@ -7,7 +7,7 @@
 var pg = require("pg");
 
 // tell it where our database is
-var connectionString = process.env.HEROKU_POSTGRESQL_NAVY_URL || "postgres://localhost:5432/family_photos";
+var databaseConnectionLocation = process.env.HEROKU_POSTGRESQL_NAVY_URL || "postgres://localhost:5432/family_photos";
 
 // connect to database using express methods with pg module
 // http://expressjs.com/guide/database-integration.html#postgres
