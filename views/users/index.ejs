@@ -9,7 +9,25 @@ the FB.login() function when clicked. -->
 <fb:login-button scope="public_profile,email,user_photos" onlogin="checkLoginState();"></fb:login-button>
 <div id="status"></div>
 
-<div id="facebookPhotoData"></div>
+<!-- <div id="facebookPhotoData"></div> -->
+
+<div ng-controller="BaseController">
+
+	<p>Special message... {{message}}</p>
+
+	<!-- <ul>
+		<li ng-repeat="photo in photoArray">{{photo}}</li>
+	</ul> -->
+
+
+	<% for (var i = 0; i < photoArray.length; i++){  %>
+		<div><img src="<%= photoArray[i] %>" height="300px"></div>
+	<% } %>
+	
+
+</div>
+
+<!-- <img src="https://fbcdn-photos-g-a.akamaihd.net/hphotos-ak-xta1/v/t1.0-0/p180x540/10300684_10153215492596060_4167049021788748131_n.jpg?oh=d7d6d6eb0552fa56b9f5b85a23f460fc&oe=565CFDAD&__gda__=1453216188_f415f24b37d6e274da58ec1ea12b9ada"> -->
 
 
 

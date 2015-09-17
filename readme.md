@@ -4,7 +4,7 @@ This is an online family photo album, with all photos on a single page, contribu
 
 This project will make it easier for families to share digital photos with the whole family. The purpose is for family members who do not use online tools frequently to be able to view family photos easily. 
 
-Current problems with available tools for photo sharing inlude:
+Current problems with available tools for photo sharing include:
 
 - a large family may use many tools and not everyone in the family will want to use the same tools
 - photo storage can be limited for free users, so old photos must be deleted before new photos can be added
@@ -25,3 +25,18 @@ There may also be an admin view that I would have access to if there is enough t
 - code: JavaScript
 - terminal code & modules: Node JS
 - framework: Express JS
+
+#### API integrations
+
+- Facebook
+- Instagram
+- Shutterfly
+- Snapfish
+
+#### Bonus Features - if time
+
+- on-page notifications when new photos are added
+- email notifications when new photos are added
+
+
+
