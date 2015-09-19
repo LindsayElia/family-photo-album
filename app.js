@@ -1,31 +1,29 @@
-//***** REQUIRE NODE MODULES *****
+//***** REQUIRE NODE MODULES & SET MIDDLEWARE *****
 
 // express - lets us use dynamic data within our views
 var express = require("express");
 var app = express();
+app.set("view engine", "ejs");
+app.use(express.static(__dirname + "/public"));
 
 // bring in our models & database
 var db = require("./models");
 
-// request - lets us make HTTP requests to APIs
+// request - lets us make HTTP requests / get & post data
 var request = require("request");
+
 // morgan - lets us log HTTP requests in terminal
 var morgan = require("morgan");
+app.use(morgan("tiny")); // less text in our logs??
 
 // method-override - lets us override the post action on form submissions
-// var methodOverride = require("method-override");
+var methodOverride = require("method-override");
+app.use(methodOverride("_method"));
 
 // body-parser - lets us collect the data out of the body of an HTML page on form submissions
-// var bodyParser = require("body-parser");
+var bodyParser = require("body-parser");
+app.use(bodyParser.urlencoded({extended:true}));
 
-
-
-//***** SET MIDDLEWARE *****
-app.set("view engine", "ejs");
-app.use(express.static(__dirname + "/public"));
-app.use(morgan("tiny")); // less text in our logs??
-// app.use(bodyParser.urlencoded({extended:true}));
-// app.use(methodOverride("_method"));
 
 
 
@@ -91,6 +89,14 @@ app.get('/index', function(req, res){
 	});
 });
 
+
+// facebookLogin route
+app.post("/facebookLogin", function(req, res){
+	console.log("this is from the ajax request - req::: ", req);
+	console.log("this is from the ajax request - res::: ", res);
+	console.log("this is from the ajax request - req.params::: ", req.params);
+	console.log("this is from the ajax request - req.query::: ", req.query);
+});
 
 
 // FALLBACK ROUTE
