@@ -23,20 +23,20 @@ pg.connect(databaseConnectionLocation, function(err, client, done){
 // ***************************************
 
 	// remove myapp_users table if it exists
-	// client.query("DROP TABLE myapp_users", function(err, result){
-	// 	done();
-	// 	if(err){
-	// 		return console.error("error dropping table myapp_users", err);
-	// 	}
-	// });
+	client.query("DROP TABLE myapp_users", function(err, result){
+		done();
+		if(err){
+			return console.error("error dropping table myapp_users", err);
+		}
+	});
 
 	// // remove facebook_photos table if it exists
-	// client.query("DROP TABLE facebook_photos", function(err, result){
-	// 	done();
-	// 	if(err){
-	// 		return console.error("error dropping table facebook_photos", err);
-	// 	}
-	// });
+	client.query("DROP TABLE facebook_photos", function(err, result){
+		done();
+		if(err){
+			return console.error("error dropping table facebook_photos", err);
+		}
+	});
 
 // ***************************************
 // I should remove these before production
@@ -54,10 +54,10 @@ pg.connect(databaseConnectionLocation, function(err, client, done){
 											"facebook_login_status BOOLEAN, " +
 											"instagram_user_id INTEGER, " +
 											"instagram_access_token TEXT, " +
-											"shutterfly_user_id, " +
-											"shutterfly_access_token, " +
-											"snapfish_user_id, " +
-											"snapfish_access_token " +
+											"shutterfly_user_id INTEGER, " +
+											"shutterfly_access_token TEXT, " +
+											"snapfish_user_id INTEGER, " +
+											"snapfish_access_token TEXT " +
 											")", function(err, result){
 		done();
 		if(err){
@@ -67,7 +67,7 @@ pg.connect(databaseConnectionLocation, function(err, client, done){
 
 
 	// create a facbook_photos table
-	client.query("CREATE TABLE facbook_photos (facebook_user_id INTEGER, " +
+	client.query("CREATE TABLE facebook_photos (facebook_user_id INTEGER, " +
 												"fb_photo_id INTEGER, " +
 												"fb_created_time TEXT, " +
 												"fb_photo_url_full_size TEXT, " + // string containing json format data with url, height & width

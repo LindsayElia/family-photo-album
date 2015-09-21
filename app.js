@@ -10,6 +10,7 @@ app.use(express.static(__dirname + "/public"));
 var db = require("./models");
 
 // request - lets us make HTTP requests / get & post data
+// it goes inside of route block of code
 var request = require("request");
 
 // morgan - lets us log HTTP requests in terminal
@@ -92,25 +93,35 @@ app.get('/index', function(req, res){
 
 // facebookLogin route
 app.post("/facebookLogin", function(req, res){
-	// need bodyParser module to interpret this response
-	console.log("this is from the ajax request - req.body - ", req.body);
 	// need to give the client side a response code or else it hangs and errors out
 	res.status(200).send("data received successfully");
 
-	// save the data to my database
+	// need bodyParser module to interpret the data
+	// console.log("this is from the ajax request - req.body - ", req);
+	// unpack JSON so that it's a JavaScript ojbect & array format, rather than a string
+	var fbDataReceived = JSON.parse(req.body.data);
+	// console.log(fbDataReceived);
+	console.log("length: ", fbDataReceived.length);
 
+
+
+
+
+	// save the data to my database
 	// loop through data...
 
-	client.query("INSERT INTO facbook_photos (facebook_user_id, fb_photo_id, " + 
-				"fb_created_time, fb_photo_url_full_size, fb_photo_thumbnail) " + 
-				"VALUES ('" + thing1 + "', '" + thing2 + 
-				"', '" + thing3 + "', '" + thing4 + "', '" + 
-				thing5 + "')", function(err, result){
-		done();
-		if(err){
-			return console.error("error inserting into table test_photos", err);
-		}
-	});
+
+
+	// client.query("INSERT INTO facbook_photos (facebook_user_id, fb_photo_id, " + 
+	// 			"fb_created_time, fb_photo_url_full_size, fb_photo_thumbnail) " + 
+	// 			"VALUES ('" + thing1 + "', '" + thing2 + 
+	// 			"', '" + thing3 + "', '" + thing4 + "', '" + 
+	// 			thing5 + "')", function(err, result){
+	// 	done();
+	// 	if(err){
+	// 		return console.error("error inserting into table test_photos", err);
+	// 	}
+	// });
 
 	// these may not always exist, so make it conditional
 	// fb_photo_place
@@ -118,8 +129,9 @@ app.post("/facebookLogin", function(req, res){
 
 
 
-	// redirect to index page, now showing new photos
-	res.redirect("/index");
+	// redirect to ? page, now showing new photos
+	// getting error 'can't set headers after they are sent, in terminal console
+	// res.render("users/facebookLanding");
 });
 
 

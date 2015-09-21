@@ -138,11 +138,10 @@ function testAPI() {
 // call the function to send data to my server
 function getPhotosAPI(){
 	// limit is 100 photos...too much data won't send successfully to my server
-	FB.api('/me/','GET',{"fields":"id,photos.limit(10){images,created_time,id,tags,place,picture,can_delete}"}, function (response) {
+	FB.api('/me/','GET',{"fields":"id,photos.limit(100){images,created_time,id,tags,place,picture,can_delete}"}, function (response) {
 	    	if (response && !response.error){
 	    		console.log("response data: ", response);
 	    		// clean up the data before I send it to my server
-	    		var userFbId = response.id;
 	    		var photoDataArray = [];
 	    		for (var i = 0; i < response.photos.data.length; i++){
 	    			var thisImage = response.photos.data[i];
@@ -153,6 +152,7 @@ function getPhotosAPI(){
 	    				console.log("skipping an image");
 	    			} else {
 	    				var photoDataObject = {
+	    					fb_user_id : response.id,
 	    					fb_photo_id : thisImage.id,
 	    					fb_photo_created_time : thisImage.created_time,
 	    					fb_photo_url_full_size : thisImage.images[0],
@@ -180,20 +180,17 @@ function getPhotosAPI(){
 
 // using jquery, send the JSON to my server, so my server can save it in my database
 function sendFbUserData(fbUserData){
+	// convert to JSON for travel
 	var dataToSend = JSON.stringify(fbUserData);
-	$.ajax({
-		type: "POST",
-		url: "/facebookLogin",
-		data: dataToSend,
-		// dataType: "json"
-	})
-	.done(function(data){
-		console.log("successful ajax post request", data);
-	})
-	.fail(function(jqXHR){
-		console.log("error/xhr from ajax request: ", jqXHR.status);
-		console.log("error/xhr from ajax request: ", jqXHR);
-	});
+	
+	$.post("/facebookLogin",{data: dataToSend})
+		.done(function(data){
+			console.log("successful ajax post request", data);
+		})
+		.fail(function(jqXHR){
+			console.log("error/xhr from ajax request: ", jqXHR.status);
+			console.log("error/xhr from ajax request: ", jqXHR);
+		});
 }
 
 
