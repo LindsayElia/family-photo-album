@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/LindsayElia/family-photo-album",
   "dependencies": {
+    "body-parser": "^1.14.0",
     "dotenv": "^1.2.0",
     "ejs": "^2.3.4",
     "express": "^4.13.3",

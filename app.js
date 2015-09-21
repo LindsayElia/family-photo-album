@@ -72,7 +72,7 @@ app.get('/index', function(req, res){
 					for (var i = 0; i < result.rows.length; i++){
 						photoArray.push(result.rows[i].photo_url);
 					}
-					console.log("array...", photoArray);
+					// console.log("array...", photoArray);
 					res.render("users/index", {photoArray:photoArray});
 				});
 			});
@@ -92,10 +92,34 @@ app.get('/index', function(req, res){
 
 // facebookLogin route
 app.post("/facebookLogin", function(req, res){
-	console.log("this is from the ajax request - req::: ", req);
-	console.log("this is from the ajax request - res::: ", res);
-	console.log("this is from the ajax request - req.params::: ", req.params);
-	console.log("this is from the ajax request - req.query::: ", req.query);
+	// need bodyParser module to interpret this response
+	console.log("this is from the ajax request - req.body - ", req.body);
+	// need to give the client side a response code or else it hangs and errors out
+	res.status(200).send("data received successfully");
+
+	// save the data to my database
+
+	// loop through data...
+
+	client.query("INSERT INTO facbook_photos (facebook_user_id, fb_photo_id, " + 
+				"fb_created_time, fb_photo_url_full_size, fb_photo_thumbnail) " + 
+				"VALUES ('" + thing1 + "', '" + thing2 + 
+				"', '" + thing3 + "', '" + thing4 + "', '" + 
+				thing5 + "')", function(err, result){
+		done();
+		if(err){
+			return console.error("error inserting into table test_photos", err);
+		}
+	});
+
+	// these may not always exist, so make it conditional
+	// fb_photo_place
+	// fb_photo_tags
+
+
+
+	// redirect to index page, now showing new photos
+	res.redirect("/index");
 });
 
 

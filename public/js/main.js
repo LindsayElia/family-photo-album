@@ -1,5 +1,3 @@
-console.log("main.js file is loaded");
-
 var app = angular.module("familyPhotoAlbumApp", ['ngRoute']);
 	
 app.config(function($routeProvider){
