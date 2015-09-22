@@ -27,6 +27,8 @@ pg.connect(databaseConnectionLocation, function(err, client, done){
 		done();
 		if(err){
 			return console.error("error dropping table myapp_users", err);
+		} else {
+			console.log("dropped myapp_users table");
 		}
 	});
 
@@ -35,6 +37,8 @@ pg.connect(databaseConnectionLocation, function(err, client, done){
 		done();
 		if(err){
 			return console.error("error dropping table facebook_photos", err);
+		} else {
+			console.log("dropped facebook_photos table");
 		}
 	});
 
@@ -49,14 +53,14 @@ pg.connect(databaseConnectionLocation, function(err, client, done){
 											"username_first TEXT, " +
 											"username_last TEXT, " +
 											"myapp_group_name TEXT, " +
-											"facebook_user_id INTEGER, " +
+											"facebook_user_id TEXT, " +
 											"facebook_access_token TEXT, " +
 											"facebook_login_status BOOLEAN, " +
-											"instagram_user_id INTEGER, " +
+											"instagram_user_id TEXT, " +
 											"instagram_access_token TEXT, " +
-											"shutterfly_user_id INTEGER, " +
+											"shutterfly_user_id TEXT, " +
 											"shutterfly_access_token TEXT, " +
-											"snapfish_user_id INTEGER, " +
+											"snapfish_user_id TEXT, " +
 											"snapfish_access_token TEXT " +
 											")", function(err, result){
 		done();
@@ -66,9 +70,9 @@ pg.connect(databaseConnectionLocation, function(err, client, done){
 	});
 
 
-	// create a facbook_photos table
-	client.query("CREATE TABLE facebook_photos (facebook_user_id INTEGER, " +
-												"fb_photo_id INTEGER, " +
+	// create a facebook_photos table
+	client.query("CREATE TABLE facebook_photos (facebook_user_id TEXT, " +
+												"fb_photo_id TEXT, " +
 												"fb_created_time TEXT, " +
 												"fb_photo_url_full_size TEXT, " + // string containing json format data with url, height & width
 												"fb_photo_thumbnail TEXT, " +
@@ -77,7 +81,7 @@ pg.connect(databaseConnectionLocation, function(err, client, done){
 												")", function(err, result){
 		done();
 		if(err){
-			return console.error("error creating table facbook_photos", err);
+			return console.error("error creating table facebook_photos", err);
 		}
 	});
 

@@ -100,33 +100,46 @@ app.post("/facebookLogin", function(req, res){
 	// console.log("this is from the ajax request - req.body - ", req);
 	// unpack JSON so that it's a JavaScript ojbect & array format, rather than a string
 	var fbDataReceived = JSON.parse(req.body.data);
-	// console.log(fbDataReceived);
-	console.log("length: ", fbDataReceived.length);
-
-
-
-
+	// console.log(fbDataReceived[0]);
 
 	// save the data to my database
-	// loop through data...
+	pg.connect(databaseConnectionLocation, function(err, client, done){
 
+		if(err){
+			return console.error("error connecting to database, from inside of post /facebookLogin route", err);
+		}
 
+		for (var i = 0; i < fbDataReceived.length; i++){
+			var currentPhotoObject = fbDataReceived[i];
+			var facebook_user_id = currentPhotoObject.fb_user_id;
+			var fb_photo_id = currentPhotoObject.fb_photo_id;
+			var fb_created_time = currentPhotoObject.fb_photo_created_time;
+			var fb_photo_url_full_size = currentPhotoObject.fb_photo_url_full_size;
+			var fb_photo_thumbnail = currentPhotoObject.fb_photo_thumbnail;
+			var fb_photo_place = currentPhotoObject.fb_photo_place;
+			var fb_photo_tags = currentPhotoObject.fb_photo_tags;
 
-	// client.query("INSERT INTO facbook_photos (facebook_user_id, fb_photo_id, " + 
-	// 			"fb_created_time, fb_photo_url_full_size, fb_photo_thumbnail) " + 
-	// 			"VALUES ('" + thing1 + "', '" + thing2 + 
-	// 			"', '" + thing3 + "', '" + thing4 + "', '" + 
-	// 			thing5 + "')", function(err, result){
-	// 	done();
-	// 	if(err){
-	// 		return console.error("error inserting into table test_photos", err);
-	// 	}
-	// });
+			client.query("INSERT INTO facebook_photos (facebook_user_id, fb_photo_id, " + 
+					"fb_created_time, fb_photo_url_full_size, fb_photo_thumbnail, " + 
+					"fb_photo_place, fb_photo_tags) " +
+					"VALUES ('" + facebook_user_id + "', '" + fb_photo_id + "', '" +
+					fb_created_time + "', '" + fb_photo_url_full_size + "', '" + 
+					fb_photo_thumbnail + "', '" + fb_photo_place + "', '" +
+					fb_photo_tags + "')", 
+				function(err, result){
+					done();
+					if(err){
+						return console.error("error inserting into table facebook_photos", err);
+					}
+			}); // close client.query
+		} // close for loop
+		console.log("successfully saved fb data to facebook_photos table");
+	}); // close pg.connect
+
 
 	// these may not always exist, so make it conditional
 	// fb_photo_place
 	// fb_photo_tags
-
 
 
 	// redirect to ? page, now showing new photos
