@@ -1,6 +1,11 @@
 <% include ../partials/header %>
+<a href="/index"><button>HOME</button></a>
 
 <p>This is the facebookLanding page.</p>
+
+<% for (var i = 0; i < photoThumbsArray.length; i++){  %>
+	<span class="spacey"><img src="<%= photoThumbsArray[i] %>"></span>
+<% } %>
 
 
 <% include ../partials/footer %>

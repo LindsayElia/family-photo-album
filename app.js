@@ -51,33 +51,19 @@ app.get("/", function(req, res){
 	res.redirect("/index");
 });
 
-
 // INDEX PAGE
+app.get("/index", function(req, res){
+	res.render("users/index");
+});
+
+// Facebook login button page
 // not sure if I want to send data via fbData or someData ???
-app.get('/index', function(req, res){
+// not sure if I need all three send type options?
+app.get('/indexFacebook', function(req, res){
 	res.format({
 		// if the request to this route is an html type, render the page
 		'text/html': function(){
-			// for now, let's make a request to our database to grab the photo_urls
-			pg.connect(databaseConnectionLocation, function(err, client, done){
-				if(err){
-					return console.error("error connecting to database in /index route", err);
-				}
-				client.query("SELECT * FROM test_photos", function(err, result){
-					done();
-					if(err){
-						return console.error("error finding table test_photos, in /index route", err);
-					}
-					// console.log("result!!! is... ", result.rows);
-					var photoArray = [];
-					for (var i = 0; i < result.rows.length; i++){
-						photoArray.push(result.rows[i].photo_url);
-					}
-					// console.log("array...", photoArray);
-					res.render("users/index", {photoArray:photoArray});
-				});
-			});
-
+			res.render("users/indexFacebook");
 		},
 		// if the request to this route is an ajax request, send the data as type json 
 		'application/json': function(){
@@ -91,13 +77,13 @@ app.get('/index', function(req, res){
 });
 
 
-// facebookLogin route
+// facebookLogin post route
 app.post("/facebookLogin", function(req, res){
 	// need to give the client side a response code or else it hangs and errors out
 	res.status(200).send("data received successfully");
 
 	// need bodyParser module to interpret the data
-	// console.log("this is from the ajax request - req.body - ", req);
+	console.log("this is from the ajax request - req.body - ", req.body);
 	// unpack JSON so that it's a JavaScript ojbect & array format, rather than a string
 	var fbDataReceived = JSON.parse(req.body.data);
 	// console.log(fbDataReceived[0]);
@@ -114,45 +100,123 @@ app.post("/facebookLogin", function(req, res){
 			var facebook_user_id = currentPhotoObject.fb_user_id;
 			var fb_photo_id = currentPhotoObject.fb_photo_id;
 			var fb_created_time = currentPhotoObject.fb_photo_created_time;
+			var fb_photo_album = currentPhotoObject.fb_photo_album; // these may not always exist??
 			var fb_photo_url_full_size = currentPhotoObject.fb_photo_url_full_size;
 			var fb_photo_thumbnail = currentPhotoObject.fb_photo_thumbnail;
-			var fb_photo_place = currentPhotoObject.fb_photo_place;
-			var fb_photo_tags = currentPhotoObject.fb_photo_tags;
+			var fb_photo_place = currentPhotoObject.fb_photo_place; // these may not always exist
+			var fb_photo_tags = currentPhotoObject.fb_photo_tags; // these may not always exist
+
+// **** TO FIX ***
+// only save if does not yet exist
+// change before production
+	// find value, then if it exists, update
+	// else, insert new item
 
 			client.query("INSERT INTO facebook_photos (facebook_user_id, fb_photo_id, " + 
-					"fb_created_time, fb_photo_url_full_size, fb_photo_thumbnail, " + 
-					"fb_photo_place, fb_photo_tags) " +
+					"fb_created_time, fb_photo_album, fb_photo_url_full_size, " +
+					"fb_photo_thumbnail, fb_photo_place, fb_photo_tags) " +
 					"VALUES ('" + facebook_user_id + "', '" + fb_photo_id + "', '" +
-					fb_created_time + "', '" + fb_photo_url_full_size + "', '" + 
-					fb_photo_thumbnail + "', '" + fb_photo_place + "', '" +
-					fb_photo_tags + "')", 
-				function(err, result){
-					done();
-					if(err){
-						return console.error("error inserting into table facebook_photos", err);
-					}
+					fb_created_time + "', '" + fb_photo_album + "', '"+ 
+					fb_photo_url_full_size + "', '" + fb_photo_thumbnail + "', '" + 
+					fb_photo_place + "', '" + fb_photo_tags + "')", 
+						function(err, result){
+							done();
+							if(err){
+								return console.error("error inserting into table facebook_photos", err);
+							}
 			}); // close client.query
 		} // close for loop
 		console.log("successfully saved fb data to facebook_photos table");
 	}); // close pg.connect
-
-
-	// these may not always exist, so make it conditional
-	// fb_photo_place
-	// fb_photo_tags
-
-
-	// redirect to ? page, now showing new photos
-	// getting error 'can't set headers after they are sent, in terminal console
-	// res.render("users/facebookLanding");
 });
 
+
+
+// facebookLanding page - photo stream
+app.get('/facebookLanding', function(req, res){
+	res.format({
+		// if the request to this route is an html type, render the page
+		'text/html': function(){
+			// make a request to our database to grab the photo_urls
+
+// **** TO FIX ***
+// hard coding user id - fix to do this dynamically later
+
+			pg.connect(databaseConnectionLocation, function(err, client, done){
+				if(err){
+					return console.error("error connecting to database in /facebookLanding route", err);
+				}
+				client.query("SELECT * FROM facebook_photos WHERE facebook_user_id = '10153659612406060'", function(err, result){
+					done();
+					if(err){
+						return console.error("error finding table test_photos, in /index route", err);
+					}
+					// console.log("result is... ", result.rows);
+					var photoThumbsArray = [];
+					for (var i = 0; i < result.rows.length; i++){
+
+// **** TO FIX ***
+// change this to get ALL the image data, then do what I want with it on the view
+
+						photoThumbsArray.push(result.rows[i].fb_photo_thumbnail);
+					}
+					console.log("array...", photoThumbsArray);
+					console.log("number of items in array: ", photoThumbsArray.length);
+					res.render("users/facebookLanding", {photoThumbsArray:photoThumbsArray});
+				});
+			});
+		},
+		// if the request to this route is an ajax request, send the data as type json 
+		'application/json': function(){
+			res.send(someData);
+		},
+		// if other type of request, send an error status message
+		'default': function(){
+			res.status(406).send("Not Acceptable data type request");
+		}
+	});
+});
+
+
+
+
+
+
+
+
+// Instagram login button page
+app.get('/indexInstagram', function(req, res){
+	res.render("users/indexInstagram");
+});
+
+
+app.get('/login/instagram', function(req, res) {
+	// ask instagram for authorization
+	res.redirect("https://api.instagram.com/oauth/authorize/?client_id=" + 
+		INSTAGRAM_CLIENT_ID + "&redirect_uri=" + INSTAGRAM_REDIRECT_URI + "&response_type=code&scope=basic");
+});
+
+
+// ON RETURN, GET ALL THE DATA FROM THE API AND STORE IT IN MY DATABASES
+
+app.get('/instagramLanding', function(req, res) {
+	res.render("users/instagramLanding");
+});	
+
+
+
+//_______ERRORS_______
+
+// 500 page
+app.get("/500", function(req, res){
+	console.log("in the /errors/500 - oopsie route");
+	res.render("errors/500");
+});
 
 // FALLBACK ROUTE
-app.get("*", function(req,res){
+app.get("*", function(req, res){
 	res.render("errors/404");
 });
-
 
 
 

@@ -1,37 +1,16 @@
 <% include ../partials/header %>
 
 
-<p>Hello! This is the index page.</p>
-
-<!-- Facebook login button & status. 
-This button uses the JavaScript SDK to present a graphical Login button that triggers 
-the FB.login() function when clicked. -->
-<fb:login-button scope="public_profile,email,user_photos" onlogin="checkLoginState();"></fb:login-button>
-<div id="status"></div>
-
-<!-- <div id="facebookPhotoData"></div> -->
-
-<button id="lindsayFBbutton">Lindsay's FB LOGIN button</button>
-
-<div id="fbLoginResult">...This is a div to give the result...</div>
-
-<div ng-controller="BaseController">
-
-	<p>Special message... {{message}}</p>
-
-	<!-- <ul>
-		<li ng-repeat="photo in photoArray">{{photo}}</li>
-	</ul> -->
+<p>Hello! This is the MAIN index page.</p>
 
 
-	<% for (var i = 0; i < photoArray.length; i++){  %>
-		<div><img src="<%= photoArray[i] %>" height="300px"></div>
-	<% } %>
-	
+<div class="spacey"><a href="/indexFacebook"><button>Go to Facebook Login</button></a></div>
+<div class="spacey"><a href="/facebookLanding"><button>Go to Facebook photo stream</button></a></div>
 
-</div>
+<div class="spacey"><a href="/indexInstagram"><button>Go to Instagram Login</button></a></div>
+<div class="spacey"><a href="/instagramLanding"><button>Go to Instagram photo stream</button></a></div>
 
-<!-- <img src="https://fbcdn-photos-g-a.akamaihd.net/hphotos-ak-xta1/v/t1.0-0/p180x540/10300684_10153215492596060_4167049021788748131_n.jpg?oh=d7d6d6eb0552fa56b9f5b85a23f460fc&oe=565CFDAD&__gda__=1453216188_f415f24b37d6e274da58ec1ea12b9ada"> -->
+
 
 
 

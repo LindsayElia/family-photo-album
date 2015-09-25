@@ -40,51 +40,6 @@ window.fbAsyncInit = function() {
 };
 
 
-// on click button with id=lindsayFBbutton, call the FB.login method, call sendFbAccessTokenToServer()
-// $("#lindsayFBbutton").click(function(){
-// 	FB.login(function(response) {
-// 		if (response.authResponse) {
-// 			console.log('lindsays FB login button clicked.... ');
-// 			console.log("access token: ", response.authResponse.accessToken);
-
-// 			// need to send this access token to my server
-// 			// and also verify again that the app id & user id match the token, server side
-// 			sendFbAccessTokenToServer(response.authResponse.accessToken);
-
-
-// 			FB.api('/me', function(response) {
-// 				console.log('Good to see you, ' + response.name + '.');
-// 			});
-// 		} else {
-// 			console.log('User cancelled login or did not fully authorize.');
-// 	   }
-// 	}, {scope: 'public_profile,user_photos'});
-// });
-
-
-// // using jquery, send the JSON to my server, so my server can save it in my database
-// function sendFbAccessTokenToServer(fbAcessToken){
-// 	$.ajax({
-// 		url: "/facebookLogin",
-// 		method: "POST",
-// 		data: fbAcessToken,
-// 		contentType: "json"
-// 	})
-// 	.done(function(userPhotoData){
-// 		console.log("successful ajax post request");
-// 		console.log("ajax 'data' is...");
-// 		$("#fbLoginResult").append("<span>successful login to FB</span>");
-// 		$("#fbLoginResult").append("<span>" + userPhotoData + "</span>");
-// 	})
-// 	.fail(function(jqXHR){
-// 		console.log("error/xhr from ajax request: ", jqXHR.status);
-// 	});
-// }
-	
-
-
-
-
 
 // This function is called when someone finishes with the Login Button.
 // See the onlogin handler attached to it in the sample code below.
@@ -137,14 +92,38 @@ function testAPI() {
 // make a request to the facebook graph API for photo data
 // call the function to send data to my server
 function getPhotosAPI(){
-	// limit is 100 photos...too much data won't send successfully to my server
-	FB.api('/me/','GET',{"fields":"id,photos.limit(100){images,created_time,id,tags,place,picture,can_delete}"}, function (response) {
+
+
+	// not yet storing this...
+	// can I nest the calls?
+	var fb_user_id;
+
+	// get user's facebook user id
+	FB.api(
+		'/me/',
+		'GET',
+		{"fields":"id"},
+		function(response) {
+			fb_user_id = response.id;
+		}
+	);
+
+	// console.log("my fb_user_id: ", fb_user_id);
+
+
+	// currently limiting to 100 photos...too much data won't send successfully to my server
+	// only getting type=uploaded to make sure the user owns those photos
+	FB.api(
+		'/me/photos',
+		'GET',
+		{"fields":"album,created_time,id,images,place,tags,picture","type":"uploaded","limit":"50"}, 
+		function (response) {
 	    	if (response && !response.error){
 	    		console.log("response data: ", response);
 	    		// clean up the data before I send it to my server
 	    		var photoDataArray = [];
-	    		for (var i = 0; i < response.photos.data.length; i++){
-	    			var thisImage = response.photos.data[i];
+	    		for (var i = 0; i < response.data.length; i++){
+	    			var thisImage = response.data[i];
 	    			// if can_delete is set to false, do not save photo
 	    			// because photo does not belong to this person
 	    			if (thisImage.can_delete === false){
@@ -152,9 +131,10 @@ function getPhotosAPI(){
 	    				console.log("skipping an image");
 	    			} else {
 	    				var photoDataObject = {
-	    					fb_user_id : response.id,
+	    					fb_user_id : fb_user_id,
 	    					fb_photo_id : thisImage.id,
 	    					fb_photo_created_time : thisImage.created_time,
+	    					fb_photo_album : thisImage.album,
 	    					fb_photo_url_full_size : thisImage.images[0],
 	    					fb_photo_thumbnail : thisImage.picture,
 	    					fb_photo_place : thisImage.place,
