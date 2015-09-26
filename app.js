@@ -209,11 +209,11 @@ app.get('/landing/facebook', function(req, res){
 var instagramClientId = process.env.INSTAGRAM_CLIENT_ID;
 var instagramRedirectUriCode = process.env.INSTAGRAM_REDIRECT_URI;
 var instagramClientSecret = process.env.INSTAGRAM_CLIENT_SECRET;
-
+console.log("instagramRedirectUriCode: ", instagramRedirectUriCode);
 
 // displays a page with the instagram authorization via a button
 app.get('/authorize/instagram', function(req, res){
-	res.render("users/indexInstagram");
+	res.render("users/authInstagram");
 });
 
 
@@ -233,12 +233,12 @@ app.get('/login/instagram', function(req, res) {
 // and req.query gets everything after the '?', so in this case, it's '?code=...'
 // and we can access that by using req.query.whatever-thing-is-before-the-equals-sign
 
-app.get('/landing/instagram/:user', function(req, expressResponse) {
+app.get('/landing/instagram', function(req, expressResponse) {
 	// if the user declines authorization, handle the error response query from instagram
 	if (req.query.error){
 		console.log("error requesting user instagram code, error reason: ", req.query.error_reason);
 		console.log("error requesting user instagram code, error description: ", req.query.error_description);
-		expressResponse.render("errors/nope");
+		expressResponse.redirect("errors/nope");
 	} else {
 		console.log("requesting access token from Instagram");
 		var instgramCode = req.query.code;
@@ -269,7 +269,8 @@ app.get('/landing/instagram/:user', function(req, expressResponse) {
 
 				// set header types using options
 				// https://github.com/request/request#custom-http-headers
-// not sure 
+// not sure that I need the header?
+// check this again once everything is working
 
 				request.get({
 					url:instagramApiUrl, 
