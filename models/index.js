@@ -34,13 +34,23 @@ pg.connect(databaseConnectionLocation, function(err, client, done){
 		}
 	});
 
-	// // remove facebook_photos table if it exists
+	// remove facebook_photos table if it exists
 	client.query("DROP TABLE facebook_photos", function(err, result){
 		done();
 		if(err){
 			return console.error("error dropping table facebook_photos", err);
 		} else {
 			console.log("dropped facebook_photos table");
+		}
+	});
+
+	// remove instagram_photos table if it exists
+	client.query("DROP TABLE instagram_photos", function(err, result){
+		done();
+		if(err){
+			return console.error("error dropping table instagram_photos", err);
+		} else {
+			console.log("dropped instagram_photos table");
 		}
 	});
 
@@ -77,9 +87,9 @@ pg.connect(databaseConnectionLocation, function(err, client, done){
 	client.query("CREATE TABLE facebook_photos (facebook_user_id TEXT, " +
 												"fb_photo_id TEXT, " +
 												"fb_photo_created_time TEXT, " +
-												"fb_photo_album TEXT, " +
+												"fb_photo_album TEXT, " +	// object/array containing data about the place
 												"fb_photo_url_full_size TEXT, " + // object containing url, height & width
-												"fb_photo_thumbnail TEXT, " +
+												"fb_photo_thumbnail TEXT, " + // just a string of the URL
 												"fb_photo_place TEXT, " + // object/array containing data about the place
 												"fb_photo_tags TEXT " +  // object/array containing data about other people tagged in photo
 												")", function(err, result){
@@ -95,7 +105,7 @@ pg.connect(databaseConnectionLocation, function(err, client, done){
 												"insta_photo_id TEXT, " +
 												"insta_photo_created_time TEXT, " +
 												"insta_photo_url_full_size TEXT, " + // object containing url, height & width
-												"insta_photo_thumbnail TEXT, " +
+												"insta_photo_thumbnail TEXT, " + // object containing url, height & width
 												"insta_photo_place TEXT, " + // ??? unsure of format since my photos don't contain location info
 												"insta_photo_tags TEXT " +  // object/array containing data about other people tagged in photo
 												")", function(err, result){
