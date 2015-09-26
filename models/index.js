@@ -19,7 +19,9 @@ pg.connect(databaseConnectionLocation, function(err, client, done){
 
 
 
-// I should remove these before production
+// TO FIX: remove these before production & figure out how to create tables JUST ONCE
+// was getting an error when running this without dropping the tables first
+// ask a teacher
 // ***************************************
 
 	// remove myapp_users table if it exists
@@ -43,11 +45,12 @@ pg.connect(databaseConnectionLocation, function(err, client, done){
 	});
 
 // ***************************************
-// I should remove these before production
+// ^^^^ remove these before production
 
 
 
 	// create a myapp_users table
+	// this acts as the JOIN table because it contains all of the API ids in addition to my app's serial key 
 	client.query("CREATE TABLE myapp_users (user_id SERIAL PRIMARY KEY, " + 
 											"user_email TEXT, " +
 											"username_first TEXT, " +
@@ -73,16 +76,32 @@ pg.connect(databaseConnectionLocation, function(err, client, done){
 	// create a facebook_photos table
 	client.query("CREATE TABLE facebook_photos (facebook_user_id TEXT, " +
 												"fb_photo_id TEXT, " +
-												"fb_created_time TEXT, " +
+												"fb_photo_created_time TEXT, " +
 												"fb_photo_album TEXT, " +
-												"fb_photo_url_full_size TEXT, " + // string containing json format data with url, height & width
+												"fb_photo_url_full_size TEXT, " + // object containing url, height & width
 												"fb_photo_thumbnail TEXT, " +
-												"fb_photo_place TEXT, " + // string containing json format data about the place
-												"fb_photo_tags TEXT " +  // string containing json format data about other people tagged in photo
+												"fb_photo_place TEXT, " + // object/array containing data about the place
+												"fb_photo_tags TEXT " +  // object/array containing data about other people tagged in photo
 												")", function(err, result){
 		done();
 		if(err){
 			return console.error("error creating table facebook_photos", err);
+		}
+	});
+
+
+	// create an instagram_photos table
+	client.query("CREATE TABLE instagram_photos (insta_user_id TEXT, " +
+												"insta_photo_id TEXT, " +
+												"insta_photo_created_time TEXT, " +
+												"insta_photo_url_full_size TEXT, " + // object containing url, height & width
+												"insta_photo_thumbnail TEXT, " +
+												"insta_photo_place TEXT, " + // ??? unsure of format since my photos don't contain location info
+												"insta_photo_tags TEXT " +  // object/array containing data about other people tagged in photo
+												")", function(err, result){
+		done();
+		if(err){
+			return console.error("error creating table instagram_photos", err);
 		}
 	});
 

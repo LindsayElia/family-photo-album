@@ -104,6 +104,7 @@ app.post("/landing/facebook", function(req, res){
 			return console.error("error connecting to database, from inside of post /facebookLogin route", err);
 		}
 
+		// format the data received from client side
 		for (var i = 0; i < fbDataReceived.length; i++){
 			var currentPhotoObject = fbDataReceived[i];
 			var facebook_user_id = currentPhotoObject.fb_user_id;
@@ -121,6 +122,7 @@ app.post("/landing/facebook", function(req, res){
 	// find value, then if it exists, update
 	// else, insert new item
 
+			// add data to db
 			client.query("INSERT INTO facebook_photos (facebook_user_id, fb_photo_id, " + 
 					"fb_created_time, fb_photo_album, fb_photo_url_full_size, " +
 					"fb_photo_thumbnail, fb_photo_place, fb_photo_tags) " +
@@ -222,7 +224,7 @@ app.get('/login/instagram', function(req, res) {
 // req.params gets everything after the 'http://localhost:3000/', so in this case, it's '/instagramLanding'
 // and req.query gets everything after the '?', so in this case, it's '?code=...'
 // and we can access that by using req.query.whatever-thing-is-before-the-equals-sign
-
+// don't change this path without also changing the redirect URLs on Instagram API Manage Client page
 app.get('/landing/instagram', function(req, expressResponse) {
 	// if the user declines authorization, handle the error response query from instagram
 	if (req.query.error){
@@ -244,7 +246,7 @@ app.get('/landing/instagram', function(req, expressResponse) {
 				code:instgramCode}
 			}, 
 			function(err, instagramTokenResponse, body){
-				console.log("body of response from instagram access token: ", body);
+				// console.log("body of response from instagram access token: ", body);
 				console.log("error in getting response from instagram for access token: ", err);
 				var userInstagramData = JSON.parse(body);
 				var userInstagramAccessToken = userInstagramData.access_token;
@@ -255,7 +257,7 @@ app.get('/landing/instagram', function(req, expressResponse) {
 
 				var instagramApiUrl = "https://api.instagram.com/v1/users/" + 
 				userInstagramId + "/media/recent?access_token=" + userInstagramAccessToken +
-				"&count=50";
+				"&count=100";
 
 				// set header types using options
 				// https://github.com/request/request#custom-http-headers
@@ -274,21 +276,74 @@ app.get('/landing/instagram', function(req, expressResponse) {
 						var instagramApiBodyParsedData = instagramApiDataParsed.data;
 						// console.log("apiBody: ", instagramApiBodyParsedData);
 
+						// format the data
 						var instargramPhotoDataArray =[];
 						for (var j = 0; j < instagramApiBodyParsedData.length; j++){
-							var thisInstaPhoto = instagramApiBodyParsedData[j].images.standard_resolution.url;
-							console.log("thisInstaPhoto - ", thisInstaPhoto);
-							instargramPhotoDataArray.push(thisInstaPhoto);
+							var thisInstaItem = instagramApiBodyParsedData[j]
+							if (thisInstaItem.type === "image"){
+								var thisInstaPhotoObject = {
+									insta_user_id : thisInstaItem.user.id,
+									insta_photo_id : thisInstaItem.id,
+									insta_photo_created_time : thisInstaItem.created_time,
+									insta_photo_url_full_size : thisInstaItem.images.standard_resolution.url,
+									insta_photo_thumbnail : thisInstaItem.images.thumbnail,
+									insta_photo_place : thisInstaItem.location,  // these may not always exist
+									insta_photo_tags : thisInstaItem.tags  // these may not always exist
+								};
+								console.log("thisInstaPhoto - ", thisInstaPhotoObject);
+								instargramPhotoDataArray.push(thisInstaPhotoObject);
+							}
 						}
 
-						// need to save this data to my db and redirect to the page
-						// then in the new 'get' route
+						// save data to my db
+						pg.connect(databaseConnectionLocation, function(err, client, done){
 
-						expressResponse.render("users/landingInstagram", {instagramData:instargramPhotoDataArray});
+							if(err){
+								return console.error("error connecting to database, from inside of post /facebookLogin route", err);
+							}
+
+// **** TO FIX ***
+// only save if does not yet exist
+// change before production
+	// find value, then if it exists, update
+		// else, insert new item
+
+								// add data to db
+								client.query("INSERT INTO instagram_photos (insta_user_id, insta_photo_id, " + 
+										"insta_photo_created_time, insta_photo_url_full_size, " +
+										"insta_photo_thumbnail, insta_photo_place, insta_photo_tags) " +
+										"VALUES ('" + insta_user_id + "', '" + insta_photo_id + "', '" +
+										insta_photo_created_time + "', '" + 
+										insta_photo_url_full_size + "', '" + insta_photo_thumbnail + "', '" + 
+										insta_photo_place + "', '" + insta_photo_tags + "')", 
+											function(err, result){
+												done();
+												if(err){
+													return console.error("error inserting into table instagram_photos", err);
+												}
+								}); // close client.query
+							console.log("successfully saved fb data to instagram_photos table");
+						}); // close pg.connect
+
+
+						// redirect to the /landing/show/instagram page
+						expressResponse.redirect("/landing/show/instagram");
+
 				});
 				
 			});
 	}
+});
+
+
+app.get("/landing/show/instagram", function(req, res){
+	// get data out of database
+	pg.connect(databaseConnectionLocation, function(err, client, done){
+
+	});
+
+
+	res.render("users/landingInstagram", {instagramData:instargramPhotoDataArray});
 });
 
 
