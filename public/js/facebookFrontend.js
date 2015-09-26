@@ -1,3 +1,5 @@
+console.log("hello from faceobook frontend js file");
+
 //***** FACEBOOK API login & authorization *****
 // for reference: https://developers.facebook.com/docs/facebook-login/web
 
@@ -163,9 +165,11 @@ function sendFbUserData(fbUserData){
 	// convert to JSON for travel
 	var dataToSend = JSON.stringify(fbUserData);
 	
-	$.post("/facebookLogin",{data: dataToSend})
+	$.post("/landing/facebook",{data: dataToSend})
 		.done(function(data){
-			console.log("successful ajax post request", data);
+			console.log("successful ajax post request data is: ", data);
+			// redirect to GET route for the /landing/facebook page
+			// $.get("/landing/facebook");
 		})
 		.fail(function(jqXHR){
 			console.log("error/xhr from ajax request: ", jqXHR.status);

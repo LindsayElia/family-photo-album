@@ -1,0 +1,12 @@
+<% include ../partials/header %>
+
+<a href="/index"><button>HOME</button></a>
+
+<p>This is the landingInstagram page.</p>
+
+<% for (var i = 0; i < instagramData.length; i++){  %>
+	<span class="spacey"><img src="<%= instagramData[i] %>"></span>
+<% } %>
+
+
+<% include ../partials/footer %>

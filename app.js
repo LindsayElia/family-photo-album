@@ -25,8 +25,8 @@ app.use(methodOverride("_method"));
 var bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended:true}));
 
-
-
+// dotenv - lets us use SECRET global variables
+require('dotenv').load();
 
 
 
@@ -56,14 +56,20 @@ app.get("/index", function(req, res){
 	res.render("users/index");
 });
 
-// Facebook login button page
-// not sure if I want to send data via fbData or someData ???
-// not sure if I need all three send type options?
-app.get('/indexFacebook', function(req, res){
+
+
+
+
+// ____________FACEBOOK____________
+
+
+// displays a page with the facebook authorization via a FB login button
+// TO FIX: not sure if I need all three send type options?
+app.get('/authorize/facebook', function(req, res){
 	res.format({
 		// if the request to this route is an html type, render the page
 		'text/html': function(){
-			res.render("users/indexFacebook");
+			res.render("users/authFacebook");
 		},
 		// if the request to this route is an ajax request, send the data as type json 
 		'application/json': function(){
@@ -77,8 +83,21 @@ app.get('/indexFacebook', function(req, res){
 });
 
 
-// facebookLogin post route
-app.post("/facebookLogin", function(req, res){
+// posts data to the landing page for facebook after authorization/login
+// from a button on the /authorize/facebook page
+// receives data from the client side js facebook file after authorizing user & retrieving data from FB API
+// saves data to my database
+
+
+
+
+
+// WORKING ON THIS: redirects to GET for /landing/facebook in the client side file???????
+
+
+
+
+app.post("/landing/facebook", function(req, res){
 	// need to give the client side a response code or else it hangs and errors out
 	res.status(200).send("data received successfully");
 
@@ -132,8 +151,10 @@ app.post("/facebookLogin", function(req, res){
 
 
 
-// facebookLanding page - photo stream
-app.get('/facebookLanding', function(req, res){
+// displays a page showing fb photo stream
+// connects to database and finds all fb photos
+// renders the users/landingFacebook page
+app.get('/landing/facebook', function(req, res){
 	res.format({
 		// if the request to this route is an html type, render the page
 		'text/html': function(){
@@ -157,12 +178,13 @@ app.get('/facebookLanding', function(req, res){
 
 // **** TO FIX ***
 // change this to get ALL the image data, then do what I want with it on the view
+// also need to save ALL of the user data (fb_user_id, etc)
 
 						photoThumbsArray.push(result.rows[i].fb_photo_thumbnail);
 					}
 					console.log("array...", photoThumbsArray);
 					console.log("number of items in array: ", photoThumbsArray.length);
-					res.render("users/facebookLanding", {photoThumbsArray:photoThumbsArray});
+					res.render("users/landingFacebook", {photoThumbsArray:photoThumbsArray});
 				});
 			});
 		},
@@ -180,32 +202,112 @@ app.get('/facebookLanding', function(req, res){
 
 
 
+// ____________INSTAGRAM____________
 
 
+// Instagram credentials
+var instagramClientId = process.env.INSTAGRAM_CLIENT_ID;
+var instagramRedirectUriCode = process.env.INSTAGRAM_REDIRECT_URI;
+var instagramClientSecret = process.env.INSTAGRAM_CLIENT_SECRET;
 
 
-// Instagram login button page
-app.get('/indexInstagram', function(req, res){
+// displays a page with the instagram authorization via a button
+app.get('/authorize/instagram', function(req, res){
 	res.render("users/indexInstagram");
 });
 
 
+// user clicks on button from the /authorize/instagram page,
+// which gets this route, which starts the authentication process
+// to the instagram API, and redirects to the /landing/instagram route below
 app.get('/login/instagram', function(req, res) {
 	// ask instagram for authorization
 	res.redirect("https://api.instagram.com/oauth/authorize/?client_id=" + 
-		INSTAGRAM_CLIENT_ID + "&redirect_uri=" + INSTAGRAM_REDIRECT_URI + "&response_type=code&scope=basic");
+		instagramClientId + "&redirect_uri=" + instagramRedirectUriCode + "&response_type=code&scope=basic");
 });
 
 
 // ON RETURN, GET ALL THE DATA FROM THE API AND STORE IT IN MY DATABASES
+// NOTES: 
+// req.params gets everything after the 'http://localhost:3000/', so in this case, it's '/instagramLanding'
+// and req.query gets everything after the '?', so in this case, it's '?code=...'
+// and we can access that by using req.query.whatever-thing-is-before-the-equals-sign
 
-app.get('/instagramLanding', function(req, res) {
-	res.render("users/instagramLanding");
-});	
+app.get('/landing/instagram/:user', function(req, expressResponse) {
+	// if the user declines authorization, handle the error response query from instagram
+	if (req.query.error){
+		console.log("error requesting user instagram code, error reason: ", req.query.error_reason);
+		console.log("error requesting user instagram code, error description: ", req.query.error_description);
+		expressResponse.render("errors/nope");
+	} else {
+		console.log("requesting access token from Instagram");
+		var instgramCode = req.query.code;
+
+		// post info in a form submission format
+		// use the 'form' format with a callback from https://github.com/request/request
+		request.post({
+			url:"https://api.instagram.com/oauth/access_token", 
+			form: {client_id:instagramClientId, 
+				client_secret:instagramClientSecret,
+				grant_type:"authorization_code", 
+				redirect_uri:instagramRedirectUriCode, 
+				code:instgramCode}
+			}, 
+			function(err, instagramTokenResponse, body){
+				console.log("body of response from instagram access token: ", body);
+				console.log("error in getting response from instagram for access token: ", err);
+				var userInstagramData = JSON.parse(body);
+				var userInstagramAccessToken = userInstagramData.access_token;
+				// console.log("just the userInstagramAccessToken: ", userInstagramAccessToken);
+
+				var userInstagramId = userInstagramData.user.id;
+				console.log("my instagram user_id:", userInstagramId);
+
+				var instagramApiUrl = "https://api.instagram.com/v1/users/" + 
+				userInstagramId + "/media/recent?access_token=" + userInstagramAccessToken +
+				"&count=50";
+
+				// set header types using options
+				// https://github.com/request/request#custom-http-headers
+// not sure 
+
+				request.get({
+					url:instagramApiUrl, 
+					headers: {"content-type": "application/json"}
+				}, 
+					function(apiError, apiResponse, apiBody){
+						// console.log("apiError: ", apiError);
+						// console.log("apiResponse: ", apiResponse);
+						var instagramApiDataParsed = JSON.parse(apiBody);
+						
+						var instagramApiBodyParsedData = instagramApiDataParsed.data;
+						// console.log("apiBody: ", instagramApiBodyParsedData);
+
+						var instargramPhotoDataArray =[];
+						for (var j = 0; j < instagramApiBodyParsedData.length; j++){
+							var thisInstaPhoto = instagramApiBodyParsedData[j].images.standard_resolution.url;
+							console.log("thisInstaPhoto - ", thisInstaPhoto);
+							instargramPhotoDataArray.push(thisInstaPhoto);
+						}
+
+						// need to save this data to my db and redirect to the page
+						// then in the new 'get' route
+
+						expressResponse.render("users/landingInstagram", {instagramData:instargramPhotoDataArray});
+				});
+				
+			});
+	}
+});
 
 
 
 //_______ERRORS_______
+
+// if user declines to authorize an application
+app.get("/nope", function(req, res){
+	res.render("errors/nope");
+});
 
 // 500 page
 app.get("/500", function(req, res){
