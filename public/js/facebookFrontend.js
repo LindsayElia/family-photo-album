@@ -1,10 +1,27 @@
-console.log("hello from faceobook frontend js file");
-
 //***** FACEBOOK API login & authorization *****
 // for reference: https://developers.facebook.com/docs/facebook-login/web
 
-// execute everything in this js file when document is ready
-// $(document).ready(function() {
+console.log("hello from faceobook frontend js file");
+
+// wrap the call to the FB button in a document ready so it can find the button id
+$(document).ready(function(){
+	// execute FB API calls when the facebook button is clicked
+	$("#facebookAuthButton").on("click", function() {
+		console.log("button clicked");
+
+		// This function gets the state of the
+		// person visiting this page and can return one of three states to
+		// the callback you provide.  They can be:
+				// 1. Logged into your app ('connected')
+				// 2. Logged into Facebook, but not your app ('not_authorized')
+				// 3. Not logged into Facebook and can't tell if they are logged into your app or not.
+		// These three cases are handled in the callback function.
+
+		FB.getLoginStatus(function(response) {
+			statusChangeCallback(response);
+		});
+	}); // close click handler
+}); // close document.ready
 
 
 // Load the Facebook SDK asynchronously
@@ -27,20 +44,11 @@ window.fbAsyncInit = function() {
 		version    : 'v2.2' // use version 2.2
 	});
 	// Now that we've initialized the JavaScript SDK, we call 
-	// FB.getLoginStatus().  This function gets the state of the
-	// person visiting this page and can return one of three states to
-	// the callback you provide.  They can be:
-			// 1. Logged into your app ('connected')
-			// 2. Logged into Facebook, but not your app ('not_authorized')
-			// 3. Not logged into Facebook and can't tell if they are logged into your app or not.
-	// These three cases are handled in the callback function.
+	// FB.getLoginStatus().  
 
-	FB.getLoginStatus(function(response) {
-		statusChangeCallback(response);
-	});
+	
 
 };
-
 
 
 // This function is called when someone finishes with the Login Button.
@@ -74,9 +82,6 @@ function statusChangeCallback(response) {
 }
 
 
-
-
-
 // Here we run a very simple test of the Graph API after login is
 // successful.  See statusChangeCallback() for when this call is made.
 function testAPI() {
@@ -90,7 +95,8 @@ function testAPI() {
 
 
 
-// I added this :)
+// I added everthing below this :)
+
 // make a request to the facebook graph API for photo data
 // call the function to send data to my server
 function getPhotosAPI(){
@@ -168,8 +174,9 @@ function sendFbUserData(fbUserData){
 	$.post("/landing/facebook",{data: dataToSend})
 		.done(function(data){
 			console.log("successful ajax post request data is: ", data);
-			// redirect to GET route for the /landing/facebook page
-			// $.get("/landing/facebook");
+			
+			// redirect the user to the landing page
+			redirectToFbLanding();
 		})
 		.fail(function(jqXHR){
 			console.log("error/xhr from ajax request: ", jqXHR.status);
@@ -177,8 +184,14 @@ function sendFbUserData(fbUserData){
 		});
 }
 
+// this redirects the user to the landing page when called
+function redirectToFbLanding() {
+	window.location="/landing/facebook";
+}
 
 
 
-// }); // close document.ready
-  	
+
+
+
+ 

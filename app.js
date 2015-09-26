@@ -87,22 +87,12 @@ app.get('/authorize/facebook', function(req, res){
 // from a button on the /authorize/facebook page
 // receives data from the client side js facebook file after authorizing user & retrieving data from FB API
 // saves data to my database
-
-
-
-
-
-// WORKING ON THIS: redirects to GET for /landing/facebook in the client side file???????
-
-
-
-
 app.post("/landing/facebook", function(req, res){
 	// need to give the client side a response code or else it hangs and errors out
 	res.status(200).send("data received successfully");
 
 	// need bodyParser module to interpret the data
-	console.log("this is from the ajax request - req.body - ", req.body);
+	// console.log("this is from the ajax request - req.body - ", req.body);
 	// unpack JSON so that it's a JavaScript ojbect & array format, rather than a string
 	var fbDataReceived = JSON.parse(req.body.data);
 	// console.log(fbDataReceived[0]);
@@ -182,8 +172,8 @@ app.get('/landing/facebook', function(req, res){
 
 						photoThumbsArray.push(result.rows[i].fb_photo_thumbnail);
 					}
-					console.log("array...", photoThumbsArray);
-					console.log("number of items in array: ", photoThumbsArray.length);
+					// console.log("array...", photoThumbsArray);
+					// console.log("number of items in array: ", photoThumbsArray.length);
 					res.render("users/landingFacebook", {photoThumbsArray:photoThumbsArray});
 				});
 			});

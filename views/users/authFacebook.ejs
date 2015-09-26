@@ -6,17 +6,18 @@
 
 <p>Hello! This is the authFacebook page.</p>
 
+
+
 <!-- Facebook login button & status. 
 This button uses the JavaScript SDK to present a graphical Login button that triggers 
 the FB.login() function when clicked. -->
-<fb:login-button scope="public_profile,email,user_photos" onlogin="checkLoginState();"></fb:login-button>
+<button id="facebookAuthButton" scope="public_profile,email,user_photos" onlogin="checkLoginState();">Let this app access my Facebook data</button>
 <div id="status"></div>
 
 <!-- <div id="facebookPhotoData"></div> -->
 
 
 
-<div id="fbLoginResult">...This is a div to give the result...</div>
 
 <div ng-controller="BaseController">
 
@@ -25,11 +26,6 @@ the FB.login() function when clicked. -->
 	<!-- <ul>
 		<li ng-repeat="photo in photoArray">{{photo}}</li>
 	</ul> -->
-
-<a href="/facebookLanding"><button>Lindsay's redirect FB photos button</button></a>
-
-
-	
 
 </div>
 
