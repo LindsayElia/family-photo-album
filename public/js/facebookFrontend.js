@@ -119,7 +119,8 @@ function getPhotosAPI(){
 	// console.log("my fb_user_id: ", fb_user_id);
 
 
-	// currently limiting to 100 photos...too much data won't send successfully to my server
+	// currently limiting to 50 photos...too much data won't send successfully to my server
+	// apparently 100 is too many for a single request
 	// only getting type=uploaded to make sure the user owns those photos
 	FB.api(
 		'/me/photos',

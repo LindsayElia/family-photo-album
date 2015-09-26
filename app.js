@@ -261,17 +261,16 @@ app.get('/landing/instagram', function(req, expressResponse) {
 				// var userInstagramId = userInstagramData.user.id;
 				// console.log("my instagram user_id:", userInstagramId);
 
+// currently grabbing just 50 most recent photos
 				var instagramApiUrl = "https://api.instagram.com/v1/users/self" + 
 				"/media/recent?access_token=" + userInstagramAccessToken +
 				"&count=50";
 
-// TO CHECK / REMOVE LATER:
 				// set header types using options
 				// https://github.com/request/request#custom-http-headers
-// not sure that I need the header?
-// check this again once everything is working
-
-				request.get({
+				// this is OPTIONAL in this instance, but it's nice to see how to format it
+				request.get(
+				{
 					url:instagramApiUrl, 
 					headers: {"content-type": "application/json"}
 				}, 
