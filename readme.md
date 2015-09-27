@@ -34,13 +34,21 @@ There may also be an admin view that I would have access to if there is enough t
 
 - Facebook
 - Instagram
+- Flickr
+
+Future additions:
+
 - Shutterfly
-- Snapfish
+- Dropbox
+- SmugMug
+
 
 #### Bonus Features - if time
 
+- real-time checking when new photos are added to any of the services a user has authorized
 - on-page notifications when new photos are added
 - email notifications when new photos are added
+- ability for users to delete their data from the app
 
 
 
