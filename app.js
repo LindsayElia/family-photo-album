@@ -28,13 +28,28 @@ app.use(bodyParser.urlencoded({extended:true}));
 // dotenv - lets us use SECRET global variables
 require('dotenv').load();
 
-
-
 // pg module - lets us talk to our postgres database
 var pg = require("pg");
 
 // tell it where our database is
 var databaseConnectionLocation = process.env.HEROKU_POSTGRESQL_NAVY_URL || "postgres://localhost:5432/family_photos";
+
+// express-session & grant-express - lets us use OAuth for 100+ APIs
+// 
+// currenlty I'm just using this for Flickr, but it also works with Facebook, Instagram, & Dropbox
+// relies on the express module I already brought in (lines 4 & 5 above)
+// https://github.com/simov/grant
+// https://grant-oauth.herokuapp.com/#/
+// getting started reference: (written by the module author) https://scotch.io/tutorials/implement-oauth-into-your-express-koa-or-hapi-applications-using-grant
+var session = require('express-session');
+var Grant = require('grant-express');
+var config = require('./config.json'); // bring in the config.json file in the same dirctory
+var grant = new Grant(config);
+// REQUIRED: (any session store - see ./example/express-session)
+app.use(session({secret:'grant'}));
+// mount grant
+app.use(grant);
+
 
 
 
@@ -412,35 +427,37 @@ app.get('/authorize/flickr', function(req, res){
 // to the instagram API, and redirects to the /landing/instagram route below
 // this uses the node module "flickrapi" that we brought in above, which has magical
 // authentication, so we don't have to specify a callback / etc
-app.get('/login/flickr', function(req, res) {
-	
-	// this does magic!
-	// it asks the user to authenticate for me, so easy!
-	Flickr.authenticate(flickrOptions, function(error, flickr) {
-	  // we can now use "flickr" as our API object
-	  console.log("flickr result??? ", flickr);
-	});
 
+// path specified by grant module
+// see https://github.com/simov/grant#typical-flow - step #5
+app.get('/connect/flickr', function(req, res){
 });
 
+// path specified by grant module
+app.get('/handle_flickr_callback', function(req, res){
+	// req.query contains all of the data returned after the OAuth flow
+	console.log(req.query);
+	res.end(JSON.stringify(req.query, null, 2));
+});
 
-app.get('/landing/flickr', function(req, res){
-
-	// request.get("https://api.flickr.com/services/rest/?" + 
-	// 	"method=flickr.people.getPhotos" + 
-	// 	"&api_key=c8180da7533fc15f8d1f2939632ca386" + // this is for testing only...mine is different
-	// 	"&user_id=me" + 
-	// 	"&content_type=1" + // type=1 is photos only
-	// 	"&per_page=50&page=1" + // get 50 results per page, and just 1 page of results
-	// 	"&format=json&nojsoncallback=1" + // get the data as JSON
-	// 	"&auth_token=72157659126665372-793381e0584fa188" + // ??? create this???
-	// 	"&api_sig=76b758782432b6c9388e117372e92f3e", // ??? do I need to create this?
-	// 	function(apiReq, apiRes){
-	// 		console.log(apiRes);
-	// 	});
-
+// path specified by grant module
+app.get('/flickr/callback', function(req, res){
 	res.redirect("/landing/show/flickr");
 });
+
+
+// 	// request.get("https://api.flickr.com/services/rest/?" + 
+// 	// 	"method=flickr.people.getPhotos" + 
+// 	// 	"&api_key=c8180da7533fc15f8d1f2939632ca386" + // this is for testing only...mine is different
+// 	// 	"&user_id=me" + 
+// 	// 	"&content_type=1" + // type=1 is photos only
+// 	// 	"&per_page=50&page=1" + // get 50 results per page, and just 1 page of results
+// 	// 	"&format=json&nojsoncallback=1" + // get the data as JSON
+// 	// 	"&auth_token=72157659126665372-793381e0584fa188" + // ??? create this???
+// 	// 	"&api_sig=76b758782432b6c9388e117372e92f3e", // ??? do I need to create this?
+// 	// 	function(apiReq, apiRes){
+// 	// 		console.log(apiRes);
+// 	// 	});
 
 
 app.get('/landing/show/flickr', function(req, res){

@@ -3,3 +3,4 @@ node_modules
 test.json
 seedData.json
 data/
+config.json
