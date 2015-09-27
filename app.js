@@ -203,8 +203,8 @@ app.get('/landing/facebook', function(req, res){
 
 // Instagram credentials
 var instagramClientId = process.env.INSTAGRAM_CLIENT_ID;
-var instagramRedirectUriCode = process.env.INSTAGRAM_REDIRECT_URI;
 var instagramClientSecret = process.env.INSTAGRAM_CLIENT_SECRET;
+var instagramRedirectUriCode = process.env.INSTAGRAM_REDIRECT_URI;
 console.log("instagramRedirectUriCode: ", instagramRedirectUriCode);
 
 
@@ -383,6 +383,11 @@ app.get("/landing/show/instagram", function(req, res){
 
 
 // ____________FLICKR____________
+
+
+// Flickr credentials
+var flickrApiKey = process.env.FLICKR_API_KEY;
+var flickrClientSecret = process.env.FLICKR_CLIENT_SECRET;
 
 
 // displays a page with the flickr authorization via a button
