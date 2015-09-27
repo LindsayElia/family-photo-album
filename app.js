@@ -1,4 +1,4 @@
-//***** REQUIRE NODE MODULES & SET MIDDLEWARE *****
+// ____________REQUIRE NODE MODULES & SET MIDDLEWARE____________
 
 // express - lets us use dynamic data within our views
 var express = require("express");
@@ -44,7 +44,7 @@ var databaseConnectionLocation = process.env.HEROKU_POSTGRESQL_NAVY_URL || "post
 // also with angular i'll be using http-service directive or whatever
 
 
-//***** ROUTES *****
+// ____________ROUTES____________
 
 // ROOT ROUTE
 app.get("/", function(req, res){
@@ -206,6 +206,7 @@ var instagramClientId = process.env.INSTAGRAM_CLIENT_ID;
 var instagramRedirectUriCode = process.env.INSTAGRAM_REDIRECT_URI;
 var instagramClientSecret = process.env.INSTAGRAM_CLIENT_SECRET;
 console.log("instagramRedirectUriCode: ", instagramRedirectUriCode);
+
 
 // displays a page with the instagram authorization via a button
 app.get('/authorize/instagram', function(req, res){
@@ -380,7 +381,23 @@ app.get("/landing/show/instagram", function(req, res){
 
 
 
-//_______ERRORS_______
+
+// ____________FLICKR____________
+
+
+// displays a page with the flickr authorization via a button
+app.get('/authorize/flickr', function(req, res){
+	res.render("users/authFlickr");
+});
+
+app.get('/landing/show/flickr', function(req, res){
+	res.render("users/landingFlickr");
+});
+
+
+
+
+// ____________ERRORS____________
 
 // if user declines to authorize an application
 app.get("/nope", function(req, res){
