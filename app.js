@@ -203,15 +203,9 @@ app.get('/landing/facebook', function(req, res){
 
 // Instagram credentials
 var instagramClientId = process.env.INSTAGRAM_CLIENT_ID;
-<<<<<<< HEAD
 var instagramClientSecret = process.env.INSTAGRAM_CLIENT_SECRET;
 var instagramRedirectUri = process.env.INSTAGRAM_REDIRECT_URI;
 console.log("instagramRedirectUri: ", instagramRedirectUri);
-=======
-var instagramRedirectUriCode = process.env.INSTAGRAM_REDIRECT_URI;
-var instagramClientSecret = process.env.INSTAGRAM_CLIENT_SECRET;
-console.log("instagramRedirectUriCode: ", instagramRedirectUriCode);
->>>>>>> parent of 0057a62... starting flickr auth flow
 
 
 // displays a page with the instagram authorization via a button
@@ -391,7 +385,6 @@ app.get("/landing/show/instagram", function(req, res){
 // ____________FLICKR____________
 
 
-<<<<<<< HEAD
 // Flickr credentials
 var flickrApiKey = process.env.FLICKR_API_KEY;
 var flickrClientSecret = process.env.FLICKR_CLIENT_SECRET;
@@ -409,8 +402,6 @@ var flickrOptions = {
     };
  
 
-=======
->>>>>>> parent of 0057a62... starting flickr auth flow
 // displays a page with the flickr authorization via a button
 app.get('/authorize/flickr', function(req, res){
 	res.render("users/authFlickr");
