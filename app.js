@@ -203,9 +203,15 @@ app.get('/landing/facebook', function(req, res){
 
 // Instagram credentials
 var instagramClientId = process.env.INSTAGRAM_CLIENT_ID;
+<<<<<<< HEAD
 var instagramClientSecret = process.env.INSTAGRAM_CLIENT_SECRET;
+var instagramRedirectUri = process.env.INSTAGRAM_REDIRECT_URI;
+console.log("instagramRedirectUri: ", instagramRedirectUri);
+=======
 var instagramRedirectUriCode = process.env.INSTAGRAM_REDIRECT_URI;
+var instagramClientSecret = process.env.INSTAGRAM_CLIENT_SECRET;
 console.log("instagramRedirectUriCode: ", instagramRedirectUriCode);
+>>>>>>> parent of 0057a62... starting flickr auth flow
 
 
 // displays a page with the instagram authorization via a button
@@ -220,7 +226,7 @@ app.get('/authorize/instagram', function(req, res){
 app.get('/login/instagram', function(req, res) {
 	// ask instagram for authorization
 	res.redirect("https://api.instagram.com/oauth/authorize/?client_id=" + 
-		instagramClientId + "&redirect_uri=" + instagramRedirectUriCode + "&response_type=code&scope=basic");
+		instagramClientId + "&redirect_uri=" + instagramRedirectUri + "&response_type=code&scope=basic");
 });
 
 
@@ -247,7 +253,7 @@ app.get('/landing/instagram', function(req, expressResponse) {
 			form: {client_id:instagramClientId, 
 				client_secret:instagramClientSecret,
 				grant_type:"authorization_code", 
-				redirect_uri:instagramRedirectUriCode, 
+				redirect_uri:instagramRedirectUri, 
 				code:instgramCode}
 			}, 
 			function(err, instagramTokenResponse, body){
@@ -385,15 +391,66 @@ app.get("/landing/show/instagram", function(req, res){
 // ____________FLICKR____________
 
 
+<<<<<<< HEAD
 // Flickr credentials
 var flickrApiKey = process.env.FLICKR_API_KEY;
 var flickrClientSecret = process.env.FLICKR_CLIENT_SECRET;
+var flickrRedirectUri = process.env.FLICKR_REDIRECT_URI;
 
+// bring in the flickrapi node module & set global variables for the api requests
+var Flickr = require("flickrapi");
+var flickrOptions = {
+      api_key: flickrApiKey,
+      secret: flickrClientSecret,
+      permissions: "read",	// my app has read-only permissions to the user's flickr data
+      // nobrowser: true, 	 // console.logs the auth URL instead of opening a browser for it
+      callback: flickrRedirectUri	// put my own URL as the callback URL
+      // noAPI: true
+    };
+ 
 
+=======
+>>>>>>> parent of 0057a62... starting flickr auth flow
 // displays a page with the flickr authorization via a button
 app.get('/authorize/flickr', function(req, res){
 	res.render("users/authFlickr");
 });
+
+// user clicks on button from the /authorize/flickr page,
+// which gets this route, which starts the authentication process
+// to the instagram API, and redirects to the /landing/instagram route below
+// this uses the node module "flickrapi" that we brought in above, which has magical
+// authentication, so we don't have to specify a callback / etc
+app.get('/login/flickr', function(req, res) {
+	
+	// this does magic!
+	// it asks the user to authenticate for me, so easy!
+	Flickr.authenticate(flickrOptions, function(error, flickr) {
+	  // we can now use "flickr" as our API object
+	  console.log("flickr result??? ", flickr);
+	});
+
+});
+
+
+app.get('/landing/flickr', function(req, res){
+
+	// request.get("https://api.flickr.com/services/rest/?" + 
+	// 	"method=flickr.people.getPhotos" + 
+	// 	"&api_key=c8180da7533fc15f8d1f2939632ca386" + // this is for testing only...mine is different
+	// 	"&user_id=me" + 
+	// 	"&content_type=1" + // type=1 is photos only
+	// 	"&per_page=50&page=1" + // get 50 results per page, and just 1 page of results
+	// 	"&format=json&nojsoncallback=1" + // get the data as JSON
+	// 	"&auth_token=72157659126665372-793381e0584fa188" + // ??? create this???
+	// 	"&api_sig=76b758782432b6c9388e117372e92f3e", // ??? do I need to create this?
+	// 	function(apiReq, apiRes){
+	// 		console.log(apiRes);
+	// 	});
+
+	res.redirect("/landing/show/flickr");
+});
+
 
 app.get('/landing/show/flickr', function(req, res){
 	res.render("users/landingFlickr");

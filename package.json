@@ -21,6 +21,7 @@
     "dotenv": "^1.2.0",
     "ejs": "^2.3.4",
     "express": "^4.13.3",
+    "flickrapi": "^0.3.36",
     "method-override": "^2.3.5",
     "morgan": "^1.6.1",
     "pg": "^4.4.1",
