@@ -1,3 +1,7 @@
+#### Demo the App
+
+You can try out the application at [www.everyonesphotos.com](http://everyonesphotos.com/). It is currently still in development.
+
 #### High-level description of this project: what question or problem does this project address?
 
 This is an online family photo album, with all photos on a single page, contributed by many family members, and easily accessible to anyone with the link to the photo album (publicly available).
