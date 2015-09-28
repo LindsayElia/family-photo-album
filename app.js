@@ -59,6 +59,15 @@ var FlickrPurest = new Purest({provider:'flickr'});
 // use grant to authenticate, then use this to make requests to the API
 var FlickrApi = require("flickrapi");
 
+// passport auth - third attempt at auth for flickr
+// also relies on express, express-session
+var passport = require('passport');
+var flickrPassportStrategy = require('passport-flickr').Strategy;
+var cookieParser = require('cookie-parser');
+app.use(cookieParser());
+app.use(passport.initialize());
+app.use(passport.session());
+
 
 
 
@@ -420,6 +429,27 @@ var flickrOptions = {
     };
 
 
+// passport-flickr
+var flickrRedirectUri = process.env.FLICKR_REDIRECT_URI;
+console.log("flickrRedirectUri - ", flickrRedirectUri);
+
+passport.use(new flickrPassportStrategy({
+    consumerKey: flickrApiKey,
+    consumerSecret: flickrClientSecret,
+    callbackURL: flickrRedirectUri
+  },
+  function(token, tokenSecret, profile, done) {
+  	console.log("flickrPassportStrategy token: ", token);
+  	console.log("flickrPassportStrategy tokenSecret: ", tokenSecret);
+  	console.log("flickrPassportStrategy profile: ", profile);
+  	console.log("done: ", done);
+    // User.findOrCreate({ flickrId: profile.id }, function (err, user) {
+      // return done(err, user);
+    // });
+	return done();
+  }
+));
+
 // displays a page with the flickr authorization via a button
 app.get('/authorize/flickr', function(req, res){
 	res.render("users/authFlickr");
@@ -427,17 +457,34 @@ app.get('/authorize/flickr', function(req, res){
 
 // user clicks on button from the /authorize/flickr page,
 // which gets this route, which starts the authentication process
-// to the instagram API, and redirects to the /landing/instagram route below
-// this uses the node module "flickrapi" that we brought in above, which has magical
-// authentication, so we don't have to specify a callback / etc
+// to the flickr API, and redirects to the /landing/flickr route below
 
-// path specified by grant module
+// using passport-flickr
+app.get('/login/flickr', passport.authenticate('flickr'));
+
+
+app.get('/auth/flickr/callback',
+	passport.authenticate('flickr'),
+	function(req, res){
+  		// Successful authentication, redirect to landing page
+		res.redirect('/landing/show/flickr');
+	});
+
+
+
+
+
+
+// this works with both the node module "flickrapi" 
+// and grant module
 // see https://github.com/simov/grant#typical-flow - step #5
 app.get('/connect/flickr', function(req, res){
 });
 
 // TO FIX: I'm not handling what happens if the user declines to authorize...they get sent back to my app's home page
 // which is a poor experience
+
+
 
 // path specified by grant module
 app.get('/handle_flickr_callback', function(req, res){
@@ -450,6 +497,7 @@ app.get('/flickr/callback', function(req, res){
 
 	console.log("logging req.query: ", req.query);
 	console.log("headers sent: ", res.headersSent);
+	console.log("grant res:")
 
 	var userFlickrAccessToken = req.query.access_token;
 	var userFlickrAccessSecret = req.query.access_secret;
@@ -489,22 +537,23 @@ app.get('/flickr/callback', function(req, res){
 	// });
 
 // attempt with info returned from grant, regular request module
-	// var flickrUrlToGetFirst = "https://api.flickr.com/services/rest/?" + 
-	// "method=flickr.people.getPhotos" + 
-	// "&api_key=" + flickrApiKey +
-	// "&user_id=" + userFlickrId +
-	// "&content_type=1" + // type=1 is photos only
-	// "&per_page=50&page=1" + // get 50 results per page, and just 1 page of results
-	// "&format=json&nojsoncallback=1" + // get the data as JSON
-	// "&auth_token=" + userFlickrAccessToken +
-	// "&api_sig=2f8c627d89b150e7e0e1afb093e798ff";
+	var flickrUrlToGetFirst = "https://api.flickr.com/services/rest/?" + 
+	"method=flickr.people.getPhotos" + 
+	"&oauth_consumer_key=" + flickrApiKey +
+	"&user_id=" + userFlickrId +
+	"&content_type=1" + // type=1 is photos only
+	"&per_page=50&page=1" + // get 50 results per page, and just 1 page of results
+	"&format=json&nojsoncallback=1" + // get the data as JSON
+	"&oauth_token=" + userFlickrAccessToken +
+	"oauth_signature_method=HMAC-SHA1" +
+	"&oauth_version=1.0";
 
-	// console.log("flickrUrlToGetFirst: ", flickrUrlToGetFirst);
+	console.log("flickrUrlToGetFirst: ", flickrUrlToGetFirst);
 
-	// request.get(flickrUrlToGetFirst,
-	// function(flickrApiRequest, flickrApiResponse){
-	// 	console.log("flickrApiResponse #1 --->>>> ", flickrApiResponse.body);
-	// });
+	request.get(flickrUrlToGetFirst,
+	function(flickrApiRequest, flickrApiResponse){
+		console.log("flickrApiResponse #1 --->>>> ", flickrApiResponse.body);
+	});
 
 // junk
 	// var flickrUrlToGetSecond = "https://api.flickr.com/services/rest" +
