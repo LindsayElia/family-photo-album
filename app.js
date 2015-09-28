@@ -44,7 +44,7 @@ var databaseConnectionLocation = process.env.HEROKU_POSTGRESQL_NAVY_URL || "post
 var session = require('express-session');
 var Grant = require('grant-express');
 var config = require('./config.json'); // bring in the config.json file in the same dirctory
-var grant = new Grant(config);
+var grant = new Grant(config['development'||'production']);
 // REQUIRED: (any session store - see ./example/express-session)
 app.use(session({secret:'grant'}));
 // mount grant
@@ -435,8 +435,12 @@ app.get('/connect/flickr', function(req, res){
 
 // path specified by grant module
 app.get('/handle_flickr_callback', function(req, res){
-	// req.query contains all of the data returned after the OAuth flow
 	console.log(req.query);
+
+	// req.query contains all of the data returned after the OAuth flow
+	// here is where we save the user's access token
+
+
 	res.end(JSON.stringify(req.query, null, 2));
 });
 
