@@ -50,6 +50,15 @@ app.use(session({secret:'grant'}));
 // mount grant
 app.use(grant);
 
+// purest - works well with grant module to make API requests easier
+// remove??
+var Purest = require('purest');
+var FlickrPurest = new Purest({provider:'flickr'});
+
+// flickrapi node module - for making signed, authenticated requests
+// use grant to authenticate, then use this to make requests to the API
+var FlickrApi = require("flickrapi");
+
 
 
 
@@ -403,19 +412,13 @@ app.get("/landing/show/instagram", function(req, res){
 // Flickr credentials
 var flickrApiKey = process.env.FLICKR_API_KEY;
 var flickrClientSecret = process.env.FLICKR_CLIENT_SECRET;
-var flickrRedirectUri = process.env.FLICKR_REDIRECT_URI;
 
-// bring in the flickrapi node module & set global variables for the api requests
-var Flickr = require("flickrapi");
+// FlickrApi
 var flickrOptions = {
       api_key: flickrApiKey,
-      secret: flickrClientSecret,
-      permissions: "read",	// my app has read-only permissions to the user's flickr data
-      // nobrowser: true, 	 // console.logs the auth URL instead of opening a browser for it
-      callback: flickrRedirectUri	// put my own URL as the callback URL
-      // noAPI: true
+      secret: flickrClientSecret
     };
- 
+
 
 // displays a page with the flickr authorization via a button
 app.get('/authorize/flickr', function(req, res){
@@ -433,35 +436,100 @@ app.get('/authorize/flickr', function(req, res){
 app.get('/connect/flickr', function(req, res){
 });
 
+// TO FIX: I'm not handling what happens if the user declines to authorize...they get sent back to my app's home page
+// which is a poor experience
+
 // path specified by grant module
 app.get('/handle_flickr_callback', function(req, res){
-	console.log(req.query);
-
-	// req.query contains all of the data returned after the OAuth flow
-	// here is where we save the user's access token
-
-
 	res.end(JSON.stringify(req.query, null, 2));
 });
 
+
 // path specified by grant module
 app.get('/flickr/callback', function(req, res){
+
+	console.log("logging req.query: ", req.query);
+	console.log("headers sent: ", res.headersSent);
+
+	var userFlickrAccessToken = req.query.access_token;
+	var userFlickrAccessSecret = req.query.access_secret;
+	var userFlickrOauthToken = req.query.raw.oauth_token;
+	var userFlickrOauthTokenSecret = req.query.raw.oauth_token_secret;
+	var userFlickrId = req.query.raw.user_nsid;
+	var userFlickrUsername = req.query.raw.username;
+
+	console.log("all the things1: ", userFlickrAccessToken);
+	console.log("all the things2: ", userFlickrAccessSecret);
+	console.log("all the things3: ", userFlickrOauthToken);	 // this appears to be the same as the userFlickrAccessToken
+	console.log("all the things4: ", userFlickrOauthTokenSecret);  // this appears to be the same as the userFlickrAccessSecret
+	console.log("all the things5: ", userFlickrId);
+	console.log("all the things6: ", userFlickrUsername);
+
+
+
+// attempt with grant & purest
+	// FlickrPurest
+	// 	.query()
+	// 	.get("flickr.people.getPhotos")
+	// 	.auth({"oauth": {"token": userFlickrOauthToken, "secret": userFlickrOauthTokenSecret}}
+	// 	// {
+	// 	// 	"oauth": {"token": userFlickrOauthToken, "secret": userFlickrOauthTokenSecret},
+	// 	// 	"oauth_consumer_key":flickrApiKey, 
+	// 	// 	"user_id":userFlickrId,
+	// 	// 	"oauth_token":userFlickrOauthToken,
+	// 	// 	"access_token":userFlickrAccessToken,
+	// 	// 	"oauth_token_secret":userFlickrOauthTokenSecret
+	// 	// }
+	// 	)
+	// 	.request(function (flickrErr, flickrRes, flickrBody) {
+	// 		// do stuff
+	// 		console.log("flickrErr: ", flickrErr);
+	// 		console.log("flickrRes: ", flickrRes);
+	// 		console.log("flickrBody: ", flickrBody);
+	// });
+
+// attempt with info returned from grant, regular request module
+	// var flickrUrlToGetFirst = "https://api.flickr.com/services/rest/?" + 
+	// "method=flickr.people.getPhotos" + 
+	// "&api_key=" + flickrApiKey +
+	// "&user_id=" + userFlickrId +
+	// "&content_type=1" + // type=1 is photos only
+	// "&per_page=50&page=1" + // get 50 results per page, and just 1 page of results
+	// "&format=json&nojsoncallback=1" + // get the data as JSON
+	// "&auth_token=" + userFlickrAccessToken +
+	// "&api_sig=2f8c627d89b150e7e0e1afb093e798ff";
+
+	// console.log("flickrUrlToGetFirst: ", flickrUrlToGetFirst);
+
+	// request.get(flickrUrlToGetFirst,
+	// function(flickrApiRequest, flickrApiResponse){
+	// 	console.log("flickrApiResponse #1 --->>>> ", flickrApiResponse.body);
+	// });
+
+// junk
+	// var flickrUrlToGetSecond = "https://api.flickr.com/services/rest" +
+	// 		"?nojsoncallback=1&oauth_nonce=84354935" +
+	// 		"&format=json" +
+	// 		"&oauth_consumer_key=" + flickrApiKey +
+	// 		"&oauth_timestamp=1305583871" +
+	// 		"&oauth_signature_method=HMAC-SHA1" +
+	// 		"&oauth_version=1.0" +
+	// 		"&oauth_token=" + userFlickrOauthToken +
+	// 		"&oauth_signature=dh3pEH0Xk1qILr82HyhOsxRv1XA%3D" +
+	// 		"&method=flickr.test.login";
+	
+	// console.log("flickrUrlToGetSecond: ", flickrUrlToGetSecond);
+
+	// request.get(flickrUrlToGetSecond,
+	// function(flickrApiRequesttwo, flickrApiResponsetwo){
+	// 	console.log("flickrApiResponsetwo #2 --->>>> ", flickrApiResponsetwo.body);
+	// });
+
+
+
+
 	res.redirect("/landing/show/flickr");
 });
-
-
-// 	// request.get("https://api.flickr.com/services/rest/?" + 
-// 	// 	"method=flickr.people.getPhotos" + 
-// 	// 	"&api_key=c8180da7533fc15f8d1f2939632ca386" + // this is for testing only...mine is different
-// 	// 	"&user_id=me" + 
-// 	// 	"&content_type=1" + // type=1 is photos only
-// 	// 	"&per_page=50&page=1" + // get 50 results per page, and just 1 page of results
-// 	// 	"&format=json&nojsoncallback=1" + // get the data as JSON
-// 	// 	"&auth_token=72157659126665372-793381e0584fa188" + // ??? create this???
-// 	// 	"&api_sig=76b758782432b6c9388e117372e92f3e", // ??? do I need to create this?
-// 	// 	function(apiReq, apiRes){
-// 	// 		console.log(apiRes);
-// 	// 	});
 
 
 app.get('/landing/show/flickr', function(req, res){
