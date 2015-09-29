@@ -34,6 +34,27 @@ var pg = require("pg");
 // tell it where our database is
 var databaseConnectionLocation = process.env.HEROKU_POSTGRESQL_NAVY_URL || "postgres://localhost:5432/family_photos";
 
+// // cookie-session - lets us create our own session cookies, for login auth with our app
+// var cookieSession = require("cookie-session");
+
+// // bring in middleware files to check cookies/sessions in routes, for auth
+// var loginHelper = require("./middleware/loginHelper");
+// var routeHelper = require("./middleware/routeHelper");
+
+// // use loginHelpers functions in entire app.js file - before all routes?
+// app.use(loginHelper);
+
+// // configure & use cookie-session module
+// app.use(session({
+// 	maxAge: 7200000,	// 2 hours, in milliseconds
+// 	secret: "music-lovers-key",		// is this the key used to make the hash?
+// 	name: "spotify-game-with-friends"	// name for cookie
+// }));
+
+
+
+// ____________MISC STUFF I TRIED FOR FLICKR OAUTH LOGIN____________
+
 // express-session & grant-express - lets us use OAuth for 100+ APIs
 // 
 // currenlty I'm just using this for Flickr, but it also works with Facebook, Instagram, & Dropbox
@@ -41,12 +62,12 @@ var databaseConnectionLocation = process.env.HEROKU_POSTGRESQL_NAVY_URL || "post
 // https://github.com/simov/grant
 // https://grant-oauth.herokuapp.com/#/
 // getting started reference: (written by the module author) https://scotch.io/tutorials/implement-oauth-into-your-express-koa-or-hapi-applications-using-grant
-var session = require('express-session');
+var expressSession = require('express-session');
 var Grant = require('grant-express');
 var config = require('./config.json'); // bring in the config.json file in the same dirctory
 var grant = new Grant(config['development'||'production']);
 // REQUIRED: (any session store - see ./example/express-session)
-app.use(session({secret:'grant'}));
+app.use(expressSession({secret:'grant'}));
 // mount grant
 app.use(grant);
 
@@ -65,8 +86,8 @@ var passport = require('passport');
 var flickrPassportStrategy = require('passport-flickr').Strategy;
 var cookieParser = require('cookie-parser');
 app.use(cookieParser());
-app.use(passport.initialize());
-app.use(passport.session());
+app.use(passport.initialize()); // passport method
+app.use(passport.session());  // passport method
 
 
 
@@ -332,7 +353,15 @@ app.get('/landing/instagram', function(req, expressResponse) {
 								if (thisInstaItem.type === "image"){
 									var thisInstaPhotoObject = thisInstaItem;
 									var insta_user_id = thisInstaItem.user.id;
-									var	insta_photo_id = thisInstaItem.id;
+
+									var	insta_photo_id_with_user_id = thisInstaItem.id;
+									// remove the underscore & user id from end of photo id
+									var pattern = /_/;
+									var	insta_photo_id_array = insta_photo_id_with_user_id.split(pattern);
+									
+									var	insta_photo_id = insta_photo_id_array[0];
+									// console.log("after splitting: ", insta_photo_id);
+									
 									var	insta_photo_created_time = thisInstaItem.created_time;
 									// the following pieces are not simple text strings, they are objects or arrays,
 									// so we need to convert to JSON in order to save in our db as a string
@@ -341,26 +370,99 @@ app.get('/landing/instagram', function(req, expressResponse) {
 									var	insta_photo_place = JSON.stringify(thisInstaItem.location);  // these may not always exist
 									var	insta_photo_tags = JSON.stringify(thisInstaItem.tags);  // these may not always exist
 
-// **** TO FIX ***
-// only save if does not yet exist
-// change before production
-	// find value, then if it exists, update
-		// else, insert new item
-
+									var temptype = typeof insta_photo_id;
+									// console.log("this insta_photo_id: ", insta_photo_id);
+									// console.log("typoe of insta_photo_id: ", temptype);
 									// add data to db
+											
+// TO FIX:
+// trying to only add item if not already in table
+// and update item's data if it is in table
+// problem with how I compare the result of searching in the table
+// ??? try putting pg.connect inside of the for loop
+// do same for facebook once I fix
+
 									client.query("INSERT INTO instagram_photos (insta_user_id, insta_photo_id, " + 
-											"insta_photo_created_time, insta_photo_url_full_size, " +
-											"insta_photo_thumbnail, insta_photo_place, insta_photo_tags) " +
-											"VALUES ('" + insta_user_id + "', '" + insta_photo_id + "', '" +
-											insta_photo_created_time + "', '" + 
-											insta_photo_url_full_size + "', '" + insta_photo_thumbnail + "', '" + 
-											insta_photo_place + "', '" + insta_photo_tags + "')", 
-												function(err, result){
-													done();
-													if(err){
-														return console.error("error inserting into table instagram_photos", err);
-													}
+														"insta_photo_created_time, insta_photo_url_full_size, " +
+														"insta_photo_thumbnail, insta_photo_place, insta_photo_tags) " +
+														"VALUES ('" + insta_user_id + "', '" + insta_photo_id + "', '" +
+														insta_photo_created_time + "', '" + 
+														insta_photo_url_full_size + "', '" + insta_photo_thumbnail + "', '" + 
+														insta_photo_place + "', '" + insta_photo_tags + "')", 
+															function(err, result){
+																// console.log("CHECK!", result);
+																done();
+																if(err){
+																	return console.error("error inserting into table instagram_photos", err);
+																}
 									}); // close client.query
+
+
+									// var query = client.query("SELECT * FROM instagram_photos WHERE insta_photo_id = '" + insta_photo_id + "'");
+									// query.on('row', function(row, result) {
+									// 	// console.log("just 'row':", row);
+									// 	// console.log("just result #1:", result);
+									// 	console.log("result.rows.length, before: ", result.rows.length);
+									// 	result.addRow(row);
+									// 	// console.log("just result #2:", result);
+									// 	console.log("result.rows.length, after: ", result.rows.length);
+								 //     	// console.log('row.insta_photo_id', row.insta_photo_id);
+								 //     	// console.log("row.rowCount: ", row.rowCount);
+								 //    });
+
+
+									// look first to see if item exists by photo id				// old: CAST(insta_photo_id AS text)
+									// client.query("SELECT * FROM instagram_photos WHERE insta_photo_id = '" + insta_photo_id + "'", 
+									// 		function(err, result){
+									// 			// console.log("just the result: ", result);
+									// 			console.log("result.rowCount: ", result.rowCount);
+									// 			// done();
+									// 			if(err){
+									// 					return console.error("error selecting photo by id from table instagram_photos", err);
+									// 			}
+
+									// 			// if the item exists in table, update it
+									// 			if (result.rows.rowCount === 1){
+									// 				console.log("rows.rowCount is one, update! <<<<");
+									// 				client.query("UPDATE instagram_photos " + 
+									// 					"SET insta_photo_place = '" + insta_photo_place + "' " +
+									// 					", insta_photo_tags = '" + insta_photo_tags + "' " +
+									// 					"WHERE insta_photo_id = " + insta_photo_id,
+									// 						function(err, result){
+									// 							done();
+									// 							if(err){
+									// 								return console.error("error updating row in table instagram_photos", err);
+									// 							}
+									// 				}); // close client.query
+									// 			} 
+
+									// 			// if the item does not exist in table, add it
+									// 			else if (result.rowCount === 0){
+									// 				console.log("rows.rowCount is zero, add! <<<<");
+									// 				client.query("INSERT INTO instagram_photos (insta_user_id, insta_photo_id, " + 
+									// 					"insta_photo_created_time, insta_photo_url_full_size, " +
+									// 					"insta_photo_thumbnail, insta_photo_place, insta_photo_tags) " +
+									// 					"VALUES ('" + insta_user_id + "', '" + insta_photo_id + "', '" +
+									// 					insta_photo_created_time + "', '" + 
+									// 					insta_photo_url_full_size + "', '" + insta_photo_thumbnail + "', '" + 
+									// 					insta_photo_place + "', '" + insta_photo_tags + "')", 
+									// 						function(err, result){
+									// 							console.log("CHECK!", result);
+									// 							done();
+									// 							// result.addRow(row); // without this, the rowcount doesn't go up, and the loop repeats with the same photo id :(
+									// 							if(err){
+									// 								return console.error("error inserting into table instagram_photos", err);
+									// 							}
+									// 				}); // close client.query
+									// 			}  
+									// 			// if there is more than 1 row with that photo_id, we have a problem!!
+									// 			else {
+									// 				console.log("we might have a serious problem with the data in select from instagram_photos");
+									// 			}
+									// 	});
+
+									
+									
 								} // close if (thisInstaItem.type === "image")
 							} // close for loop
 							console.log("successfully saved instagram data to instagram_photos table");
@@ -394,7 +496,7 @@ app.get("/landing/show/instagram", function(req, res){
 				return console.error("error SELECTing from table instagram_photos, in /landing/show/instagram route", err);
 			}
 
-			console.log("connecting to db in /landing/show/instagram");
+			// console.log("connecting to db in /landing/show/instagram");
 			// console.log("result: ", result);
 			var thisUserInstaAllPhotosData = result.rows;
 			// console.log("thisUserInstaAllPhotosData: ", thisUserInstaAllPhotosData);
@@ -497,7 +599,7 @@ app.get('/flickr/callback', function(req, res){
 
 	console.log("logging req.query: ", req.query);
 	console.log("headers sent: ", res.headersSent);
-	console.log("grant res:")
+	console.log("grant res:");
 
 	var userFlickrAccessToken = req.query.access_token;
 	var userFlickrAccessSecret = req.query.access_secret;
