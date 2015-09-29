@@ -34,22 +34,22 @@ var pg = require("pg");
 // tell it where our database is
 var databaseConnectionLocation = process.env.HEROKU_POSTGRESQL_NAVY_URL || "postgres://localhost:5432/family_photos";
 
-// // cookie-session - lets us create our own session cookies, for login auth with our app
-// var cookieSession = require("cookie-session");
+// cookie-session - lets us create our own session cookies, for login auth with our app
+var cookieSession = require("cookie-session");
 
-// // bring in middleware files to check cookies/sessions in routes, for auth
-// var loginHelper = require("./middleware/loginHelper");
-// var routeHelper = require("./middleware/routeHelper");
+// bring in middleware files to check cookies/sessions in routes, for auth
+var loginHelper = require("./middleware/loginHelper");
+var routeHelper = require("./middleware/routeHelper");
 
-// // use loginHelpers functions in entire app.js file - before all routes?
-// app.use(loginHelper);
+// use loginHelpers functions in entire app.js file - before all routes?
+app.use(loginHelper);
 
-// // configure & use cookie-session module
-// app.use(session({
-// 	maxAge: 7200000,	// 2 hours, in milliseconds
-// 	secret: "music-lovers-key",		// is this the key used to make the hash?
-// 	name: "spotify-game-with-friends"	// name for cookie
-// }));
+// configure & use cookie-session module
+app.use(session({
+	maxAge: 7200000,	// 2 hours, in milliseconds
+	secret: "family-photos",		// is this the key used to make the hash?
+	name: "everyones-photos"	// name for cookie
+}));
 
 
 
@@ -381,6 +381,12 @@ app.get('/landing/instagram', function(req, expressResponse) {
 // problem with how I compare the result of searching in the table
 // ??? try putting pg.connect inside of the for loop
 // do same for facebook once I fix
+
+// TO DO:
+// change query statements so they are not insecure
+// using prepared statements
+// https://github.com/brianc/node-postgres/wiki/Prepared-Statements
+// https://students.galvanize.com/cohorts/13/daily_plans/2015-07-08
 
 									client.query("INSERT INTO instagram_photos (insta_user_id, insta_photo_id, " + 
 														"insta_photo_created_time, insta_photo_url_full_size, " +
