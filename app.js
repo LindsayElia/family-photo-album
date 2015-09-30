@@ -120,9 +120,8 @@ app.get("/signup", routeHelper.loggedInStop, function(req, res){
 	res.render("users/signup");
 });
 
-
 // SIGNUP - POST "signup"
-// create a new user and redirect to "/edit" for user to enter their player bio info
+// create a new user and redirect to api auth buttons for now
 app.post("/signup", function(req, res){
 	var newUser = {};
 	newUser.email = req.body.userEmail;
@@ -147,10 +146,35 @@ app.post("/signup", function(req, res){
 
 //_______LOGIN_______
 
-// LOGIN - GET "login" - simple
+// LOGIN - GET "login"
 // show the login page
 app.get("/login", routeHelper.loggedInStop, function(req, res){
 	res.render("users/login");
+});
+
+// LOGIN - POST "login"
+// sign the user in and redirect to to api auth buttons for now
+app.post("/login", function(req, res){
+	var userLoggingIn = {};
+	userLoggingIn.email = req.body.userEmail;
+	userLoggingIn.password = req.body.userPass;
+	console.log("this user is logging in, user email & pass: ", userLoggingIn);	
+
+	db.User.authenticate(userLoggingIn, function(err, user){
+		if (!err && user !== null){
+			// if email & pw match, set the session id to the user id for this user
+			req.login(user);
+			// send the user to their own landing page
+			res.redirect("/users/" + user._id + "/apiAuthStart");
+		} else {
+			console.log(err);
+			res.render("users/login", {err:err}); 
+// TO DO:
+// add some error messaging to login page if error
+
+		}
+	});
+
 });
 
 

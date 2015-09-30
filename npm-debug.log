@@ -1,0 +1,537 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/local/bin/node',
+1 verbose cli   '/usr/local/bin/npm',
+1 verbose cli   'install',
+1 verbose cli   '--save',
+1 verbose cli   'bcrypt' ]
+2 info using npm@2.14.4
+3 info using node@v4.1.1
+4 verbose install initial load of /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/package.json
+5 verbose installManyTop reading scoped package data from /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcryptjs/package.json
+6 verbose installManyTop reading scoped package data from /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/body-parser/package.json
+7 verbose installManyTop reading scoped package data from /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/cookie-parser/package.json
+8 verbose installManyTop reading scoped package data from /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/cookie-session/package.json
+9 verbose installManyTop reading scoped package data from /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/dotenv/package.json
+10 verbose installManyTop reading scoped package data from /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/ejs/package.json
+11 verbose installManyTop reading scoped package data from /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/express/package.json
+12 verbose installManyTop reading scoped package data from /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/express-session/package.json
+13 verbose installManyTop reading scoped package data from /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/flickrapi/package.json
+14 verbose installManyTop reading scoped package data from /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/grant-express/package.json
+15 verbose installManyTop reading scoped package data from /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/method-override/package.json
+16 verbose installManyTop reading scoped package data from /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/mongoose/package.json
+17 verbose installManyTop reading scoped package data from /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/morgan/package.json
+18 verbose installManyTop reading scoped package data from /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/passport/package.json
+19 verbose installManyTop reading scoped package data from /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/passport-flickr/package.json
+20 verbose installManyTop reading scoped package data from /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/pg/package.json
+21 verbose installManyTop reading scoped package data from /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/purest/package.json
+22 verbose installManyTop reading scoped package data from /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/request/package.json
+23 info package.json passport-flickr@0.2.0 No license field.
+24 verbose readDependencies loading dependencies from /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/package.json
+25 silly cache add args [ 'bcrypt', null ]
+26 verbose cache add spec bcrypt
+27 silly cache add parsed spec Result {
+27 silly cache add   raw: 'bcrypt',
+27 silly cache add   scope: null,
+27 silly cache add   name: 'bcrypt',
+27 silly cache add   rawSpec: '',
+27 silly cache add   spec: '*',
+27 silly cache add   type: 'range' }
+28 silly addNamed bcrypt@*
+29 verbose addNamed "*" is a valid semver range for bcrypt
+30 silly addNameRange { name: 'bcrypt', range: '*', hasData: false }
+31 silly mapToRegistry name bcrypt
+32 silly mapToRegistry using default registry
+33 silly mapToRegistry registry https://registry.npmjs.org/
+34 silly mapToRegistry uri https://registry.npmjs.org/bcrypt
+35 verbose addNameRange registry:https://registry.npmjs.org/bcrypt not in flight; fetching
+36 verbose request uri https://registry.npmjs.org/bcrypt
+37 verbose request no auth needed
+38 info attempt registry request try #1 at 3:47:25 PM
+39 verbose request id b8cec54358b744fe
+40 verbose etag "80TAIVT10JKCUZUGNBLIH9S4N"
+41 http request GET https://registry.npmjs.org/bcrypt
+42 http 304 https://registry.npmjs.org/bcrypt
+43 silly get cb [ 304,
+43 silly get   { date: 'Wed, 30 Sep 2015 22:47:25 GMT',
+43 silly get     via: '1.1 varnish',
+43 silly get     'cache-control': 'max-age=60',
+43 silly get     etag: '"80TAIVT10JKCUZUGNBLIH9S4N"',
+43 silly get     age: '0',
+43 silly get     connection: 'keep-alive',
+43 silly get     'x-served-by': 'cache-lax1433-LAX',
+43 silly get     'x-cache': 'HIT',
+43 silly get     'x-cache-hits': '1',
+43 silly get     'x-timer': 'S1443653245.646177,VS0,VE46',
+43 silly get     vary: 'Accept' } ]
+44 verbose etag https://registry.npmjs.org/bcrypt from cache
+45 verbose get saving bcrypt to /Users/LindsayElia/.npm/registry.npmjs.org/bcrypt/.cache.json
+46 silly addNameRange number 2 { name: 'bcrypt', range: '*', hasData: true }
+47 silly addNameRange versions [ 'bcrypt',
+47 silly addNameRange   [ '0.1.2',
+47 silly addNameRange     '0.2.0',
+47 silly addNameRange     '0.2.1',
+47 silly addNameRange     '0.1.3',
+47 silly addNameRange     '0.2.2',
+47 silly addNameRange     '0.2.3',
+47 silly addNameRange     '0.2.4',
+47 silly addNameRange     '0.3.0',
+47 silly addNameRange     '0.3.1',
+47 silly addNameRange     '0.3.2',
+47 silly addNameRange     '0.4.0',
+47 silly addNameRange     '0.4.1',
+47 silly addNameRange     '0.5.0',
+47 silly addNameRange     '0.6.0',
+47 silly addNameRange     '0.7.0',
+47 silly addNameRange     '0.7.1',
+47 silly addNameRange     '0.7.2',
+47 silly addNameRange     '0.7.3',
+47 silly addNameRange     '0.7.4',
+47 silly addNameRange     '0.7.5',
+47 silly addNameRange     '0.7.6',
+47 silly addNameRange     '0.7.7',
+47 silly addNameRange     '0.7.8',
+47 silly addNameRange     '0.8.0',
+47 silly addNameRange     '0.8.1',
+47 silly addNameRange     '0.8.2',
+47 silly addNameRange     '0.8.3',
+47 silly addNameRange     '0.8.4',
+47 silly addNameRange     '0.8.5' ] ]
+48 silly addNamed bcrypt@0.8.5
+49 verbose addNamed "0.8.5" is a plain semver version for bcrypt
+50 silly cache afterAdd bcrypt@0.8.5
+51 verbose afterAdd /Users/LindsayElia/.npm/bcrypt/0.8.5/package/package.json not in flight; writing
+52 verbose afterAdd /Users/LindsayElia/.npm/bcrypt/0.8.5/package/package.json written
+53 silly install resolved [ { name: 'bcrypt',
+53 silly install resolved     description: 'A bcrypt library for NodeJS.',
+53 silly install resolved     keywords:
+53 silly install resolved      [ 'bcrypt',
+53 silly install resolved        'password',
+53 silly install resolved        'auth',
+53 silly install resolved        'authentication',
+53 silly install resolved        'encryption',
+53 silly install resolved        'crypt',
+53 silly install resolved        'crypto' ],
+53 silly install resolved     main: './bcrypt',
+53 silly install resolved     version: '0.8.5',
+53 silly install resolved     author: { name: 'Nick Campbell', url: 'https://github.com/ncb000gt' },
+53 silly install resolved     engines: { node: '>= 0.6.0' },
+53 silly install resolved     repository:
+53 silly install resolved      { type: 'git',
+53 silly install resolved        url: 'git+https://github.com/ncb000gt/node.bcrypt.js.git' },
+53 silly install resolved     license: 'MIT',
+53 silly install resolved     bugs: { url: 'https://github.com/ncb000gt/node.bcrypt.js/issues' },
+53 silly install resolved     scripts:
+53 silly install resolved      { test: 'node-gyp configure build && nodeunit test',
+53 silly install resolved        install: 'node-gyp rebuild' },
+53 silly install resolved     dependencies: { bindings: '1.2.1', nan: '2.0.5' },
+53 silly install resolved     devDependencies: { nodeunit: '~0.9.1' },
+53 silly install resolved     contributors:
+53 silly install resolved      [ [Object],
+53 silly install resolved        [Object],
+53 silly install resolved        [Object],
+53 silly install resolved        [Object],
+53 silly install resolved        [Object],
+53 silly install resolved        [Object],
+53 silly install resolved        [Object],
+53 silly install resolved        [Object],
+53 silly install resolved        [Object],
+53 silly install resolved        [Object],
+53 silly install resolved        [Object],
+53 silly install resolved        [Object],
+53 silly install resolved        [Object],
+53 silly install resolved        [Object] ],
+53 silly install resolved     gypfile: true,
+53 silly install resolved     gitHead: '5d97708f06754d7d7989c67ba867002d10013615',
+53 silly install resolved     homepage: 'https://github.com/ncb000gt/node.bcrypt.js#readme',
+53 silly install resolved     _id: 'bcrypt@0.8.5',
+53 silly install resolved     _shasum: '8e5b81b4db80e944f440005979ca8d58a961861d',
+53 silly install resolved     _from: 'bcrypt@*',
+53 silly install resolved     _npmVersion: '2.13.3',
+53 silly install resolved     _nodeVersion: '3.0.0',
+53 silly install resolved     _npmUser: { name: 'defunctzombie', email: 'shtylman@gmail.com' },
+53 silly install resolved     dist:
+53 silly install resolved      { shasum: '8e5b81b4db80e944f440005979ca8d58a961861d',
+53 silly install resolved        tarball: 'http://registry.npmjs.org/bcrypt/-/bcrypt-0.8.5.tgz' },
+53 silly install resolved     maintainers: [ [Object], [Object], [Object], [Object] ],
+53 silly install resolved     directories: {},
+53 silly install resolved     _resolved: 'https://registry.npmjs.org/bcrypt/-/bcrypt-0.8.5.tgz',
+53 silly install resolved     readme: 'ERROR: No README data found!' } ]
+54 info install bcrypt@0.8.5 into /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album
+55 info installOne bcrypt@0.8.5
+56 verbose installOne of bcrypt to /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album not in flight; installing
+57 verbose lock using /Users/LindsayElia/.npm/_locks/bcrypt-1239167b09a3fddf.lock for /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt
+58 silly install write writing bcrypt 0.8.5 to /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt
+59 verbose unbuild node_modules/bcrypt
+60 silly gentlyRm /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt is being purged from base /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album
+61 verbose gentlyRm don't care about contents; nuking /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt
+62 verbose tar unpack /Users/LindsayElia/.npm/bcrypt/0.8.5/package.tgz
+63 verbose tar unpacking to /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt
+64 silly gentlyRm /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt is being purged
+65 verbose gentlyRm don't care about contents; nuking /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt
+66 silly gunzTarPerm modes [ '755', '644' ]
+67 silly gunzTarPerm extractEntry package.json
+68 silly gunzTarPerm extractEntry .npmignore
+69 silly gunzTarPerm extractEntry README.md
+70 silly gunzTarPerm extractEntry LICENSE
+71 silly gunzTarPerm extractEntry bcrypt.js
+72 silly gunzTarPerm extractEntry binding.gyp
+73 silly gunzTarPerm extractEntry .travis.yml
+74 silly gunzTarPerm extractEntry CHANGELOG.md
+75 silly gunzTarPerm extractEntry examples/async_compare.js
+76 silly gunzTarPerm extractEntry examples/forever_gen_salt.js
+77 silly gunzTarPerm extractEntry test/async.js
+78 silly gunzTarPerm extractEntry test/repetitions.js
+79 silly gunzTarPerm extractEntry test/sync.js
+80 silly gunzTarPerm extractEntry Makefile
+81 silly gunzTarPerm extractEntry src/bcrypt.cc
+82 silly gunzTarPerm extractEntry src/bcrypt_node.cc
+83 silly gunzTarPerm extractEntry src/blowfish.cc
+84 silly gunzTarPerm extractEntry src/node_blf.h
+85 silly gunzTarPerm extractEntry werker.yml
+86 verbose write writing to /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt/package.json
+87 info preinstall bcrypt@0.8.5
+88 verbose readDependencies loading dependencies from /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt/package.json
+89 silly prepareForInstallMany adding bindings@1.2.1 from bcrypt dependencies
+90 silly prepareForInstallMany adding nan@2.0.5 from bcrypt dependencies
+91 verbose readDependencies loading dependencies from /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt/package.json
+92 silly cache add args [ 'nan@2.0.5', null ]
+93 verbose cache add spec nan@2.0.5
+94 silly cache add parsed spec Result {
+94 silly cache add   raw: 'nan@2.0.5',
+94 silly cache add   scope: null,
+94 silly cache add   name: 'nan',
+94 silly cache add   rawSpec: '2.0.5',
+94 silly cache add   spec: '2.0.5',
+94 silly cache add   type: 'version' }
+95 silly addNamed nan@2.0.5
+96 verbose addNamed "2.0.5" is a plain semver version for nan
+97 silly mapToRegistry name nan
+98 silly mapToRegistry using default registry
+99 silly mapToRegistry registry https://registry.npmjs.org/
+100 silly mapToRegistry uri https://registry.npmjs.org/nan
+101 verbose addNameVersion registry:https://registry.npmjs.org/nan not in flight; fetching
+102 silly cache add args [ 'bindings@1.2.1', null ]
+103 verbose cache add spec bindings@1.2.1
+104 silly cache add parsed spec Result {
+104 silly cache add   raw: 'bindings@1.2.1',
+104 silly cache add   scope: null,
+104 silly cache add   name: 'bindings',
+104 silly cache add   rawSpec: '1.2.1',
+104 silly cache add   spec: '1.2.1',
+104 silly cache add   type: 'version' }
+105 silly addNamed bindings@1.2.1
+106 verbose addNamed "1.2.1" is a plain semver version for bindings
+107 silly mapToRegistry name bindings
+108 silly mapToRegistry using default registry
+109 silly mapToRegistry registry https://registry.npmjs.org/
+110 silly mapToRegistry uri https://registry.npmjs.org/bindings
+111 verbose addNameVersion registry:https://registry.npmjs.org/bindings not in flight; fetching
+112 verbose request uri https://registry.npmjs.org/bindings
+113 verbose request no auth needed
+114 info attempt registry request try #1 at 3:47:25 PM
+115 verbose etag "547Q3C60W4DUGPOZ65YOO6930"
+116 http request GET https://registry.npmjs.org/bindings
+117 verbose request uri https://registry.npmjs.org/nan
+118 verbose request no auth needed
+119 info attempt registry request try #1 at 3:47:25 PM
+120 verbose etag "1L4RU1AM541YSVP1YQFXG1Y1J"
+121 http request GET https://registry.npmjs.org/nan
+122 http 304 https://registry.npmjs.org/nan
+123 silly get cb [ 304,
+123 silly get   { date: 'Wed, 30 Sep 2015 22:47:25 GMT',
+123 silly get     via: '1.1 varnish',
+123 silly get     'cache-control': 'max-age=60',
+123 silly get     etag: '"1L4RU1AM541YSVP1YQFXG1Y1J"',
+123 silly get     age: '38',
+123 silly get     connection: 'keep-alive',
+123 silly get     'x-served-by': 'cache-lax1424-LAX',
+123 silly get     'x-cache': 'HIT',
+123 silly get     'x-cache-hits': '6',
+123 silly get     'x-timer': 'S1443653245.878071,VS0,VE0',
+123 silly get     vary: 'Accept' } ]
+124 verbose etag https://registry.npmjs.org/nan from cache
+125 verbose get saving nan to /Users/LindsayElia/.npm/registry.npmjs.org/nan/.cache.json
+126 http 304 https://registry.npmjs.org/bindings
+127 silly get cb [ 304,
+127 silly get   { date: 'Wed, 30 Sep 2015 22:47:25 GMT',
+127 silly get     via: '1.1 varnish',
+127 silly get     'cache-control': 'max-age=60',
+127 silly get     etag: '"547Q3C60W4DUGPOZ65YOO6930"',
+127 silly get     age: '37',
+127 silly get     connection: 'keep-alive',
+127 silly get     'x-served-by': 'cache-lax1425-LAX',
+127 silly get     'x-cache': 'HIT',
+127 silly get     'x-cache-hits': '2',
+127 silly get     'x-timer': 'S1443653245.888378,VS0,VE0',
+127 silly get     vary: 'Accept' } ]
+128 verbose etag https://registry.npmjs.org/bindings from cache
+129 verbose get saving bindings to /Users/LindsayElia/.npm/registry.npmjs.org/bindings/.cache.json
+130 silly cache afterAdd bindings@1.2.1
+131 verbose afterAdd /Users/LindsayElia/.npm/bindings/1.2.1/package/package.json not in flight; writing
+132 verbose afterAdd /Users/LindsayElia/.npm/bindings/1.2.1/package/package.json written
+133 silly cache afterAdd nan@2.0.5
+134 verbose afterAdd /Users/LindsayElia/.npm/nan/2.0.5/package/package.json not in flight; writing
+135 verbose afterAdd /Users/LindsayElia/.npm/nan/2.0.5/package/package.json written
+136 silly install resolved [ { name: 'bindings',
+136 silly install resolved     description: 'Helper module for loading your native module\'s .node file',
+136 silly install resolved     keywords: [ 'native', 'addon', 'bindings', 'gyp', 'waf', 'c', 'c++' ],
+136 silly install resolved     version: '1.2.1',
+136 silly install resolved     author:
+136 silly install resolved      { name: 'Nathan Rajlich',
+136 silly install resolved        email: 'nathan@tootallnate.net',
+136 silly install resolved        url: 'http://tootallnate.net' },
+136 silly install resolved     repository:
+136 silly install resolved      { type: 'git',
+136 silly install resolved        url: 'git://github.com/TooTallNate/node-bindings.git' },
+136 silly install resolved     main: './bindings.js',
+136 silly install resolved     bugs: { url: 'https://github.com/TooTallNate/node-bindings/issues' },
+136 silly install resolved     homepage: 'https://github.com/TooTallNate/node-bindings',
+136 silly install resolved     license: 'MIT',
+136 silly install resolved     gitHead: 'e404152ee27f8478ccbc7122ee051246e8e5ec02',
+136 silly install resolved     _id: 'bindings@1.2.1',
+136 silly install resolved     scripts: {},
+136 silly install resolved     _shasum: '14ad6113812d2d37d72e67b4cacb4bb726505f11',
+136 silly install resolved     _from: 'bindings@1.2.1',
+136 silly install resolved     _npmVersion: '1.4.14',
+136 silly install resolved     _npmUser: { name: 'tootallnate', email: 'nathan@tootallnate.net' },
+136 silly install resolved     maintainers: [ [Object], [Object] ],
+136 silly install resolved     dist:
+136 silly install resolved      { shasum: '14ad6113812d2d37d72e67b4cacb4bb726505f11',
+136 silly install resolved        tarball: 'http://registry.npmjs.org/bindings/-/bindings-1.2.1.tgz' },
+136 silly install resolved     directories: {},
+136 silly install resolved     _resolved: 'https://registry.npmjs.org/bindings/-/bindings-1.2.1.tgz',
+136 silly install resolved     readme: 'ERROR: No README data found!' },
+136 silly install resolved   { name: 'nan',
+136 silly install resolved     version: '2.0.5',
+136 silly install resolved     description: 'Native Abstractions for Node.js: C++ header for Node 0.8->0.12 compatibility',
+136 silly install resolved     main: 'include_dirs.js',
+136 silly install resolved     repository: { type: 'git', url: 'git://github.com/nodejs/nan.git' },
+136 silly install resolved     scripts:
+136 silly install resolved      { test: 'tap --gc test/js/*-test.js',
+136 silly install resolved        'rebuild-tests': 'pangyp rebuild --msvs_version=2013 --directory test',
+136 silly install resolved        docs: 'doc/.build.sh' },
+136 silly install resolved     contributors:
+136 silly install resolved      [ [Object],
+136 silly install resolved        [Object],
+136 silly install resolved        [Object],
+136 silly install resolved        [Object],
+136 silly install resolved        [Object],
+136 silly install resolved        [Object],
+136 silly install resolved        [Object] ],
+136 silly install resolved     devDependencies:
+136 silly install resolved      { bindings: '~1.2.1',
+136 silly install resolved        'node-gyp': '~2.0.2',
+136 silly install resolved        pangyp: '~2.2.0',
+136 silly install resolved        tap: '~0.7.1',
+136 silly install resolved        xtend: '~4.0.0' },
+136 silly install resolved     license: 'MIT',
+136 silly install resolved     gitHead: 'd13a2e9ce762fd130877b53c71d35963fa2cf689',
+136 silly install resolved     bugs: { url: 'https://github.com/nodejs/nan/issues' },
+136 silly install resolved     homepage: 'https://github.com/nodejs/nan#readme',
+136 silly install resolved     _id: 'nan@2.0.5',
+136 silly install resolved     _shasum: '365888014be1fd178db0cbfa258edf7b0cb1c408',
+136 silly install resolved     _from: 'nan@2.0.5',
+136 silly install resolved     _npmVersion: '2.13.3',
+136 silly install resolved     _nodeVersion: '3.0.0',
+136 silly install resolved     _npmUser: { name: 'kkoopa', email: 'bbyholm@abo.fi' },
+136 silly install resolved     maintainers: [ [Object], [Object] ],
+136 silly install resolved     dist:
+136 silly install resolved      { shasum: '365888014be1fd178db0cbfa258edf7b0cb1c408',
+136 silly install resolved        tarball: 'http://registry.npmjs.org/nan/-/nan-2.0.5.tgz' },
+136 silly install resolved     directories: {},
+136 silly install resolved     _resolved: 'https://registry.npmjs.org/nan/-/nan-2.0.5.tgz',
+136 silly install resolved     readme: 'ERROR: No README data found!' } ]
+137 info install bindings@1.2.1 into /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt
+138 info install nan@2.0.5 into /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt
+139 info installOne bindings@1.2.1
+140 verbose installOne of bindings to /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt not in flight; installing
+141 info installOne nan@2.0.5
+142 verbose installOne of nan to /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt not in flight; installing
+143 verbose lock using /Users/LindsayElia/.npm/_locks/bindings-459db1f0e2dfa779.lock for /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt/node_modules/bindings
+144 verbose lock using /Users/LindsayElia/.npm/_locks/nan-151fd3de12ddff38.lock for /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt/node_modules/nan
+145 silly install write writing bindings 1.2.1 to /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt/node_modules/bindings
+146 silly install write writing nan 2.0.5 to /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt/node_modules/nan
+147 verbose unbuild node_modules/bcrypt/node_modules/bindings
+148 verbose unbuild node_modules/bcrypt/node_modules/nan
+149 silly gentlyRm /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt/node_modules/bindings is being purged from base /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album
+150 verbose gentlyRm don't care about contents; nuking /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt/node_modules/bindings
+151 silly gentlyRm /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt/node_modules/nan is being purged from base /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album
+152 verbose gentlyRm don't care about contents; nuking /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt/node_modules/nan
+153 verbose tar unpack /Users/LindsayElia/.npm/bindings/1.2.1/package.tgz
+154 verbose tar unpacking to /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt/node_modules/bindings
+155 silly gentlyRm /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt/node_modules/bindings is being purged
+156 verbose gentlyRm don't care about contents; nuking /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt/node_modules/bindings
+157 verbose tar unpack /Users/LindsayElia/.npm/nan/2.0.5/package.tgz
+158 verbose tar unpacking to /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt/node_modules/nan
+159 silly gentlyRm /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt/node_modules/nan is being purged
+160 verbose gentlyRm don't care about contents; nuking /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt/node_modules/nan
+161 silly gunzTarPerm modes [ '755', '644' ]
+162 silly gunzTarPerm modes [ '755', '644' ]
+163 silly gunzTarPerm extractEntry package.json
+164 silly gunzTarPerm extractEntry package.json
+165 silly gunzTarPerm modified mode [ 'package.json', 436, 420 ]
+166 silly gunzTarPerm extractEntry README.md
+167 silly gunzTarPerm extractEntry bindings.js
+168 silly gunzTarPerm extractEntry README.md
+169 silly gunzTarPerm modified mode [ 'README.md', 436, 420 ]
+170 silly gunzTarPerm extractEntry include_dirs.js
+171 silly gunzTarPerm modified mode [ 'include_dirs.js', 436, 420 ]
+172 silly gunzTarPerm extractEntry nan_converters.h
+173 silly gunzTarPerm modified mode [ 'nan_converters.h', 436, 420 ]
+174 silly gunzTarPerm extractEntry LICENSE.md
+175 silly gunzTarPerm modified mode [ 'LICENSE.md', 436, 420 ]
+176 silly gunzTarPerm extractEntry .dntrc
+177 silly gunzTarPerm modified mode [ '.dntrc', 436, 420 ]
+178 silly gunzTarPerm extractEntry appveyor.yml
+179 silly gunzTarPerm modified mode [ 'appveyor.yml', 436, 420 ]
+180 verbose write writing to /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt/node_modules/bindings/package.json
+181 info preinstall bindings@1.2.1
+182 verbose readDependencies loading dependencies from /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt/node_modules/bindings/package.json
+183 verbose readDependencies loading dependencies from /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt/node_modules/bindings/package.json
+184 silly install resolved []
+185 verbose about to build /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt/node_modules/bindings
+186 info build /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt/node_modules/bindings
+187 silly gunzTarPerm extractEntry doc/new.md
+188 silly gunzTarPerm modified mode [ 'doc/new.md', 436, 420 ]
+189 silly gunzTarPerm extractEntry doc/.build.sh
+190 silly gunzTarPerm modified mode [ 'doc/.build.sh', 509, 493 ]
+191 info linkStuff bindings@1.2.1
+192 silly linkStuff bindings@1.2.1 has /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt/node_modules as its parent node_modules
+193 verbose linkBins bindings@1.2.1
+194 verbose linkMans bindings@1.2.1
+195 verbose rebuildBundles bindings@1.2.1
+196 silly gunzTarPerm extractEntry doc/buffers.md
+197 silly gunzTarPerm modified mode [ 'doc/buffers.md', 436, 420 ]
+198 silly gunzTarPerm extractEntry doc/callback.md
+199 silly gunzTarPerm modified mode [ 'doc/callback.md', 436, 420 ]
+200 info install bindings@1.2.1
+201 info postinstall bindings@1.2.1
+202 verbose unlock done using /Users/LindsayElia/.npm/_locks/bindings-459db1f0e2dfa779.lock for /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt/node_modules/bindings
+203 silly gunzTarPerm extractEntry doc/converters.md
+204 silly gunzTarPerm modified mode [ 'doc/converters.md', 436, 420 ]
+205 silly gunzTarPerm extractEntry doc/errors.md
+206 silly gunzTarPerm modified mode [ 'doc/errors.md', 436, 420 ]
+207 silly gunzTarPerm extractEntry doc/maybe_types.md
+208 silly gunzTarPerm modified mode [ 'doc/maybe_types.md', 436, 420 ]
+209 silly gunzTarPerm extractEntry doc/methods.md
+210 silly gunzTarPerm modified mode [ 'doc/methods.md', 436, 420 ]
+211 silly gunzTarPerm extractEntry doc/asyncworker.md
+212 silly gunzTarPerm modified mode [ 'doc/asyncworker.md', 436, 420 ]
+213 silly gunzTarPerm extractEntry doc/node_misc.md
+214 silly gunzTarPerm modified mode [ 'doc/node_misc.md', 436, 420 ]
+215 silly gunzTarPerm extractEntry doc/persistent.md
+216 silly gunzTarPerm modified mode [ 'doc/persistent.md', 436, 420 ]
+217 silly gunzTarPerm extractEntry doc/scopes.md
+218 silly gunzTarPerm modified mode [ 'doc/scopes.md', 436, 420 ]
+219 silly gunzTarPerm extractEntry doc/script.md
+220 silly gunzTarPerm modified mode [ 'doc/script.md', 436, 420 ]
+221 silly gunzTarPerm extractEntry doc/string_bytes.md
+222 silly gunzTarPerm modified mode [ 'doc/string_bytes.md', 436, 420 ]
+223 silly gunzTarPerm extractEntry doc/v8_internals.md
+224 silly gunzTarPerm modified mode [ 'doc/v8_internals.md', 436, 420 ]
+225 silly gunzTarPerm extractEntry doc/v8_misc.md
+226 silly gunzTarPerm modified mode [ 'doc/v8_misc.md', 436, 420 ]
+227 silly gunzTarPerm extractEntry nan.h
+228 silly gunzTarPerm modified mode [ 'nan.h', 436, 420 ]
+229 silly gunzTarPerm extractEntry nan_callbacks.h
+230 silly gunzTarPerm modified mode [ 'nan_callbacks.h', 436, 420 ]
+231 silly gunzTarPerm extractEntry nan_callbacks_12_inl.h
+232 silly gunzTarPerm modified mode [ 'nan_callbacks_12_inl.h', 436, 420 ]
+233 silly gunzTarPerm extractEntry nan_callbacks_pre_12_inl.h
+234 silly gunzTarPerm modified mode [ 'nan_callbacks_pre_12_inl.h', 436, 420 ]
+235 silly gunzTarPerm extractEntry nan_converters_43_inl.h
+236 silly gunzTarPerm modified mode [ 'nan_converters_43_inl.h', 436, 420 ]
+237 silly gunzTarPerm extractEntry nan_converters_pre_43_inl.h
+238 silly gunzTarPerm modified mode [ 'nan_converters_pre_43_inl.h', 436, 420 ]
+239 silly gunzTarPerm extractEntry nan_implementation_12_inl.h
+240 silly gunzTarPerm modified mode [ 'nan_implementation_12_inl.h', 436, 420 ]
+241 silly gunzTarPerm extractEntry nan_implementation_pre_12_inl.h
+242 silly gunzTarPerm modified mode [ 'nan_implementation_pre_12_inl.h', 436, 420 ]
+243 silly gunzTarPerm extractEntry nan_maybe_43_inl.h
+244 silly gunzTarPerm modified mode [ 'nan_maybe_43_inl.h', 436, 420 ]
+245 silly gunzTarPerm extractEntry nan_maybe_pre_43_inl.h
+246 silly gunzTarPerm modified mode [ 'nan_maybe_pre_43_inl.h', 436, 420 ]
+247 silly gunzTarPerm extractEntry nan_new.h
+248 silly gunzTarPerm modified mode [ 'nan_new.h', 436, 420 ]
+249 silly gunzTarPerm extractEntry nan_object_wrap.h
+250 silly gunzTarPerm modified mode [ 'nan_object_wrap.h', 436, 420 ]
+251 silly gunzTarPerm extractEntry nan_persistent_12_inl.h
+252 silly gunzTarPerm modified mode [ 'nan_persistent_12_inl.h', 436, 420 ]
+253 silly gunzTarPerm extractEntry nan_persistent_pre_12_inl.h
+254 silly gunzTarPerm modified mode [ 'nan_persistent_pre_12_inl.h', 436, 420 ]
+255 silly gunzTarPerm extractEntry nan_string_bytes.h
+256 silly gunzTarPerm modified mode [ 'nan_string_bytes.h', 436, 420 ]
+257 silly gunzTarPerm extractEntry nan_weak.h
+258 silly gunzTarPerm modified mode [ 'nan_weak.h', 436, 420 ]
+259 silly gunzTarPerm extractEntry CHANGELOG.md
+260 silly gunzTarPerm modified mode [ 'CHANGELOG.md', 436, 420 ]
+261 silly gunzTarPerm extractEntry tools/package.json
+262 silly gunzTarPerm modified mode [ 'tools/package.json', 436, 420 ]
+263 silly gunzTarPerm extractEntry tools/README.md
+264 silly gunzTarPerm modified mode [ 'tools/README.md', 436, 420 ]
+265 silly gunzTarPerm extractEntry tools/1to2.js
+266 silly gunzTarPerm modified mode [ 'tools/1to2.js', 509, 493 ]
+267 verbose write writing to /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt/node_modules/nan/package.json
+268 info preinstall nan@2.0.5
+269 verbose readDependencies loading dependencies from /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt/node_modules/nan/package.json
+270 verbose readDependencies loading dependencies from /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt/node_modules/nan/package.json
+271 silly install resolved []
+272 verbose about to build /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt/node_modules/nan
+273 info build /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt/node_modules/nan
+274 info linkStuff nan@2.0.5
+275 silly linkStuff nan@2.0.5 has /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt/node_modules as its parent node_modules
+276 verbose linkBins nan@2.0.5
+277 verbose linkMans nan@2.0.5
+278 verbose rebuildBundles nan@2.0.5
+279 info install nan@2.0.5
+280 info postinstall nan@2.0.5
+281 verbose unlock done using /Users/LindsayElia/.npm/_locks/nan-151fd3de12ddff38.lock for /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt/node_modules/nan
+282 verbose about to build /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt
+283 info build /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt
+284 info linkStuff bcrypt@0.8.5
+285 silly linkStuff bcrypt@0.8.5 has /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules as its parent node_modules
+286 verbose linkBins bcrypt@0.8.5
+287 verbose linkMans bcrypt@0.8.5
+288 verbose rebuildBundles bcrypt@0.8.5
+289 verbose rebuildBundles [ 'bindings', 'nan' ]
+290 info install bcrypt@0.8.5
+291 verbose unsafe-perm in lifecycle true
+292 info bcrypt@0.8.5 Failed to exec install script
+293 verbose unlock done using /Users/LindsayElia/.npm/_locks/bcrypt-1239167b09a3fddf.lock for /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt
+294 verbose stack Error: bcrypt@0.8.5 install: `node-gyp rebuild`
+294 verbose stack Exit status 1
+294 verbose stack     at EventEmitter.<anonymous> (/usr/local/lib/node_modules/npm/lib/utils/lifecycle.js:214:16)
+294 verbose stack     at emitTwo (events.js:87:13)
+294 verbose stack     at EventEmitter.emit (events.js:172:7)
+294 verbose stack     at ChildProcess.<anonymous> (/usr/local/lib/node_modules/npm/lib/utils/spawn.js:24:14)
+294 verbose stack     at emitTwo (events.js:87:13)
+294 verbose stack     at ChildProcess.emit (events.js:172:7)
+294 verbose stack     at maybeClose (internal/child_process.js:817:16)
+294 verbose stack     at Process.ChildProcess._handle.onexit (internal/child_process.js:211:5)
+295 verbose pkgid bcrypt@0.8.5
+296 verbose cwd /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album
+297 error Darwin 14.5.0
+298 error argv "/usr/local/bin/node" "/usr/local/bin/npm" "install" "--save" "bcrypt"
+299 error node v4.1.1
+300 error npm  v2.14.4
+301 error code ELIFECYCLE
+302 error bcrypt@0.8.5 install: `node-gyp rebuild`
+302 error Exit status 1
+303 error Failed at the bcrypt@0.8.5 install script 'node-gyp rebuild'.
+303 error This is most likely a problem with the bcrypt package,
+303 error not with npm itself.
+303 error Tell the author that this fails on your system:
+303 error     node-gyp rebuild
+303 error You can get their info via:
+303 error     npm owner ls bcrypt
+303 error There is likely additional logging output above.
+304 verbose exit [ 1, true ]
+305 verbose unbuild node_modules/bcrypt
+306 info preuninstall bcrypt@0.8.5
+307 info uninstall bcrypt@0.8.5
+308 verbose unbuild rmStuff bcrypt@0.8.5 from /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules
+309 info postuninstall bcrypt@0.8.5
+310 silly gentlyRm /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt is being purged from base /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album
+311 verbose gentlyRm don't care about contents; nuking /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt
+312 silly vacuum-fs purging /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules/bcrypt
+313 silly vacuum-fs quitting because other entries in /Users/LindsayElia/Projects/galvanize/4_projects/project4-capstone-family-photo-album/family-photo-album/node_modules
