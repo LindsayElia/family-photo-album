@@ -1,11 +1,31 @@
+<!-- sign up page for new, non-logged-in users -->
 <% include ../partials/header %>
 
-<a href="/index"><button>HOME</button></a>
+<h1>Sign up page</h1>
 
-<p>sign up page</p>
-<p>How to sign up...</p>
+<form action="/signup" method="POST">
+	<p>
+		<label for="userEmail">What is your first name? </label>
+		<input type="text" id="userFirstName" name="userFirstName" placeholder="Enter first name" class="textField" autofocus>
+	</p>
+	<p>
+		<label for="userPass">What is your last name? </label>
+		<input type="text" id="userLastName" name="userLastName" placeholder="Enter last name" class="textField">
+	</p>
+	<p>
+		<label for="userEmail">What email would you like to use to sign in with this application? </label>
+		<input type="text" id="userEmail" name="userEmail" placeholder="Enter email" class="textField">
+	</p>
+	<p>
+		<label for="userPass">Please choose a password: </label>
+		<input type="text" id="userPass" name="userPass" placeholder="Enter password" class="textField">
+	</p>
+	<input type="submit" value="Create Account" class="button">
 
-<p>Already have an account?</p>	
-<div class="spacey"><a href="/login"><button>Login</button></a></div>
+</form>
+
+<p>Already have an account? <a href="/login"><button class="button">Login</button></a></p>
+
+<p><a href="/index"><button class="button">HOME</button></a></p>
 
 <% include ../partials/footer %>

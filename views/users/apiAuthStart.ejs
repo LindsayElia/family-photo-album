@@ -2,9 +2,7 @@
 
 <a href="/index"><button>HOME</button></a>
 
-<h1>EveryonesPhotos</h1>
-<div class="spacey"><a href="/authorize/facebook"><button>Sign Up for EveryonesPhotos</button></a></div>
-<div class="spacey"><a href="/landing/facebook"><button>Login to my EveryonesPhotos account</button></a></div>
+<p>Welcome <%=user.firstName %>!</p>
 
 <h1>Facebook</h1>
 <div class="spacey"><a href="/authorize/facebook"><button>Go to Facebook Login</button></a></div>
@@ -18,7 +16,8 @@
 <div class="spacey"><a href="/authorize/flickr"><button>Go to Flickr Login</button></a></div>
 <div class="spacey"><a href="/landing/show/flickr"><button>Go to Flickr photo stream</button></a></div>
 
-
+<p>All done?</p>
+<a href="/logout"><button class="button logout">Logout</button></a>
 
 
 <% include ../partials/footer %>

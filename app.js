@@ -121,6 +121,30 @@ app.get("/signup", routeHelper.loggedInStop, function(req, res){
 });
 
 
+// SIGNUP - POST "signup"
+// create a new user and redirect to "/edit" for user to enter their player bio info
+app.post("/signup", function(req, res){
+	var newUser = {};
+	newUser.email = req.body.userEmail;
+	newUser.password = req.body.userPass;
+	newUser.firstName = req.body.userFirstName;
+	newUser.lastName = req.body.userLastName;
+	console.log("post to /signup for newUser: ", newUser);
+
+	// create user in database
+	db.User.create(newUser, function(err, user){
+		if(err){
+			console.log(err);
+			res.render("errors/500");
+		} else {
+			console.log(user);
+			req.login(user); // set the session id for this user to be the user's id from our DB
+			res.redirect("/users/" + user._id + "/apiAuthStart");
+		}
+	});
+});
+
+
 //_______LOGIN_______
 
 // LOGIN - GET "login" - simple
@@ -129,9 +153,26 @@ app.get("/login", routeHelper.loggedInStop, function(req, res){
 	res.render("users/login");
 });
 
+
+//_______LOGOUT_______
+app.get("/logout", function(req, res){
+	req.logout();
+	res.redirect("/index");
+});
+
+
+//_______USER FLOWS_______
+
 // show the page with buttons for all the APIs
-app.get("/apiAuthStart", function(req, res){
-	res.render("users/apiAuthStart");
+app.get("/users/:user_id/apiAuthStart", routeHelper.ensureSameUser, function(req, res){
+	db.User.findById(req.params.user_id, function(err, user){
+		if(err){
+			console.log(err);
+			res.render("errors/500");
+		} else {
+			res.render("users/apiAuthStart", {user:user});
+		}
+	});
 });
 
 

@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/LindsayElia/family-photo-album",
   "dependencies": {
+    "bcryptjs": "^2.3.0",
     "body-parser": "^1.14.0",
     "cookie-parser": "^1.4.0",
     "cookie-session": "^1.2.0",

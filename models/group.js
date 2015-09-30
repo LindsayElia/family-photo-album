@@ -9,11 +9,10 @@ var dateGroupCreated = (date.getMonth() + 1) + "/" + date.getDate() + "/" + date
 
 //_______DEFINE USER SCHEMA_______
 var groupSchema = new mongoose.Schema({
-	groupId: {
+	groupName: {
 		type: String,
 		unique: true
 	},
-	groupName: String,
 	groupMembers: [{		// one group has many users
 		type: mongoose.Schema.Types.ObjectId,
 		ref: "User"
