@@ -45,7 +45,7 @@ var routeHelper = require("./middleware/routeHelper");
 app.use(loginHelper);
 
 // configure & use cookie-session module
-app.use(session({
+app.use(cookieSession({
 	maxAge: 7200000,	// 2 hours, in milliseconds
 	secret: "family-photos",		// is this the key used to make the hash?
 	name: "everyones-photos"	// name for cookie
@@ -100,7 +100,9 @@ app.use(passport.session());  // passport method
 
 // ____________ROUTES____________
 
-// ROOT ROUTE
+//_______HOME_______
+
+// ROOT
 app.get("/", function(req, res){
 	res.redirect("/index");
 });
@@ -110,6 +112,22 @@ app.get("/index", function(req, res){
 	res.render("users/index");
 });
 
+//_______SIGNUP_______
+
+// SIGNUP - GET "signup"
+// show the signup page
+app.get("/signup", routeHelper.loggedInStop, function(req, res){
+	res.render("users/signup");
+});
+
+
+//_______LOGIN_______
+
+// LOGIN - GET "login" - simple
+// show the login page
+app.get("/login", routeHelper.loggedInStop, function(req, res){
+	res.render("users/login");
+});
 
 
 
