@@ -129,6 +129,11 @@ app.get("/login", routeHelper.loggedInStop, function(req, res){
 	res.render("users/login");
 });
 
+// show the page with buttons for all the APIs
+app.get("/apiAuthStart", function(req, res){
+	res.render("users/apiAuthStart");
+});
+
 
 
 

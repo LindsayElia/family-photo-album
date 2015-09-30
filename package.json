@@ -27,6 +27,7 @@
     "flickrapi": "^0.3.36",
     "grant-express": "^3.5.0",
     "method-override": "^2.3.5",
+    "mongoose": "^4.1.9",
     "morgan": "^1.6.1",
     "passport": "^0.3.0",
     "passport-flickr": "^0.2.0",
