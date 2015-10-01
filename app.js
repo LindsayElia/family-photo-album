@@ -28,14 +28,21 @@ app.use(bodyParser.urlencoded({extended:true}));
 // dotenv - lets us use SECRET global variables
 require('dotenv').load();
 
+// -------------------TO DELETE-------------------
 // pg module - lets us talk to our postgres database
 var pg = require("pg");
 
+// -------------------TO DELETE-------------------
 // tell it where our database is
 var databaseConnectionLocation = process.env.HEROKU_POSTGRESQL_NAVY_URL || "postgres://localhost:5432/family_photos";
 
 // cookie-session - lets us create our own session cookies, for login auth with our app
 var cookieSession = require("cookie-session");
+app.use(cookieSession({
+	maxAge: 7200000,	// 2 hours, in milliseconds
+	secret: "family-photos",		// is this the key used to make the hash?
+	name: "everyones-photos"	// name for cookie
+}));
 
 // bring in middleware files to check cookies/sessions in routes, for auth
 var loginHelper = require("./middleware/loginHelper");
@@ -44,12 +51,20 @@ var routeHelper = require("./middleware/routeHelper");
 // use loginHelpers functions in entire app.js file - before all routes?
 app.use(loginHelper);
 
-// configure & use cookie-session module
-app.use(cookieSession({
-	maxAge: 7200000,	// 2 hours, in milliseconds
-	secret: "family-photos",		// is this the key used to make the hash?
-	name: "everyones-photos"	// name for cookie
-}));
+// nodemailer - for password reset emails
+var nodemailer = require('nodemailer');
+// SMTP transport module for Nodemailer is a built-in module with nodemailer
+// create reusable transporter object using SMTP transport
+var manrillEmail = process.env.MANDRILL_USER_EMAIL;
+var mandrillPass = process.env.MANDRILL_API_KEY;
+var transporter = nodemailer.createTransport({
+    service: 'Mandrill',
+    auth: {
+        user: manrillEmail,
+        pass: mandrillPass
+    }
+});
+
 
 
 
@@ -171,10 +186,50 @@ app.post("/login", function(req, res){
 			res.render("users/login", {err:err}); 
 // TO DO:
 // add some error messaging to login page if error
-
 		}
 	});
 
+});
+
+//_______PASSWORD RESET_______
+
+// password reset page
+app.get('/passwordreset', function(req, res){
+	res.render("users/passwordreset");
+});
+
+
+// left off here...
+// TO DO:
+// validate that user entered something (with front end), before submitting form
+// generate secure linky to include in email
+// change text content of email
+// display message after redirect telling user that the email was sent,
+// or if there was a problem, to try again
+
+
+// password email request
+app.post('/passwordreset', function(req, res){
+	var receipientEmail = req.body.userEmail;
+	// setup e-mail data
+	var mailOptions = {
+	    from: 'Everone\'s Photos<lindsay@everyonesphotos.com>', // sender address
+	    to: receipientEmail,
+	    subject: 'Password reset requested for Everyone\s Photos ✉', // Subject line
+	    text: 'Hello world', 			// plaintext body
+	    html: '<b>★ Hello world ★ </b>' // html body
+	};
+
+	transporter.sendMail(mailOptions, function(error, info){
+	    if(error){
+	        console.log(error);
+	        res.render("users/passwordreset");
+	    }else{
+	        console.log('Message sent: ' + info.response);
+	        res.redirect("/login");
+	    }
+	});
+	
 });
 
 
