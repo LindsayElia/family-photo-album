@@ -4,12 +4,11 @@
 
 <form action="/reset/:user_id/:token" method="POST">
 	<p>
-		<label for="userPass1">New Password: </label>
-		<input type="text" id="userPass1" name="userPass1" class="textField">
+		<input type="hidden" id="token" name="token" value="<%= token %>">
 	</p>
 	<p>
-		<label for="userPass2">Confirm New Password: </label>
-		<input type="text" id="userPass2" name="userPass2" class="textField">
+		<label for="userPass">New Password: </label>
+		<input type="text" id="userPass" name="userPass" class="textField">
 	</p>
 	<input type="submit" value="Change Password and Login" class="button">
 </form>

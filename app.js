@@ -134,7 +134,7 @@ app.get("/", function(req, res){
 
 // INDEX PAGE
 app.get("/index", function(req, res){
-	res.render("users/index");
+	res.render("users/index", {req:req});
 });
 
 //_______SIGNUP_______
@@ -206,9 +206,9 @@ app.post("/login", function(req, res){
 
 //_______PASSWORD RESET_______
 
-// password reset page
+// password reset page request page - open to anyone
 app.get('/passwordreset', function(req, res){
-	res.render("users/passwordreset");
+	res.render("users/requestPassReset");
 });
 
 
@@ -216,7 +216,7 @@ app.get('/passwordreset', function(req, res){
 // validate that user entered something (with front end), before submitting form
 
 
-// password email request
+// password email request - by clicking button to send email with link to reset pw
 app.post('/passwordreset', function(req, res){
 	
 	// generate the token
@@ -236,8 +236,8 @@ app.post('/passwordreset', function(req, res){
 		if (!user) {
 // TO DO:
 // tell user no account with that email address in our system, try again
-			console.log("no user by that emai in system");
-			res.render("users/passwordreset");
+			console.log("no user by that email in system");
+			res.render("users/requestPassReset");
 		} else if (user) {
 
 			// set user's info 
@@ -278,7 +278,7 @@ app.post('/passwordreset', function(req, res){
 					transporter.sendMail(mailOptions, function(error, info){
 					    if (error) {
 					        console.log(error);
-					        res.render("users/passwordreset");
+					        res.render("users/requestPassReset");
 					    } else {
 // TO DO:
 // flash confirmation to user
@@ -297,6 +297,8 @@ app.post('/passwordreset', function(req, res){
 
 // login with reset password email link
 app.get('/reset/:user_id/:token', function(req, res){
+	// pass the token from the requesting url into the page as data, to save in a hidden field
+	var token = req.params.token;
 	// $gt selects those documents where the value of the field is greater than the specified value.
 	db.User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function(err, user) {
 		if (!user) {
@@ -306,8 +308,8 @@ app.get('/reset/:user_id/:token', function(req, res){
 			res.redirect('/passwordreset');
 		} else {
     		// show a password reset form
-			res.render("users/reset");
-    	};
+			res.render("users/reset", {token:token});
+    	}
 	});
 });
 
@@ -325,16 +327,16 @@ app.get('/reset/:user_id/:token', function(req, res){
 // post - password reset, submit new password
 app.post('/reset/:user_id/:token', function(req, res){
 	// $gt selects those documents where the value of the field is greater than the specified value.
-	console.log("Logging req.params.token: ", req.params.token);
-	console.log("logging req.params: ", req.params);
-	db.User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function(err, user) {
+	console.log("Logging req.body.token: ", req.body.token);	
+	db.User.findOne({ resetPasswordToken: req.body.token, resetPasswordExpires: { $gt: Date.now() } }, function(err, user) {
 		if (!user) {
 // TO DO:
 // flash message token is invalid
 			// req.flash('error', 'Password reset token is invalid or has expired.');
 			res.redirect('/passwordreset');
 		} else {
-			user.password = req.body.userPass2;
+			var receipientEmail = user.email;
+			user.password = req.body.userPass;
 			user.resetPasswordToken = undefined;
 			user.resetPasswordExpires = undefined;
 			user.save(function(err){
@@ -352,12 +354,16 @@ app.post('/reset/:user_id/:token', function(req, res){
 					    // plaintext body
 					    text: "Hello " + user.firstName + ", \n \n" + 
 					    "This email is to let you know that your password has been changed for your account. \n \n" + 
-					    "No further action is needed, this is just a confirmation email. \n \n" + 
+					    "We are sending this email as a confirmation and no further action is needed, " + 
+					    "unless you did not reset your password. If this was not you, please go to our " +
+					    "password reset page and request a new password reset. www.everyonesphotos.com/passwordreset\n \n" + 
 					    "~Lindsay",
 					    // html body
 					    html: "<p>Hello " + user.firstName + ",</p>" + 
 					    "<p>This email is to let you know that your password has been changed for your account.</p>" + 
-					    "<p>No further action is needed, this is just a confirmation email</p>" + 
+					    "<p>We are sending this email as a confirmation and no further action is needed, " +
+					    "unless you did not reset your password. If this was not you, please go to our " +
+					    "<a href='www.everyonesphotos.com/passwordreset'>password reset page</a> and request a new password reset.</p>" + 
 					    "<p>~Lindsay<p>"
 					};
 

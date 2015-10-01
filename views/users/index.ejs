@@ -5,13 +5,25 @@ You can read more about this project at <a href="https://github.com/LindsayElia/
 
 <p>For now, you are welcome to try it out but please note that the application is under development and your data will not be stored for longer than a day or so. Currently this application retrieves the 50 most recent photos from your Facebook and Instagram accounts, if you grant it permission to do so.</p>
 
+<!-- show this if user is NOT logged in -->
+<% if (req.session.id === null || req.session.id === undefined) { %>
 <div>
 <p>New to this site? Sign up for an account.</p>
 <div class="spacey"><a href="/signup"><button>Sign Up</button></a></div>
 <p>Already have an account?</p>	
 <div class="spacey"><a href="/login"><button>Login</button></a></div>
 </div>
-<div class="spacey"><a href="/apiAuthStart"><button>go to buttons!!!</button></a></div>
+<% } %>
+
+
+<!-- show this if user IS logged in -->
+<% if (req.session.id !== null && req.session.id !== undefined) { %>
+<div class="spacey"><a href="/users/<%=req.session.id%>/apiAuthStart"><button>go to buttons!!! </button></a></div>
+
+<p>All done?</p>
+<a href="/logout"><button class="button logout">Logout</button></a>
+
+<% } %>
 
 
 
