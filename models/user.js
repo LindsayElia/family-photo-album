@@ -23,6 +23,8 @@ var userSchema = new mongoose.Schema({
 		type: String,
 		required: true
 	},
+	resetPasswordToken: String,
+	resetPasswordExpires: Date,
 	groupId: {			// user belongs to a single group
 		type: mongoose.Schema.Types.ObjectId,
         ref: "Group"

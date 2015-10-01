@@ -1,0 +1,22 @@
+<% include ../partials/header %>
+
+<h1>Please choose a new password for your account.</h1>
+
+<form action="/reset/:user_id/:token" method="POST">
+	<p>
+		<label for="userPass1">New Password: </label>
+		<input type="text" id="userPass1" name="userPass1" class="textField">
+	</p>
+	<p>
+		<label for="userPass2">Confirm New Password: </label>
+		<input type="text" id="userPass2" name="userPass2" class="textField">
+	</p>
+	<input type="submit" value="Change Password and Login" class="button">
+</form>
+
+
+<p>Need an account? <a href="/signup"><button class="button">Signup</button></a></p>
+
+<p><a href="/index"><button class="button home">Go Home</button></a></p>
+
+<% include ../partials/footer %>

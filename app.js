@@ -65,6 +65,16 @@ var transporter = nodemailer.createTransport({
     }
 });
 
+// crypto comes built in with NodeJS - used for generating a random token during password reset
+// https://nodejs.org/api/crypto.html
+var crypto = require('crypto');
+
+// CHANGE FOR PRODUCTION
+// CHANGE FOR PRODUCTION
+// CHANGE FOR PRODUCTION
+// base domain
+var domain = "localhost:3000";
+// var domain = "everyonesphotos.com";
 
 
 
@@ -145,6 +155,9 @@ app.post("/signup", function(req, res){
 	newUser.lastName = req.body.userLastName;
 	console.log("post to /signup for newUser: ", newUser);
 
+// TO DO:
+// validate user email format before saving to db
+
 	// create user in database
 	db.User.create(newUser, function(err, user){
 		if(err){
@@ -199,38 +212,176 @@ app.get('/passwordreset', function(req, res){
 });
 
 
-// left off here...
 // TO DO:
 // validate that user entered something (with front end), before submitting form
-// generate secure linky to include in email
-// change text content of email
-// display message after redirect telling user that the email was sent,
-// or if there was a problem, to try again
 
 
 // password email request
 app.post('/passwordreset', function(req, res){
-	var receipientEmail = req.body.userEmail;
-	// setup e-mail data
-	var mailOptions = {
-	    from: 'Everone\'s Photos<lindsay@everyonesphotos.com>', // sender address
-	    to: receipientEmail,
-	    subject: 'Password reset requested for Everyone\s Photos ✉', // Subject line
-	    text: 'Hello world', 			// plaintext body
-	    html: '<b>★ Hello world ★ </b>' // html body
-	};
-
-	transporter.sendMail(mailOptions, function(error, info){
-	    if(error){
-	        console.log(error);
-	        res.render("users/passwordreset");
-	    }else{
-	        console.log('Message sent: ' + info.response);
-	        res.redirect("/login");
-	    }
+	
+	// generate the token
+	var token;
+	crypto.randomBytes(20, function(err, buffer) {
+		token = buffer.toString('hex');
+		console.log("curious to see what this generates: ", token);
 	});
 	
+	// look for user in our db
+	var receipientEmail = req.body.userEmail;
+	db.User.findOne({email: receipientEmail}, function (err, user){
+		if (err){
+			console.log("error in /forgotpassword route, finding user in db");
+			res.redirect("errors/500");
+		}
+		if (!user) {
+// TO DO:
+// tell user no account with that email address in our system, try again
+			console.log("no user by that emai in system");
+			res.render("users/passwordreset");
+		} else if (user) {
+
+			// set user's info 
+			user.resetPasswordToken = token;
+    		user.resetPasswordExpires = Date.now() + 7200000; // 2 hours, in milliseconds
+    		// save user with token
+        	user.save(function(err){
+        		if (err){
+					console.log("error in /forgotpassword route, saving token to user db");
+					res.redirect("errors/500");
+				} else {
+					console.log("saved user reset token to db, sending email...", token);
+					// configure e-mail data
+					var mailOptions = {
+					    from: "Eveyrone\'s Photos<lindsay@everyonesphotos.com>", // sender address
+					    to: receipientEmail,
+					    subject: "Password reset requested for Everyone\'s Photos ✉", // Subject line
+					    // plaintext body
+					    text: "Hello " + user.firstName + ", \n \n Someone requested a password reset for this account. \n" + 
+					    "Please click on this link, or copy and paste it into your browser, to reset your password: \n \n" + 
+					    "http://" + domain + "/reset/" + user._id + "/" + token +  "\n \n" +
+					    "This link will expire in 2 hours. \n If you did not request a password reset, you can " +
+					    "ignore this email and your password will remain unchanged. \n \n" + 
+					    " Do not forward this email to anyone. \n \n " +
+					    "~Lindsay",
+					    // html body
+					    html: "<p>Hello " + user.firstName + ",</p>" + 
+					    "<p>Someone requested a password reset for this account.</p>" + 
+					    "<p>Please click on this link, or copy and paste it into your browser, to reset your password:</p>" + 
+					    "<p>http://" + domain + "/reset/" + user._id + "/" + token +  "</p>" +
+					    "<p>This link will expire in 2 hours. If you did not request a password reset, you can " +
+					    "ignore this email and your password will remain unchanged. </p>" + 
+					    "<p>Do not forward this email to anyone.</p>" +
+					    "<p>~Lindsay<p>"
+					};
+
+					// send password reset email to user
+					transporter.sendMail(mailOptions, function(error, info){
+					    if (error) {
+					        console.log(error);
+					        res.render("users/passwordreset");
+					    } else {
+// TO DO:
+// flash confirmation to user
+					        console.log('Message sent: ' + info.response);
+					        res.redirect("/");
+					    }
+					}); // close transporter.sendMail
+
+				} // close else
+        	}); // close user.save
+
+        } // close else if (user)
+	}); // close User.findOne
+}); // close app.post
+	
+
+// login with reset password email link
+app.get('/reset/:user_id/:token', function(req, res){
+	// $gt selects those documents where the value of the field is greater than the specified value.
+	db.User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function(err, user) {
+		if (!user) {
+// TO DO:
+// flash message token is invalid
+			// req.flash('error', 'Password reset token is invalid or has expired.');
+			res.redirect('/passwordreset');
+		} else {
+    		// show a password reset form
+			res.render("users/reset");
+    	};
+	});
 });
+
+
+
+
+// LEFT OFF HERE...
+// issue with finding by token / user id on submit
+// logging req.params is showing literal ':user_id' and ':token', 
+// rather than user's info
+
+
+
+
+// post - password reset, submit new password
+app.post('/reset/:user_id/:token', function(req, res){
+	// $gt selects those documents where the value of the field is greater than the specified value.
+	console.log("Logging req.params.token: ", req.params.token);
+	console.log("logging req.params: ", req.params);
+	db.User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function(err, user) {
+		if (!user) {
+// TO DO:
+// flash message token is invalid
+			// req.flash('error', 'Password reset token is invalid or has expired.');
+			res.redirect('/passwordreset');
+		} else {
+			user.password = req.body.userPass2;
+			user.resetPasswordToken = undefined;
+			user.resetPasswordExpires = undefined;
+			user.save(function(err){
+				if (err){
+					console.log("error in POST /reset/:user_id/:token route, saving user's new info to user db");
+					res.redirect("errors/500");
+				} else {
+					// send password email confirmation
+					// configure e-mail data
+					console.log("password successfully changed & saved in db");
+					var mailOptions = {
+					    from: "Eveyrone\'s Photos<lindsay@everyonesphotos.com>", // sender address
+					    to: receipientEmail,
+					    subject: "Password reset confirmation for Everyone\'s Photos ✉", // Subject line
+					    // plaintext body
+					    text: "Hello " + user.firstName + ", \n \n" + 
+					    "This email is to let you know that your password has been changed for your account. \n \n" + 
+					    "No further action is needed, this is just a confirmation email. \n \n" + 
+					    "~Lindsay",
+					    // html body
+					    html: "<p>Hello " + user.firstName + ",</p>" + 
+					    "<p>This email is to let you know that your password has been changed for your account.</p>" + 
+					    "<p>No further action is needed, this is just a confirmation email</p>" + 
+					    "<p>~Lindsay<p>"
+					};
+
+					// send password reset email to user
+					transporter.sendMail(mailOptions, function(error, info){
+					    if (error) {
+					        console.log(error);
+					        res.redirect("/");
+					    } else {
+// TO DO:
+// flash confirmation to user
+					        // log the user in with loginHelper middleware
+							req.login(user);
+							// send the user to their own landing page
+							res.redirect("/users/" + user._id + "/apiAuthStart");
+					    }
+					}); // close transporter.sendMail
+				} // close else
+
+			});
+    	} // close else
+	}); // close db.User.findOne
+}); // close app.post('/reset/:user_id/:token...
+
 
 
 //_______LOGOUT_______
