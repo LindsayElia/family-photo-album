@@ -850,6 +850,8 @@ app.get('/flickr/callback', function(req, res){
 					// make the instagramPhoto object
 					var thisFlickrPhotoObject = {
 						flickrPhotoId: currentFlickrPhoto.id,
+						flickrPhotoSecret: currentFlickrPhoto.secret,
+						flickrPhotoOriginalSecret: currentFlickrPhoto.originalsecret,
 						owner: user,
 						createdTime: currentFlickrPhoto.dateupload,
 						urlFullSize: currentFlickrPhoto.url_o,
