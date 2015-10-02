@@ -683,7 +683,7 @@ app.get("/users/:user_id/landing/show/instagram", function(req, res){
 // Flickr credentials
 var flickrApiKey = process.env.FLICKR_API_KEY;
 var flickrClientSecret = process.env.FLICKR_CLIENT_SECRET;
-var flickrRedirectUri = process.env.FLICKR_REDIRECT_URI;
+// var flickrRedirectUri = process.env.FLICKR_REDIRECT_URI;
 // console.log("flickrRedirectUri - ", flickrRedirectUri);
 
 
@@ -707,18 +707,18 @@ app.get('/users/:user_id/connect/flickr', function(req, res){
 });
 
 // path specified by grant module
-app.get('/handle_flickr_callback', function(req, res){
+app.get('/connect/flickr/callback', function(req, res){
 	res.end(JSON.stringify(req.query, null, 2));
 });
 
 // path specified by grant module
 // route user lands on after granting permission for flickr api auth
 // I make a call to the flickr api after the user grants permission, to get 50 photos
-app.get('/flickr/callback', function(req, res){
+app.get('/handle_flickr_response', function(req, res){
 
-	// console.log("logging req.query: ", req.query);
-	// console.log("headers sent: ", res.headersSent);
-	// console.log("grant res:");
+	console.log("logging req.query: ", req.query);
+	console.log("headers sent: ", res.headersSent);
+	// console.log("grant res: ", res);
 
 	// save the user data, access token, that we get from the grant auth process
 	var userFlickrAccessToken = req.query.access_token;
@@ -825,13 +825,13 @@ app.get('/flickr/callback', function(req, res){
 	"&user_id=" + userFlickrId +	
 	"&oauth_signature=" + apiSignature ; // our hashed variable
 
-	console.log("flickrUrlToGet: ", flickrUrlToGet);
+	// console.log("flickrUrlToGet: ", flickrUrlToGet);
 
 	request.get(flickrUrlToGet,
 		function(flickrApiRequest, flickrApiResponse){
-		console.log("flickrApiResponse.body --->>>> ", flickrApiResponse.body);
+		// console.log("flickrApiResponse.body --->>>> ", flickrApiResponse.body);
 		var flickrData = JSON.parse(flickrApiResponse.body);
-		console.log("flickrData.photos.photo --->>>>", flickrData.photos.photo);
+		// console.log("flickrData.photos.photo --->>>>", flickrData.photos.photo);
 
 		// make the user object
 		var user = {};
@@ -848,7 +848,7 @@ app.get('/flickr/callback', function(req, res){
 				// loop through the response data
 				for(var i = 0; i < flickrData.photos.photo.length; i++){
 					var currentFlickrPhoto = flickrData.photos.photo[i];
-					console.log("currentFlickrPhoto: ", currentFlickrPhoto);
+					// console.log("currentFlickrPhoto: ", currentFlickrPhoto);
 					var latAndLong = {
 							latitude: currentFlickrPhoto.latitude,
 							longitude: currentFlickrPhoto.longitude
@@ -865,7 +865,7 @@ app.get('/flickr/callback', function(req, res){
 						place: JSON.stringify(latAndLong),	// can't save an object to a string placeholder
 						tags: currentFlickrPhoto.tags
 					};
-					console.log("thisFlickrPhotoObject: ", thisFlickrPhotoObject);
+					// console.log("thisFlickrPhotoObject: ", thisFlickrPhotoObject);
 					db.FlickrPhoto.findOneAndUpdate({flickrPhotoId: thisFlickrPhotoObject.flickrPhotoId}, thisFlickrPhotoObject, {upsert:true}, function(err, flickrphotodata){
 						if(err){
 							console.error("error with findOneAndUpdate in get /flickr/callback route", err);
@@ -873,11 +873,10 @@ app.get('/flickr/callback', function(req, res){
 							console.log("successfully saved item to flickrphotos document");
 						}
 					}); // close db.FlickrPhoto.findOneAndUpdate
-
 				} // close for loop
-
 			} // close else
 		}); // close db.User.findByIdAndUpdate
+	res.redirect("/users/"+ req.session.id + "/landing/show/flickr");
 	}); // close request.get
 });
 
@@ -893,7 +892,7 @@ app.get('/users/:user_id/landing/show/flickr', function(req, res){
 				if (err){
 					console.error("error with FlickrPhoto.find() in get to /users/:user_id/landing/show/flickr route", err);
 				} else {
-					console.log("all flickrphotodata for this user: ", flickrphotodata);
+					// console.log("all flickrphotodata for this user: ", flickrphotodata);
 					// put all thumbnails into an array to pass to view
 					var flickrThumbsArray = [];
 					for (var i = 0; i < flickrphotodata.length; i++){
