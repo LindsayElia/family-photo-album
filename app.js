@@ -28,14 +28,6 @@ app.use(bodyParser.urlencoded({extended:true}));
 // dotenv - lets us use SECRET global variables
 require('dotenv').load();
 
-// -------------------TO DELETE-------------------
-// pg module - lets us talk to our postgres database
-var pg = require("pg");
-
-// -------------------TO DELETE-------------------
-// tell it where our database is
-var databaseConnectionLocation = process.env.HEROKU_POSTGRESQL_NAVY_URL || "postgres://localhost:5432/family_photos";
-
 // cookie-session - lets us create our own session cookies, for login auth with our app
 var cookieSession = require("cookie-session");
 app.use(cookieSession({
@@ -117,13 +109,9 @@ app.use(passport.session());  // passport method
 
 
 
-// I need to make routes that send out the data I need as json
-// that connect to my database and return data on ajax requests from the client side
-
-// also with angular i'll be using http-service directive or whatever
-
 
 // ____________ROUTES____________
+
 
 //_______HOME_______
 
@@ -148,15 +136,24 @@ app.get("/signup", routeHelper.loggedInStop, function(req, res){
 // SIGNUP - POST "signup"
 // create a new user and redirect to api auth buttons for now
 app.post("/signup", function(req, res){
+
+	// check email format
+	var thisEmail = req.body.userEmail;
+	console.log("thisEmail 1st: ", thisEmail);
+	// SUPER simple / basic email validation, just checkes that there is an @ symbol between strings
+	// function validateEmail(email) {
+ //    	var emailPattern = /\S+@\S+/;
+ //    	return emailPattern.test(email);
+	// }
+	// thisEmail = validateEmail(thisEmail);
+	// console.log("thisEmail 2nd: ", thisEmail);
+
 	var newUser = {};
-	newUser.email = req.body.userEmail;
+	newUser.email = thisEmail;
 	newUser.password = req.body.userPass;
 	newUser.firstName = req.body.userFirstName;
 	newUser.lastName = req.body.userLastName;
 	console.log("post to /signup for newUser: ", newUser);
-
-// TO DO:
-// validate user email format before saving to db
 
 	// create user in database
 	db.User.create(newUser, function(err, user){
@@ -314,16 +311,6 @@ app.get('/reset/:user_id/:token', function(req, res){
 });
 
 
-
-
-// LEFT OFF HERE...
-// issue with finding by token / user id on submit
-// logging req.params is showing literal ':user_id' and ':token', 
-// rather than user's info
-
-
-
-
 // post - password reset, submit new password
 app.post('/reset/:user_id/:token', function(req, res){
 	// $gt selects those documents where the value of the field is greater than the specified value.
@@ -419,19 +406,13 @@ app.get("/users/:user_id/apiAuthStart", routeHelper.ensureSameUser, function(req
 
 // displays a page with the facebook authorization via a FB login button
 // TO FIX: not sure if I need all three send type options?
-app.get('/authorize/facebook', function(req, res){
-	res.format({
-		// if the request to this route is an html type, render the page
-		'text/html': function(){
-			res.render("users/authFacebook");
-		},
-		// if the request to this route is an ajax request, send the data as type json 
-		'application/json': function(){
-			res.send(someData);
-		},
-		// if other type of request, send an error status message
-		'default': function(){
-			res.status(406).send("Not Acceptable data type request");
+app.get('/users/:user_id/authorize/facebook', routeHelper.ensureSameUser, function(req, res){
+	db.User.findById(req.params.user_id, function(err, user){
+		if(err){
+			console.log(err);
+			res.render("errors/500");
+		} else {
+			res.render("users/authFacebook", {user:user});
 		}
 	});
 });
@@ -445,108 +426,103 @@ app.post("/landing/facebook", function(req, res){
 	// need to give the client side a response code or else it hangs and errors out
 	res.status(200).send("data received successfully");
 
+	// console.log("req.params >>> ", req.params);
+	// console.log("req.body >>> ", req.body);
+	// console.log("req.query >>> ", req.query);
+	// console.log("req.session.id >>> ", req.session.id);
+
 	// need bodyParser module to interpret the data
 	// console.log("this is from the ajax request - req.body - ", req.body);
 	// unpack JSON so that it's a JavaScript ojbect & array format, rather than a string
 	var fbDataReceived = JSON.parse(req.body.data);
-	// console.log(fbDataReceived[0]);
+	// console.log("fbDataReceived[0]:", fbDataReceived[0]);
 
-	// save the data to my database
-	pg.connect(databaseConnectionLocation, function(err, client, done){
+	// grab the fb user id off of the first item in data received from client side
+	var user = {};
+	user.facebookId = fbDataReceived[0].fb_user_id;	// save fb id off of the first item returned
+	console.log("user? >>> ", user);
 
+	// save the user's facebook user id to user db
+	db.User.findByIdAndUpdate(req.session.id, user, function(err, user){
 		if(err){
-			return console.error("error connecting to database, from inside of post /facebookLogin route", err);
+			console.error("error with findByIdAndUpdate in User DB in post to /users/:user_id/landing/facebook route", err);
+		} else {
+			console.log("successfully saved user's fb_id to User DB: ", user);
+
+			// iterate through the data we've received from client side
+			for (var i = 0; i < fbDataReceived.length; i++){
+				
+				// format the data received from client side
+				// some pieces are not simple text strings, they are objects or arrays,
+				// so we need to convert to JSON in order to save in our db as a string
+				var currentPhotoObject = fbDataReceived[i];
+				var fbphotoToSave = {
+					facebookPhotoId: currentPhotoObject.fb_photo_id,
+					// owner: currentPhotoObject.fb_user_id,
+					createdTime: currentPhotoObject.fb_photo_created_time,
+					album: JSON.stringify(currentPhotoObject.fb_photo_album), 		// these may not always exist
+					urlFullSize: JSON.stringify(currentPhotoObject.fb_photo_url_full_size), 
+					urlThumbnail: currentPhotoObject.fb_photo_thumbnail,
+					place: JSON.stringify(currentPhotoObject.fb_photo_place),		// these may not always exist
+					tags: JSON.stringify(currentPhotoObject.fb_photo_tags)			// these may not always exist
+				};
+
+				// save the data to my database
+				db.FacebookPhoto.findOneAndUpdate({fb_photo_id: fbphotoToSave.facebookPhotoId}, fbphotoToSave, {upsert:true}, function(err, user){
+					if(err){
+						console.error("error with findOneAndUpdate in post to /users/:user_id/landing/facebook route", err);
+					} else {
+						console.log("successfully saved item to facebookphotos document");
+					}
+				}); // close db.FacebookPhoto.findOneAndUpdate
+
+			} // close for loop
+
 		}
+	}); // close db.User.findByIdAndUpdate
 
-		// format the data received from client side
-		for (var i = 0; i < fbDataReceived.length; i++){
-			var currentPhotoObject = fbDataReceived[i];
-			var facebook_user_id = currentPhotoObject.fb_user_id;
-			var fb_photo_id = currentPhotoObject.fb_photo_id;
-			var fb_photo_created_time = currentPhotoObject.fb_photo_created_time;
-			// the following pieces are not simple text strings, they are objects or arrays,
-			// so we need to convert to JSON in order to save in our db as a string
-			// except thumbnail, that's already just a string of the url
-			var fb_photo_album = JSON.stringify(currentPhotoObject.fb_photo_album); // these may not always exist??
-			var fb_photo_url_full_size = JSON.stringify(currentPhotoObject.fb_photo_url_full_size);
-			var fb_photo_thumbnail = currentPhotoObject.fb_photo_thumbnail;
-			var fb_photo_place = JSON.stringify(currentPhotoObject.fb_photo_place); // these may not always exist
-			var fb_photo_tags = JSON.stringify(currentPhotoObject.fb_photo_tags); // these may not always exist
-
-// **** TO FIX ***
-// only save if does not yet exist
-// change before production
-	// find value, then if it exists, update
-	// else, insert new item
-
-			// add data to db
-			client.query("INSERT INTO facebook_photos (facebook_user_id, fb_photo_id, " + 
-					"fb_photo_created_time, fb_photo_album, fb_photo_url_full_size, " +
-					"fb_photo_thumbnail, fb_photo_place, fb_photo_tags) " +
-					"VALUES ('" + facebook_user_id + "', '" + fb_photo_id + "', '" +
-					fb_photo_created_time + "', '" + fb_photo_album + "', '"+ 
-					fb_photo_url_full_size + "', '" + fb_photo_thumbnail + "', '" + 
-					fb_photo_place + "', '" + fb_photo_tags + "')", 
-						function(err, result){
-							done();
-							if(err){
-								return console.error("error inserting into table facebook_photos", err);
-							}
-			}); // close client.query
-		} // close for loop
-		console.log("successfully saved fb data to facebook_photos table");
-	}); // close pg.connect
-});
+}); // close app.post("/landing/facebook"...
 
 
 
 // displays a page showing fb photo stream
 // connects to database and finds all fb photos
 // renders the users/landingFacebook page
-app.get('/landing/facebook', function(req, res){
-	res.format({
-		// if the request to this route is an html type, render the page
-		'text/html': function(){
-			// make a request to our database to grab the photo_urls
-
-// **** TO FIX ***
-// hard coding user id - fix to do this dynamically later
-
-			pg.connect(databaseConnectionLocation, function(err, client, done){
-				if(err){
-					return console.error("error connecting to database in /facebookLanding route", err);
+app.get('/users/:user_id/landing/facebook', function(req, res){
+	// connect to User db to grab user id
+	db.User.findById(req.session.id, function(err, user){
+		if (err){
+			console.error("error with findById for User DB in get to /users/:user_id/landing/facebook route", err);
+		} else {
+			var facebookId = user.facebookId;
+			// connect to FB photo db to find all photos for this user
+			db.FacebookPhoto.find({owner:facebookId}, function(err, fbphotodata){
+				if (err){
+					console.error("error with FacebookPhoto.find() in get to /users/:user_id/landing/facebook route", err);
+				} else {
+				console.log("all fbphotodata for this user: ", fbphotodata);
+				res.render("users/landingFacebook");
 				}
-				client.query("SELECT * FROM facebook_photos WHERE facebook_user_id = '10153659612406060'", function(err, result){
-					done();
-					if(err){
-						return console.error("error SELECTing table facebook_photos, in /landing/facebook route", err);
-					}
-					// console.log("result is... ", result.rows);
-					var fbPhotoThumbsArray = [];
-					for (var i = 0; i < result.rows.length; i++){
+			}); // close db.FacebookPhoto.findOne
+		} // close else
+	}); // close db.User.findById
+			
 
-// **** TO FIX ***
-// change this to get ALL the image data, then do what I want with it on the view
-// also need to save ALL of the user data (fb_user_id, etc)
 
-						var fbThumbUrl = result.rows[i].fb_photo_thumbnail;
-						fbPhotoThumbsArray.push(fbThumbUrl);
-					}
-					// console.log("array...", photoThumbsArray);
-					// console.log("number of items in array: ", photoThumbsArray.length);
-					res.render("users/landingFacebook", {fbPhotoThumbsArray:fbPhotoThumbsArray});
-				});
-			});
-		},
-		// if the request to this route is an ajax request, send the data as type json 
-		'application/json': function(){
-			res.send(someData);
-		},
-		// if other type of request, send an error status message
-		'default': function(){
-			res.status(406).send("Not Acceptable data type request");
-		}
-	});
+// 					var fbPhotoThumbsArray = [];
+// 					for (var i = 0; i < result.rows.length; i++){
+
+// // **** TO FIX ***
+// // change this to get ALL the image data, then do what I want with it on the view
+// // also need to save ALL of the user data (fb_user_id, etc)
+
+// 						var fbThumbUrl = result.rows[i].fb_photo_thumbnail;
+// 						fbPhotoThumbsArray.push(fbThumbUrl);
+// 					}
+
+// 					res.render("users/landingFacebook", {fbPhotoThumbsArray:fbPhotoThumbsArray});
+
+
 });
 
 
@@ -563,7 +539,7 @@ console.log("instagramRedirectUri: ", instagramRedirectUri);
 
 
 // displays a page with the instagram authorization via a button
-app.get('/authorize/instagram', function(req, res){
+app.get('/users/:user_id/authorize/instagram', function(req, res){
 	res.render("users/authInstagram");
 });
 
@@ -571,7 +547,7 @@ app.get('/authorize/instagram', function(req, res){
 // user clicks on button from the /authorize/instagram page,
 // which gets this route, which starts the authentication process
 // to the instagram API, and redirects to the /landing/instagram route below
-app.get('/login/instagram', function(req, res) {
+app.get('/users/:user_id/login/instagram', function(req, res) {
 	// ask instagram for authorization
 	res.redirect("https://api.instagram.com/oauth/authorize/?client_id=" + 
 		instagramClientId + "&redirect_uri=" + instagramRedirectUri + "&response_type=code&scope=basic");
@@ -785,7 +761,7 @@ app.get('/landing/instagram', function(req, expressResponse) {
 });
 
 
-app.get("/landing/show/instagram", function(req, res){
+app.get("/users/:user_id/landing/show/instagram", function(req, res){
 	console.log("hello from inside of /landing/show/instagram");
 	// get data out of database
 	pg.connect(databaseConnectionLocation, function(err, client, done){
@@ -859,7 +835,7 @@ passport.use(new flickrPassportStrategy({
 ));
 
 // displays a page with the flickr authorization via a button
-app.get('/authorize/flickr', function(req, res){
+app.get('/users/:user_id/authorize/flickr', function(req, res){
 	res.render("users/authFlickr");
 });
 
@@ -868,7 +844,7 @@ app.get('/authorize/flickr', function(req, res){
 // to the flickr API, and redirects to the /landing/flickr route below
 
 // using passport-flickr
-app.get('/login/flickr', passport.authenticate('flickr'));
+app.get('/users/:user_id/login/flickr', passport.authenticate('flickr'));
 
 
 app.get('/auth/flickr/callback',
@@ -886,7 +862,7 @@ app.get('/auth/flickr/callback',
 // this works with both the node module "flickrapi" 
 // and grant module
 // see https://github.com/simov/grant#typical-flow - step #5
-app.get('/connect/flickr', function(req, res){
+app.get('/users/:user_id/connect/flickr', function(req, res){
 });
 
 // TO FIX: I'm not handling what happens if the user declines to authorize...they get sent back to my app's home page
@@ -984,12 +960,12 @@ app.get('/flickr/callback', function(req, res){
 
 
 
-
-	res.redirect("/landing/show/flickr");
+ 
+	res.redirect("/users/" + user._id + "/landing/show/flickr");
 });
 
 
-app.get('/landing/show/flickr', function(req, res){
+app.get('/users/:user_id/landing/show/flickr', function(req, res){
 	res.render("users/landingFlickr");
 });
 

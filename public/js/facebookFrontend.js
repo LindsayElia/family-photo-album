@@ -1,13 +1,38 @@
 //***** FACEBOOK API login & authorization *****
-// for reference: https://developers.facebook.com/docs/facebook-login/web
+// for reference: 
+// https://developers.facebook.com/docs/facebook-login/web
+// https://developers.facebook.com/docs/javascript/examples#login
+// https://developers.facebook.com/docs/facebook-login/permissions/#reference
 
 console.log("hello from faceobook frontend js file");
 
+// initialize the Facebook SDK 
+// https://developers.facebook.com/docs/javascript/quickstart/v2.4
+window.fbAsyncInit = function() {
+	FB.init({
+		appId      : '1171727296190425',
+		cookie     : true,  // enable cookies to allow the server to access the session
+		xfbml      : true,  // parse social plugins on this page
+		version    : 'v2.4' 
+	});
+};
+
+// Load the Facebook SDK asynchronously
+(function(d, s, id) {
+	var js, fjs = d.getElementsByTagName(s)[0];
+	if (d.getElementById(id)) {return;}
+	js = d.createElement(s); js.id = id;
+	js.src = "//connect.facebook.net/en_US/sdk.js";
+	fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+
+
 // wrap the call to the FB button in a document ready so it can find the button id
 $(document).ready(function(){
+	$("#goToFacebookLanding").hide();
 	// execute FB API calls when the facebook button is clicked
 	$("#facebookAuthButton").on("click", function() {
-		console.log("button clicked");
+		console.log("facebookAuthButton button clicked");
 
 		// This function gets the state of the
 		// person visiting this page and can return one of three states to
@@ -16,48 +41,11 @@ $(document).ready(function(){
 				// 2. Logged into Facebook, but not your app ('not_authorized')
 				// 3. Not logged into Facebook and can't tell if they are logged into your app or not.
 		// These three cases are handled in the callback function.
-
 		FB.getLoginStatus(function(response) {
 			statusChangeCallback(response);
 		});
 	}); // close click handler
 }); // close document.ready
-
-
-// Load the Facebook SDK asynchronously
-(function(d, s, id) {
-	var js, fjs = d.getElementsByTagName(s)[0];
-	if (d.getElementById(id)) return;
-	js = d.createElement(s); js.id = id;
-	js.src = "//connect.facebook.net/en_US/sdk.js";
-	fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));
-
-
-// initialize the Facebook SDK 
-	/// and call getLoginStatus ???
-window.fbAsyncInit = function() {
-	FB.init({
-		appId      : '1171727296190425',
-		cookie     : true,  // enable cookies to allow the server to access the session
-		xfbml      : true,  // parse social plugins on this page
-		version    : 'v2.2' // use version 2.2
-	});
-	// Now that we've initialized the JavaScript SDK, we call 
-	// FB.getLoginStatus().  
-
-	
-
-};
-
-
-// This function is called when someone finishes with the Login Button.
-// See the onlogin handler attached to it in the sample code below.
-function checkLoginState() {
-	FB.getLoginStatus(function(response) {
-		statusChangeCallback(response);
-	});
-}
 
 
 // This is called with the results from from FB.getLoginStatus().
@@ -69,15 +57,16 @@ function statusChangeCallback(response) {
 	// for FB.getLoginStatus().
 	if (response.status === 'connected') {
 		// Logged into your app and Facebook.
+		console.log("already logged in, getting data from API");
 		testAPI();
 		getPhotosAPI();
 	} else if (response.status === 'not_authorized') {
-		// The person is logged into Facebook, but not your app.
-		document.getElementById('status').innerHTML = 'Please log into this app.';
-	} else {
-		// The person is not logged into Facebook, so we're not sure if
-		// they are logged into this app or not.
-		document.getElementById('status').innerHTML = 'Please log into Facebook.';
+		FB.login(function(){}, {
+			scope: 'user_photos'
+		});
+		console.log("logging user in for first time");
+		testAPI();
+		getPhotosAPI();
 	}
 }
 
@@ -101,12 +90,9 @@ function testAPI() {
 // call the function to send data to my server
 function getPhotosAPI(){
 
-
-	// not yet storing this...
-	// can I nest the calls?
 	var fb_user_id;
 
-	// get user's facebook user id
+	// // get user's facebook user id
 	FB.api(
 		'/me/',
 		'GET',
@@ -117,7 +103,6 @@ function getPhotosAPI(){
 	);
 
 	// console.log("my fb_user_id: ", fb_user_id);
-
 
 	// currently limiting to 50 photos...too much data won't send successfully to my server
 	// apparently 100 is too many for a single request
@@ -185,9 +170,13 @@ function sendFbUserData(fbUserData){
 		});
 }
 
+
+// need to pass in user_id...
+
 // this redirects the user to the landing page when called
 function redirectToFbLanding() {
-	window.location="/landing/facebook";
+	$("#goToFacebookLanding").show();
+	$("#facebookAuthButton").hide();
 }
 
 
