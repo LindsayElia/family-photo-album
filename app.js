@@ -458,7 +458,7 @@ app.post("/landing/facebook", function(req, res){
 				var currentPhotoObject = fbDataReceived[i];
 				var fbphotoToSave = {
 					facebookPhotoId: currentPhotoObject.fb_photo_id,
-					// owner: currentPhotoObject.fb_user_id,
+					owner: user,
 					createdTime: currentPhotoObject.fb_photo_created_time,
 					album: JSON.stringify(currentPhotoObject.fb_photo_album), 		// these may not always exist
 					urlFullSize: JSON.stringify(currentPhotoObject.fb_photo_url_full_size), 
@@ -484,7 +484,6 @@ app.post("/landing/facebook", function(req, res){
 }); // close app.post("/landing/facebook"...
 
 
-
 // displays a page showing fb photo stream
 // connects to database and finds all fb photos
 // renders the users/landingFacebook page
@@ -494,36 +493,24 @@ app.get('/users/:user_id/landing/facebook', function(req, res){
 		if (err){
 			console.error("error with findById for User DB in get to /users/:user_id/landing/facebook route", err);
 		} else {
-			var facebookId = user.facebookId;
 			// connect to FB photo db to find all photos for this user
-			db.FacebookPhoto.find({owner:facebookId}, function(err, fbphotodata){
+			db.FacebookPhoto.find({owner:user}, function(err, fbphotodata){
 				if (err){
 					console.error("error with FacebookPhoto.find() in get to /users/:user_id/landing/facebook route", err);
 				} else {
-				console.log("all fbphotodata for this user: ", fbphotodata);
-				res.render("users/landingFacebook");
-				}
+					console.log("all fbphotodata for this user: ", fbphotodata);
+					// put all thumbnails into an array to pass to view
+					var fbPhotoThumbsArray = [];
+					for (var i = 0; i < fbphotodata.length; i++){
+						var fbThumbUrl = fbphotodata[i].urlThumbnail;
+						fbPhotoThumbsArray.push(fbThumbUrl);
+					}
+					res.render("users/landingFacebook", {fbPhotoThumbsArray:fbPhotoThumbsArray});
+				} // close else
 			}); // close db.FacebookPhoto.findOne
 		} // close else
 	}); // close db.User.findById
-			
-
-
-// 					var fbPhotoThumbsArray = [];
-// 					for (var i = 0; i < result.rows.length; i++){
-
-// // **** TO FIX ***
-// // change this to get ALL the image data, then do what I want with it on the view
-// // also need to save ALL of the user data (fb_user_id, etc)
-
-// 						var fbThumbUrl = result.rows[i].fb_photo_thumbnail;
-// 						fbPhotoThumbsArray.push(fbThumbUrl);
-// 					}
-
-// 					res.render("users/landingFacebook", {fbPhotoThumbsArray:fbPhotoThumbsArray});
-
-
-});
+}); // close app.get
 
 
 
