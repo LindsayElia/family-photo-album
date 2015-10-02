@@ -646,7 +646,6 @@ app.get('/landing/instagram', function(req, expressResponse) {
 
 
 app.get("/users/:user_id/landing/show/instagram", function(req, res){
-	console.log("hello from inside of /landing/show/instagram");
 	// connect to User db to grab user id
 	db.User.findById(req.session.id, function(err, user){
 		if (err){
@@ -690,7 +689,14 @@ var flickrRedirectUri = process.env.FLICKR_REDIRECT_URI;
 
 // displays a page with the flickr authorization via a button
 app.get('/users/:user_id/authorize/flickr', function(req, res){
-	res.render("users/authFlickr");
+	db.User.findById(req.params.user_id, function(err, user){
+		if(err){
+			console.log(err);
+			res.render("errors/500");
+		} else {
+			res.render("users/authFlickr", {user:user});
+		}
+	});
 });
 
 // user clicks on button from the /authorize/flickr page,
@@ -872,23 +878,35 @@ app.get('/flickr/callback', function(req, res){
 
 			} // close else
 		}); // close db.User.findByIdAndUpdate
-
-
-// TO FIX:
-// redirect to user/:user path
-	 	res.redirect("/users/landing/show/flickr");
-		// res.redirect("/users/" + user._id + "/landing/show/flickr");
-
 	}); // close request.get
 });
 
 
-// app.get('/users/:user_id/landing/show/flickr', function(req, res){
-// 	res.render("users/landingFlickr");
-// });
+app.get('/users/:user_id/landing/show/flickr', function(req, res){
+	// connect to User db to grab user id
+	db.User.findById(req.session.id, function(err, user){
+		if (err){
+			console.error("error with findById for User DB in get to /users/:user_id/landing/show/flickr route", err);
+		} else {
+			// connect to instagram photo db to find all photos for this user
+			db.FlickrPhoto.find({owner:user}, function(err, flickrphotodata){
+				if (err){
+					console.error("error with FlickrPhoto.find() in get to /users/:user_id/landing/show/flickr route", err);
+				} else {
+					console.log("all flickrphotodata for this user: ", flickrphotodata);
+					// put all thumbnails into an array to pass to view
+					var flickrThumbsArray = [];
+					for (var i = 0; i < flickrphotodata.length; i++){
+						var flickrThumbUrl = flickrphotodata[i].urlThumbnail;
+						flickrThumbsArray.push(flickrThumbUrl);
+					}
+					res.render("users/landingFlickr", {flickrThumbsArray:flickrThumbsArray});
+				} // close else
+			}); // close db.InstagramPhoto.findOne
+		} // close else
+	}); // close db.User.findById
 
-app.get('/users/landing/show/flickr', function(req, res){
-	res.render("users/landingFlickr");
+
 });
 
 
