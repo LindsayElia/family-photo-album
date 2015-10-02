@@ -4,7 +4,7 @@
 // https://developers.facebook.com/docs/javascript/examples#login
 // https://developers.facebook.com/docs/facebook-login/permissions/#reference
 
-console.log("hello from faceobook frontend js file");
+console.log("hello from facebook frontend js file");
 
 // initialize the Facebook SDK 
 // https://developers.facebook.com/docs/javascript/quickstart/v2.4

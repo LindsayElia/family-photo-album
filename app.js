@@ -249,7 +249,7 @@ app.post('/passwordreset', function(req, res){
 					console.log("saved user reset token to db, sending email...", token);
 					// configure e-mail data
 					var mailOptions = {
-					    from: "Eveyrone\'s Photos<lindsay@everyonesphotos.com>", // sender address
+					    from: "Everyone\'s Photos<lindsay@everyonesphotos.com>", // sender address
 					    to: receipientEmail,
 					    subject: "Password reset requested for Everyone\'s Photos ✉", // Subject line
 					    // plaintext body
@@ -335,7 +335,7 @@ app.post('/reset/:user_id/:token', function(req, res){
 					// configure e-mail data
 					console.log("password successfully changed & saved in db");
 					var mailOptions = {
-					    from: "Eveyrone\'s Photos<lindsay@everyonesphotos.com>", // sender address
+					    from: "Everyone\'s Photos<lindsay@everyonesphotos.com>", // sender address
 					    to: receipientEmail,
 					    subject: "Password reset confirmation for Everyone\'s Photos ✉", // Subject line
 					    // plaintext body
@@ -445,7 +445,7 @@ app.post("/landing/facebook", function(req, res){
 	// save the user's facebook user id to user db
 	db.User.findByIdAndUpdate(req.session.id, user, function(err, user){
 		if(err){
-			console.error("error with findByIdAndUpdate in User DB in post to /users/:user_id/landing/facebook route", err);
+			console.error("error with findByIdAndUpdate in User DB in post to landing/facebook route", err);
 		} else {
 			console.log("successfully saved user's fb_id to User DB: ", user);
 
@@ -468,9 +468,9 @@ app.post("/landing/facebook", function(req, res){
 				};
 
 				// save the data to my database
-				db.FacebookPhoto.findOneAndUpdate({fb_photo_id: fbphotoToSave.facebookPhotoId}, fbphotoToSave, {upsert:true}, function(err, user){
+				db.FacebookPhoto.findOneAndUpdate({fb_photo_id: fbphotoToSave.facebookPhotoId}, fbphotoToSave, {upsert:true}, function(err, fbphotodata){
 					if(err){
-						console.error("error with findOneAndUpdate in post to /users/:user_id/landing/facebook route", err);
+						console.error("error with findOneAndUpdate in post to /landing/facebook route", err);
 					} else {
 						console.log("successfully saved item to facebookphotos document");
 					}
@@ -527,7 +527,14 @@ console.log("instagramRedirectUri: ", instagramRedirectUri);
 
 // displays a page with the instagram authorization via a button
 app.get('/users/:user_id/authorize/instagram', function(req, res){
-	res.render("users/authInstagram");
+	db.User.findById(req.params.user_id, function(err, user){
+		if(err){
+			console.log(err);
+			res.render("errors/500");
+		} else {
+			res.render("users/authInstagram", {user:user});
+		}
+	});
 });
 
 
@@ -589,7 +596,7 @@ app.get('/landing/instagram', function(req, expressResponse) {
 				// this is OPTIONAL in this instance, but it's nice to see how to format it
 				request.get(
 				{
-					url:instagramApiUrl, 
+					url: instagramApiUrl, 
 					headers: {"content-type": "application/json"}
 				}, 
 					function(apiError, apiResponse, apiBody){
@@ -600,187 +607,84 @@ app.get('/landing/instagram', function(req, expressResponse) {
 						var instagramApiBodyParsedData = instagramApiDataParsed.data;
 						// console.log("apiBody: ", instagramApiBodyParsedData);
 
+						// format user's user-instagram-id and instagram access token
+						var user = {};
+						user.instagramId = userInstagramData.user.id;  // received with callback, before request to get user photos
+						user.instagramAccessToken = userInstagramAccessToken;
+						console.log("user? >>> ", user);
+
 						// save data to my db
-						pg.connect(databaseConnectionLocation, function(err, client, done){
 
-							if(err){
-								return console.error("error connecting to database, from inside of /landing/instagram route", err);
-							}
-
-
-							// format the data
-							for (var i = 0; i < instagramApiBodyParsedData.length; i++){
-
-								var thisInstaItem = instagramApiBodyParsedData[i];
-								// only save photos, not images
-								if (thisInstaItem.type === "image"){
-									var thisInstaPhotoObject = thisInstaItem;
-									var insta_user_id = thisInstaItem.user.id;
-
-									var	insta_photo_id_with_user_id = thisInstaItem.id;
-									// remove the underscore & user id from end of photo id
-									var pattern = /_/;
-									var	insta_photo_id_array = insta_photo_id_with_user_id.split(pattern);
-									
-									var	insta_photo_id = insta_photo_id_array[0];
-									// console.log("after splitting: ", insta_photo_id);
-									
-									var	insta_photo_created_time = thisInstaItem.created_time;
-									// the following pieces are not simple text strings, they are objects or arrays,
-									// so we need to convert to JSON in order to save in our db as a string
-									var	insta_photo_url_full_size = JSON.stringify(thisInstaItem.images.standard_resolution.url);
-									var	insta_photo_thumbnail = JSON.stringify(thisInstaItem.images.thumbnail);
-									var	insta_photo_place = JSON.stringify(thisInstaItem.location);  // these may not always exist
-									var	insta_photo_tags = JSON.stringify(thisInstaItem.tags);  // these may not always exist
-
-									var temptype = typeof insta_photo_id;
-									// console.log("this insta_photo_id: ", insta_photo_id);
-									// console.log("typoe of insta_photo_id: ", temptype);
-									// add data to db
-											
-// TO FIX:
-// trying to only add item if not already in table
-// and update item's data if it is in table
-// problem with how I compare the result of searching in the table
-// ??? try putting pg.connect inside of the for loop
-// do same for facebook once I fix
-
-// TO DO:
-// change query statements so they are not insecure
-// using prepared statements
-// https://github.com/brianc/node-postgres/wiki/Prepared-Statements
-// https://students.galvanize.com/cohorts/13/daily_plans/2015-07-08
-
-									client.query("INSERT INTO instagram_photos (insta_user_id, insta_photo_id, " + 
-														"insta_photo_created_time, insta_photo_url_full_size, " +
-														"insta_photo_thumbnail, insta_photo_place, insta_photo_tags) " +
-														"VALUES ('" + insta_user_id + "', '" + insta_photo_id + "', '" +
-														insta_photo_created_time + "', '" + 
-														insta_photo_url_full_size + "', '" + insta_photo_thumbnail + "', '" + 
-														insta_photo_place + "', '" + insta_photo_tags + "')", 
-															function(err, result){
-																// console.log("CHECK!", result);
-																done();
-																if(err){
-																	return console.error("error inserting into table instagram_photos", err);
-																}
-									}); // close client.query
+							// save the user's instagram user id & access token to user db
+							db.User.findByIdAndUpdate(req.session.id, user, function(err, user){
+								if(err){
+									console.error("error with findByIdAndUpdate in User DB in post to /landing/instagram route", err);
+								} else {
+									console.log("successfully saved user's instagram_id to User DB: ", user);
 
 
-									// var query = client.query("SELECT * FROM instagram_photos WHERE insta_photo_id = '" + insta_photo_id + "'");
-									// query.on('row', function(row, result) {
-									// 	// console.log("just 'row':", row);
-									// 	// console.log("just result #1:", result);
-									// 	console.log("result.rows.length, before: ", result.rows.length);
-									// 	result.addRow(row);
-									// 	// console.log("just result #2:", result);
-									// 	console.log("result.rows.length, after: ", result.rows.length);
-								 //     	// console.log('row.insta_photo_id', row.insta_photo_id);
-								 //     	// console.log("row.rowCount: ", row.rowCount);
-								 //    });
+									// iterate through the data we've received from client side
+									for (var i = 0; i < instagramApiBodyParsedData.length; i++){
+										var thisInstaItem = instagramApiBodyParsedData[i];
+										// only save photos, not images
+										if (thisInstaItem.type === "image"){
+											// format the data received from client side
+											var thisInstaPhotoObject = {
+												instagramPhotoId: thisInstaItem.id,
+												owner: user,
+												createdTime: thisInstaItem.created_time,
+												urlFullSize: thisInstaItem.images.standard_resolution.url,
+												urlThumbnail: thisInstaItem.images.thumbnail.url,
+												// some pieces are not simple text strings, they are objects or arrays,
+												// so we need to convert to JSON in order to save in our db as a string
+												place: JSON.stringify(thisInstaItem.location),  // these may not always exist
+												tags: JSON.stringify(thisInstaItem.tags)  // these may not always exist
+											};
 
+											// save the data to my database
+											db.InstagramPhoto.findOneAndUpdate({instagramPhotoId: thisInstaPhotoObject.instagramPhotoId}, thisInstaPhotoObject, {upsert:true}, function(err, instaphotodata){
+												if(err){
+													console.error("error with findOneAndUpdate in get /landing/instagram route", err);
+												} else {
+													console.log("successfully saved item to instagramphotos document");
+												}
+											}); // close db.FacebookPhoto.findOneAndUpdate
 
-									// look first to see if item exists by photo id				// old: CAST(insta_photo_id AS text)
-									// client.query("SELECT * FROM instagram_photos WHERE insta_photo_id = '" + insta_photo_id + "'", 
-									// 		function(err, result){
-									// 			// console.log("just the result: ", result);
-									// 			console.log("result.rowCount: ", result.rowCount);
-									// 			// done();
-									// 			if(err){
-									// 					return console.error("error selecting photo by id from table instagram_photos", err);
-									// 			}
+										} // close if
+									} // close for loop
+								} // close else
+							}); // close db.User.findByIdAndUpdate
 
-									// 			// if the item exists in table, update it
-									// 			if (result.rows.rowCount === 1){
-									// 				console.log("rows.rowCount is one, update! <<<<");
-									// 				client.query("UPDATE instagram_photos " + 
-									// 					"SET insta_photo_place = '" + insta_photo_place + "' " +
-									// 					", insta_photo_tags = '" + insta_photo_tags + "' " +
-									// 					"WHERE insta_photo_id = " + insta_photo_id,
-									// 						function(err, result){
-									// 							done();
-									// 							if(err){
-									// 								return console.error("error updating row in table instagram_photos", err);
-									// 							}
-									// 				}); // close client.query
-									// 			} 
-
-									// 			// if the item does not exist in table, add it
-									// 			else if (result.rowCount === 0){
-									// 				console.log("rows.rowCount is zero, add! <<<<");
-									// 				client.query("INSERT INTO instagram_photos (insta_user_id, insta_photo_id, " + 
-									// 					"insta_photo_created_time, insta_photo_url_full_size, " +
-									// 					"insta_photo_thumbnail, insta_photo_place, insta_photo_tags) " +
-									// 					"VALUES ('" + insta_user_id + "', '" + insta_photo_id + "', '" +
-									// 					insta_photo_created_time + "', '" + 
-									// 					insta_photo_url_full_size + "', '" + insta_photo_thumbnail + "', '" + 
-									// 					insta_photo_place + "', '" + insta_photo_tags + "')", 
-									// 						function(err, result){
-									// 							console.log("CHECK!", result);
-									// 							done();
-									// 							// result.addRow(row); // without this, the rowcount doesn't go up, and the loop repeats with the same photo id :(
-									// 							if(err){
-									// 								return console.error("error inserting into table instagram_photos", err);
-									// 							}
-									// 				}); // close client.query
-									// 			}  
-									// 			// if there is more than 1 row with that photo_id, we have a problem!!
-									// 			else {
-									// 				console.log("we might have a serious problem with the data in select from instagram_photos");
-									// 			}
-									// 	});
-
-									
-									
-								} // close if (thisInstaItem.type === "image")
-							} // close for loop
-							console.log("successfully saved instagram data to instagram_photos table");
-						}); // close pg.connect
-
-
-						// redirect to the /landing/show/instagram page
-						expressResponse.redirect("/landing/show/instagram");
-
-				});
-				
-			});
-	}
-});
+				}); // close function callback on request.get
+			}); // close function callback on request.post
+	} // close first 'else'
+}); // close app.get ('/landing/instagram'...
 
 
 app.get("/users/:user_id/landing/show/instagram", function(req, res){
 	console.log("hello from inside of /landing/show/instagram");
-	// get data out of database
-	pg.connect(databaseConnectionLocation, function(err, client, done){
-		if(err){
-			return console.error("error connecting to database, from inside of /landing/show/instagram route", err);
-		}
-
-// **** TO FIX ***
-// hard coding user id - fix to do this dynamically later
-
-		client.query("SELECT * FROM instagram_photos WHERE insta_user_id = '2173066951'", function(err, result){
-			done();
-			if(err){
-				return console.error("error SELECTing from table instagram_photos, in /landing/show/instagram route", err);
-			}
-
-			// console.log("connecting to db in /landing/show/instagram");
-			// console.log("result: ", result);
-			var thisUserInstaAllPhotosData = result.rows;
-			// console.log("thisUserInstaAllPhotosData: ", thisUserInstaAllPhotosData);
-			var instaThumbsArray = [];
-			for (var n = 0; n < thisUserInstaAllPhotosData.length; n++){
-				var currentThumbString = thisUserInstaAllPhotosData[n].insta_photo_thumbnail;
-				var currentThumbObject = JSON.parse(currentThumbString);
-				// console.log("current insta thumb:", currentThumbString);
-				var currentThumUrl = currentThumbObject.url;
-				instaThumbsArray.push(currentThumUrl);
-			}
-
-			res.render("users/landingInstagram", {instaThumbsArray:instaThumbsArray});
-		}); // close client.query
-	}); // close pg.connect
+	// connect to User db to grab user id
+	db.User.findById(req.session.id, function(err, user){
+		if (err){
+			console.error("error with findById for User DB in get to /users/:user_id/landing/show/instagram route", err);
+		} else {
+			// connect to instagram photo db to find all photos for this user
+			db.InstagramPhoto.find({owner:user}, function(err, instaphotodata){
+				if (err){
+					console.error("error with InstagramPhoto.find() in get to /users/:user_id/landing/show/instagram route", err);
+				} else {
+					console.log("all instaphotodata for this user: ", instaphotodata);
+					// put all thumbnails into an array to pass to view
+					var instaThumbsArray = [];
+					for (var i = 0; i < instaphotodata.length; i++){
+						var instaThumbUrl = instaphotodata[i].urlThumbnail;
+						instaThumbsArray.push(instaThumbUrl);
+					}
+					res.render("users/landingInstagram", {instaThumbsArray:instaThumbsArray});
+				} // close else
+			}); // close db.FacebookPhoto.findOne
+		} // close else
+	}); // close db.User.findById
 });
 
 

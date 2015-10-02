@@ -13,7 +13,6 @@ var instagramPhotoSchema = new mongoose.Schema({
         ref: "User"
 	},
 	createdTime: String,	// default to false?
-	album: String, 			// build out an object?
 	urlFullSize: String,
 	urlThumbnail: String,
 	place: String, 			// build out an object?
