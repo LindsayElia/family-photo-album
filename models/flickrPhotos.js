@@ -8,6 +8,7 @@ var flickrPhotoSchema = new mongoose.Schema({
 		type: String,
 		unique: true
 	},
+	flickrPhotoSecret: String,
 	owner: {				// photo belongs to a single user
 		type: mongoose.Schema.Types.ObjectId,
         ref: "User"

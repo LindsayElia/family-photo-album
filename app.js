@@ -750,6 +750,7 @@ app.get('/flickr/callback', function(req, res){
 	// https://www.flickr.com/services/rest/
 		// &
 	// &content_type=1
+	// &extras=date_upload,original_format,geo,tags,url_q,url_o
 	// &format=json
 	// &method=flickr.people.getPhotos
 	// &nojsoncallback=1
@@ -764,13 +765,16 @@ app.get('/flickr/callback', function(req, res){
 	// &per_page=50
 	// &user_id=				//--> userFlickrId
 
-	// & is 	%26
-	// = is 	%3D
+	// convert symbols to HTML Character Codes http://www.7is7.com/software/chars.html
+	// &   is 	%26
+	// =   is 	%3D
+	// ,   is	%2C
 	// &oauth_signature=		//--> what we're creating here, leave out of base string
 
+	// replace all ampersands EXCEPT for the two between the three parts: the base string, 
 	var stringToConvertToSignature = "GET&" + 
 		"https%3A%2F%2Fwww.flickr.com%2services%2rest&" + 
-		"%26content_type%3D1" +
+		"%26content_type%3D1&extras%3Ddate_upload%2Coriginal_format%2Cgeo%2Ctags%2Curl_q%2Curl_o" +
 		"%26format%3Djson%26method%3Dflickr.people.getPhotos%26nojsoncallback%3D1" +
 		"%26oauth_consumer_key%3D" + flickrApiKey +
 		"%26oauth_nonce%3D" + nonce + "%26oauth_signature_method%3DHMAC-SHA1" + 
@@ -779,10 +783,10 @@ app.get('/flickr/callback', function(req, res){
 
 	console.log("my magic string - stringToConvertToSignature: ", stringToConvertToSignature);
 
-	// original, before swapping out & and =
+	// original, before swapping out & and = and ,
 	// var stringToConvertToSignature = "GET&" + 
 	// 	"https%3A%2F%2Fwww.flickr.com%2services%2rest&" + 
-	//  "&content_type=1" +
+	//  "&content_type=1&extras=date_upload,original_format,geo,tags,url_q,url_o" +
 	// 	"&format=json&method=flickr.people.getPhotos&nojsoncallback=1" +
 	// 	"&oauth_callback=" + flickrRedirectUri + "&oauth_consumer_key=" + flickrApiKey +
 	// 	"&oauth_nonce=" + nonce + "&oauth_signature_method=HMAC-SHA1" + 
@@ -799,6 +803,7 @@ app.get('/flickr/callback', function(req, res){
 	// using the api signature we generated above
 	var flickrUrlToGet = "https://api.flickr.com/services/rest/?" + 
 	"&content_type=1" + // type=1 is photos only
+	"&extras=date_upload,original_format,geo,tags,url_q,url_o" +
 	"&format=json" +
 	"&method=flickr.people.getPhotos" + 
 	"&nojsoncallback=1" + // get the data as JSON
@@ -837,6 +842,7 @@ app.get('/flickr/callback', function(req, res){
 				// loop through the response data
 				for(var i = 0; i < flickrData.photos.photo.length; i++){
 					var currentFlickrPhoto = flickrData.photos.photo[i];
+					console.log("currentFlickrPhoto: ", currentFlickrPhoto);
 					var latAndLong = {
 							latitude: currentFlickrPhoto.latitude,
 							longitude: currentFlickrPhoto.longitude
