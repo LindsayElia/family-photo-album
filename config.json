@@ -1,0 +1,26 @@
+{
+    "development": {
+        "server": {
+            "protocol": "http",
+            "host": "localhost:3000"
+        },
+        "flickr": {
+            "key": "f30f2ac48226245100c37b160e1a1538",
+            "secret": "4a488fb1119cbf65",
+            "scope" : ["read"],
+            "callback": "/flickr/callback"
+        }
+    },
+    "production": {
+        "server": {
+            "protocol": "https",
+            "host": "everyonesphotos.com"
+        },
+        "flickr": {
+            "key": "f30f2ac48226245100c37b160e1a1538",
+            "secret": "4a488fb1119cbf65",
+            "scope" : ["read"],
+            "callback": "/flickr/callback"
+        }
+    }
+}
