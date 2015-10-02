@@ -311,7 +311,6 @@ app.get('/reset/:user_id/:token', function(req, res){
 });
 
 
-
 // post - password reset, submit new password
 app.post('/reset/:user_id/:token', function(req, res){
 	// $gt selects those documents where the value of the field is greater than the specified value.
