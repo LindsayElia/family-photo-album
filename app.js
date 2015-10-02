@@ -70,7 +70,7 @@ var domain = "localhost:3000";
 
 
 
-// ____________MISC STUFF I TRIED FOR FLICKR OAUTH LOGIN____________
+// ____________FLICKR OAUTH LOGIN____________
 
 // express-session & grant-express - lets us use OAuth for 100+ APIs
 // 
@@ -87,25 +87,9 @@ var grant = new Grant(config['development'||'production']);
 app.use(expressSession({secret:'grant'}));
 // mount grant
 app.use(grant);
-
-// purest - works well with grant module to make API requests easier
-// remove??
-var Purest = require('purest');
-var FlickrPurest = new Purest({provider:'flickr'});
-
-// flickrapi node module - for making signed, authenticated requests
-// use grant to authenticate, then use this to make requests to the API
-var FlickrApi = require("flickrapi");
-
-// passport auth - third attempt at auth for flickr
-// also relies on express, express-session
-var passport = require('passport');
-var flickrPassportStrategy = require('passport-flickr').Strategy;
-var cookieParser = require('cookie-parser');
-app.use(cookieParser());
-app.use(passport.initialize()); // passport method
-app.use(passport.session());  // passport method
-
+// also used the crypto module that we're also using for generating tokens
+// https://nodejs.org/api/crypto.html#crypto_crypto_createhmac_algorithm_key
+// https://docs.nodejitsu.com/articles/cryptography/how-to-use-crypto-module
 
 
 
@@ -220,7 +204,7 @@ app.post('/passwordreset', function(req, res){
 	var token;
 	crypto.randomBytes(20, function(err, buffer) {
 		token = buffer.toString('hex');
-		console.log("curious to see what this generates: ", token);
+		console.log("curious to see what this generates - token: ", token);
 	});
 	
 	// look for user in our db
@@ -468,7 +452,7 @@ app.post("/landing/facebook", function(req, res){
 				};
 
 				// save the data to my database
-				db.FacebookPhoto.findOneAndUpdate({fb_photo_id: fbphotoToSave.facebookPhotoId}, fbphotoToSave, {upsert:true}, function(err, fbphotodata){
+				db.FacebookPhoto.findOneAndUpdate({facebookPhotoId: fbphotoToSave.facebookPhotoId}, fbphotoToSave, {upsert:true}, function(err, fbphotodata){
 					if(err){
 						console.error("error with findOneAndUpdate in post to /landing/facebook route", err);
 					} else {
@@ -648,7 +632,7 @@ app.get('/landing/instagram', function(req, expressResponse) {
 												} else {
 													console.log("successfully saved item to instagramphotos document");
 												}
-											}); // close db.FacebookPhoto.findOneAndUpdate
+											}); // close db.InstagramPhoto.findOneAndUpdate
 
 										} // close if
 									} // close for loop
@@ -682,7 +666,7 @@ app.get("/users/:user_id/landing/show/instagram", function(req, res){
 					}
 					res.render("users/landingInstagram", {instaThumbsArray:instaThumbsArray});
 				} // close else
-			}); // close db.FacebookPhoto.findOne
+			}); // close db.InstagramPhoto.findOne
 		} // close else
 	}); // close db.User.findById
 });
@@ -692,38 +676,17 @@ app.get("/users/:user_id/landing/show/instagram", function(req, res){
 
 // ____________FLICKR____________
 
+// TO FIX: 
+// I'm not handling what happens if the user declines to authorize...they get sent back to my app's home page
+// which is a poor experience
+
 
 // Flickr credentials
 var flickrApiKey = process.env.FLICKR_API_KEY;
 var flickrClientSecret = process.env.FLICKR_CLIENT_SECRET;
-
-// FlickrApi
-var flickrOptions = {
-      api_key: flickrApiKey,
-      secret: flickrClientSecret
-    };
-
-
-// passport-flickr
 var flickrRedirectUri = process.env.FLICKR_REDIRECT_URI;
-console.log("flickrRedirectUri - ", flickrRedirectUri);
+// console.log("flickrRedirectUri - ", flickrRedirectUri);
 
-passport.use(new flickrPassportStrategy({
-    consumerKey: flickrApiKey,
-    consumerSecret: flickrClientSecret,
-    callbackURL: flickrRedirectUri
-  },
-  function(token, tokenSecret, profile, done) {
-  	console.log("flickrPassportStrategy token: ", token);
-  	console.log("flickrPassportStrategy tokenSecret: ", tokenSecret);
-  	console.log("flickrPassportStrategy profile: ", profile);
-  	console.log("done: ", done);
-    // User.findOrCreate({ flickrId: profile.id }, function (err, user) {
-      // return done(err, user);
-    // });
-	return done();
-  }
-));
 
 // displays a page with the flickr authorization via a button
 app.get('/users/:user_id/authorize/flickr', function(req, res){
@@ -733,47 +696,25 @@ app.get('/users/:user_id/authorize/flickr', function(req, res){
 // user clicks on button from the /authorize/flickr page,
 // which gets this route, which starts the authentication process
 // to the flickr API, and redirects to the /landing/flickr route below
-
-// using passport-flickr
-app.get('/users/:user_id/login/flickr', passport.authenticate('flickr'));
-
-
-app.get('/auth/flickr/callback',
-	passport.authenticate('flickr'),
-	function(req, res){
-  		// Successful authentication, redirect to landing page
-		res.redirect('/landing/show/flickr');
-	});
-
-
-
-
-
-
-// this works with both the node module "flickrapi" 
-// and grant module
 // see https://github.com/simov/grant#typical-flow - step #5
 app.get('/users/:user_id/connect/flickr', function(req, res){
 });
-
-// TO FIX: I'm not handling what happens if the user declines to authorize...they get sent back to my app's home page
-// which is a poor experience
-
-
 
 // path specified by grant module
 app.get('/handle_flickr_callback', function(req, res){
 	res.end(JSON.stringify(req.query, null, 2));
 });
 
-
 // path specified by grant module
+// route user lands on after granting permission for flickr api auth
+// I make a call to the flickr api after the user grants permission, to get 50 photos
 app.get('/flickr/callback', function(req, res){
 
-	console.log("logging req.query: ", req.query);
-	console.log("headers sent: ", res.headersSent);
-	console.log("grant res:");
+	// console.log("logging req.query: ", req.query);
+	// console.log("headers sent: ", res.headersSent);
+	// console.log("grant res:");
 
+	// save the user data, access token, that we get from the grant auth process
 	var userFlickrAccessToken = req.query.access_token;
 	var userFlickrAccessSecret = req.query.access_secret;
 	var userFlickrOauthToken = req.query.raw.oauth_token;
@@ -781,85 +722,166 @@ app.get('/flickr/callback', function(req, res){
 	var userFlickrId = req.query.raw.user_nsid;
 	var userFlickrUsername = req.query.raw.username;
 
-	console.log("all the things1: ", userFlickrAccessToken);
-	console.log("all the things2: ", userFlickrAccessSecret);
-	console.log("all the things3: ", userFlickrOauthToken);	 // this appears to be the same as the userFlickrAccessToken
-	console.log("all the things4: ", userFlickrOauthTokenSecret);  // this appears to be the same as the userFlickrAccessSecret
-	console.log("all the things5: ", userFlickrId);
-	console.log("all the things6: ", userFlickrUsername);
+	// console.log("all the things1: ", userFlickrAccessToken);
+	// console.log("all the things2: ", userFlickrAccessSecret);
+	// console.log("all the things3: ", userFlickrOauthToken);	 // this appears to be the same as the userFlickrAccessToken
+	// console.log("all the things4: ", userFlickrOauthTokenSecret);  // this appears to be the same as the userFlickrAccessSecret
+	// console.log("all the things5: ", userFlickrId);
+	// console.log("all the things6: ", userFlickrUsername);
 
+	// generate an api signature; required by flickr API
 
+	// https://www.flickr.com/services/api/auth.oauth.html
+	// First, you must create a base string from your request. 
+	// The base string is constructed by concatenating the HTTP verb, the request URL, and all request parameters 
+	// sorted by name, using lexicograhpical byte value ordering, separated by an '&'.
 
-// attempt with grant & purest
-	// FlickrPurest
-	// 	.query()
-	// 	.get("flickr.people.getPhotos")
-	// 	.auth({"oauth": {"token": userFlickrOauthToken, "secret": userFlickrOauthTokenSecret}}
-	// 	// {
-	// 	// 	"oauth": {"token": userFlickrOauthToken, "secret": userFlickrOauthTokenSecret},
-	// 	// 	"oauth_consumer_key":flickrApiKey, 
-	// 	// 	"user_id":userFlickrId,
-	// 	// 	"oauth_token":userFlickrOauthToken,
-	// 	// 	"access_token":userFlickrAccessToken,
-	// 	// 	"oauth_token_secret":userFlickrOauthTokenSecret
-	// 	// }
-	// 	)
-	// 	.request(function (flickrErr, flickrRes, flickrBody) {
-	// 		// do stuff
-	// 		console.log("flickrErr: ", flickrErr);
-	// 		console.log("flickrRes: ", flickrRes);
-	// 		console.log("flickrBody: ", flickrBody);
-	// });
-
-// attempt with info returned from grant, regular request module
-	var flickrUrlToGetFirst = "https://api.flickr.com/services/rest/?" + 
-	"method=flickr.people.getPhotos" + 
-	"&oauth_consumer_key=" + flickrApiKey +
-	"&user_id=" + userFlickrId +
-	"&content_type=1" + // type=1 is photos only
-	"&per_page=50&page=1" + // get 50 results per page, and just 1 page of results
-	"&format=json&nojsoncallback=1" + // get the data as JSON
-	"&oauth_token=" + userFlickrAccessToken +
-	"oauth_signature_method=HMAC-SHA1" +
-	"&oauth_version=1.0";
-
-	console.log("flickrUrlToGetFirst: ", flickrUrlToGetFirst);
-
-	request.get(flickrUrlToGetFirst,
-	function(flickrApiRequest, flickrApiResponse){
-		console.log("flickrApiResponse #1 --->>>> ", flickrApiResponse.body);
+	var nonce;
+	crypto.randomBytes(20, function(err, buffer) {
+		nonce = buffer.toString('hex');
+		console.log("curious to see what this generates - nonce: ", nonce);
 	});
 
-// junk
-	// var flickrUrlToGetSecond = "https://api.flickr.com/services/rest" +
-	// 		"?nojsoncallback=1&oauth_nonce=84354935" +
-	// 		"&format=json" +
-	// 		"&oauth_consumer_key=" + flickrApiKey +
-	// 		"&oauth_timestamp=1305583871" +
-	// 		"&oauth_signature_method=HMAC-SHA1" +
-	// 		"&oauth_version=1.0" +
-	// 		"&oauth_token=" + userFlickrOauthToken +
-	// 		"&oauth_signature=dh3pEH0Xk1qILr82HyhOsxRv1XA%3D" +
-	// 		"&method=flickr.test.login";
-	
-	// console.log("flickrUrlToGetSecond: ", flickrUrlToGetSecond);
+	var timestamp = Date.now();
 
-	// request.get(flickrUrlToGetSecond,
-	// function(flickrApiRequesttwo, flickrApiResponsetwo){
-	// 	console.log("flickrApiResponsetwo #2 --->>>> ", flickrApiResponsetwo.body);
-	// });
+	// ORDER WITH URL FIRST, THEN QUERY PARAMS IN ALPHABETICAL ORDER
+	// GET
+		// &
+	// https://www.flickr.com/services/rest/
+		// &
+	// &content_type=1
+	// &format=json
+	// &method=flickr.people.getPhotos
+	// &nojsoncallback=1
+					// skip? // &oauth_callback=			//--> flickrRedirectUri
+	// &oauth_consumer_key= 	//--> flickrApiKey		// my app's API key 
+	// &oauth_nonce= 			//--> nonce 			// any random number that will likely be unique each time
+	// &oauth_signature_method=HMAC-SHA1
+	// &oauth_timestamp=		//--> timestamp
+	// &oauth_token=			//--> userFlickrAccessToken
+	// &oauth_version=1.0
+	// &page=1
+	// &per_page=50
+	// &user_id=				//--> userFlickrId
+
+	// & is 	%26
+	// = is 	%3D
+	// &oauth_signature=		//--> what we're creating here, leave out of base string
+
+	var stringToConvertToSignature = "GET&" + 
+		"https%3A%2F%2Fwww.flickr.com%2services%2rest&" + 
+		"%26content_type%3D1" +
+		"%26format%3Djson%26method%3Dflickr.people.getPhotos%26nojsoncallback%3D1" +
+		"%26oauth_consumer_key%3D" + flickrApiKey +
+		"%26oauth_nonce%3D" + nonce + "%26oauth_signature_method%3DHMAC-SHA1" + 
+		"%26oauth_timestamp%3D" + timestamp + "%26oauth_token%3D" + userFlickrAccessToken +
+		"%26oauth_version%3D1.0%26page%3D1%26per_page%3D50%26user_id%3D" + userFlickrId ;
+
+	console.log("my magic string - stringToConvertToSignature: ", stringToConvertToSignature);
+
+	// original, before swapping out & and =
+	// var stringToConvertToSignature = "GET&" + 
+	// 	"https%3A%2F%2Fwww.flickr.com%2services%2rest&" + 
+	//  "&content_type=1" +
+	// 	"&format=json&method=flickr.people.getPhotos&nojsoncallback=1" +
+	// 	"&oauth_callback=" + flickrRedirectUri + "&oauth_consumer_key=" + flickrApiKey +
+	// 	"&oauth_nonce=" + nonce + "&oauth_signature_method=HMAC-SHA1" + 
+	// 	"&oauth_timestamp=" + timestamp + "&oauth_token=" + userFlickrAccessToken +
+	// 	"&oauth_version=1.0&page=1&per_page=50&user_id=" + userFlickrId ;
+
+	var key = flickrClientSecret + "&" + userFlickrAccessSecret ;
+
+	// make the hash
+	var apiSignature = crypto.createHmac("sha1", key).update(stringToConvertToSignature).digest('hex');
+	console.log("my crypto apiSignature: ", apiSignature);
+
+	// make call to flickr API for the photos,
+	// using the api signature we generated above
+	var flickrUrlToGet = "https://api.flickr.com/services/rest/?" + 
+	"&content_type=1" + // type=1 is photos only
+	"&format=json" +
+	"&method=flickr.people.getPhotos" + 
+	"&nojsoncallback=1" + // get the data as JSON
+	"&oauth_consumer_key=" + flickrApiKey +
+	"&oauth_nonce=" + nonce +
+	"&user_id=" + userFlickrId +
+	"&oauth_signature_method=HMAC-SHA1" +
+	"&oauth_timestamp=" + timestamp +
+	"&oauth_token=" + userFlickrAccessToken +
+	"&oauth_version=1.0" + 
+	"&page=1" +
+	"&per_page=50" + // get 50 results per page, and just 1 page of results
+	"&user_id=" + userFlickrId +	
+	"&oauth_signature=" + apiSignature ; // our hashed variable
+
+	console.log("flickrUrlToGet: ", flickrUrlToGet);
+
+	request.get(flickrUrlToGet,
+		function(flickrApiRequest, flickrApiResponse){
+		console.log("flickrApiResponse.body --->>>> ", flickrApiResponse.body);
+		var flickrData = JSON.parse(flickrApiResponse.body);
+		console.log("flickrData.photos.photo --->>>>", flickrData.photos.photo);
+
+		// make the user object
+		var user = {};
+		user.flickrId = userFlickrId;
+		user.flickrAccessToken = userFlickrAccessToken;
+		user.flickrAccessSecret = userFlickrAccessSecret;
+		// save the user's flickr user id to user db
+		db.User.findByIdAndUpdate(req.session.id, user, function(err, user){
+			if(err){
+				console.error("error with findByIdAndUpdate in User DB in get /flickr/callback route", err);
+			} else {
+				console.log("successfully saved user's flickr_id to User DB: ", user);
+
+				// loop through the response data
+				for(var i = 0; i < flickrData.photos.photo.length; i++){
+					var currentFlickrPhoto = flickrData.photos.photo[i];
+					var latAndLong = {
+							latitude: currentFlickrPhoto.latitude,
+							longitude: currentFlickrPhoto.longitude
+						};
+					// make the instagramPhoto object
+					var thisFlickrPhotoObject = {
+						flickrPhotoId: currentFlickrPhoto.id,
+						owner: user,
+						createdTime: currentFlickrPhoto.dateupload,
+						urlFullSize: currentFlickrPhoto.url_o,
+						urlThumbnail: currentFlickrPhoto.url_q,
+						place: JSON.stringify(latAndLong),	// can't save an object to a string placeholder
+						tags: currentFlickrPhoto.tags
+					};
+					console.log("thisFlickrPhotoObject: ", thisFlickrPhotoObject);
+					db.FlickrPhoto.findOneAndUpdate({flickrPhotoId: thisFlickrPhotoObject.flickrPhotoId}, thisFlickrPhotoObject, {upsert:true}, function(err, flickrphotodata){
+						if(err){
+							console.error("error with findOneAndUpdate in get /flickr/callback route", err);
+						} else {
+							console.log("successfully saved item to flickrphotos document");
+						}
+					}); // close db.FlickrPhoto.findOneAndUpdate
+
+				} // close for loop
+
+			} // close else
+		}); // close db.User.findByIdAndUpdate
 
 
+// TO FIX:
+// redirect to user/:user path
+	 	res.redirect("/users/landing/show/flickr");
+		// res.redirect("/users/" + user._id + "/landing/show/flickr");
 
- 
-	res.redirect("/users/" + user._id + "/landing/show/flickr");
+	}); // close request.get
 });
 
 
-app.get('/users/:user_id/landing/show/flickr', function(req, res){
+// app.get('/users/:user_id/landing/show/flickr', function(req, res){
+// 	res.render("users/landingFlickr");
+// });
+
+app.get('/users/landing/show/flickr', function(req, res){
 	res.render("users/landingFlickr");
 });
-
 
 
 

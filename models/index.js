@@ -9,3 +9,4 @@ module.exports.Group = require("./group");
 module.exports.User = require("./user");
 module.exports.FacebookPhoto = require("./facebookPhotos");
 module.exports.InstagramPhoto = require("./instagramPhotos");
+module.exports.FlickrPhoto = require("./flickrPhotos");

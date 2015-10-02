@@ -3,6 +3,7 @@ var mongoose = require("mongoose");
 mongoose.set("debug", true);
 var FacebookPhoto = require('./facebookPhotos');
 var InstagramPhoto = require('./instagramPhotos');
+var FlickrPhoto = require('./flickrPhotos');
 
 var bcrypt = require('bcryptjs');	// NOTE: using bcryptjs instead of bcrypt because bcrypt
 // had an issue installing on my machine. Trying bcryptjs as a workaround for now.
@@ -51,6 +52,13 @@ var userSchema = new mongoose.Schema({
 	instagramPhotos: [{		// one user has many instagram photos
 		type: mongoose.Schema.Types.ObjectId,
 		ref: "InstagramPhoto"
+	}],
+	flickrId: String,
+	flickrAccessToken: String,
+	flickrAccessSecret: String,
+	flickrPhotos: [{		// one user has many instagram photos
+		type: mongoose.Schema.Types.ObjectId,
+		ref: "FlickrPhoto"
 	}]
 });
 
