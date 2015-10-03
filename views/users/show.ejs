@@ -1,0 +1,26 @@
+<% include ../partials/header %>
+
+<a href="/index"><button>HOME</button></a>
+
+<p>This is a show / landing page for this user: <%= user.firstName %></p>
+
+<h1>You</h1>
+<a href="/users/<%= user._id %>/edit"><button>Edit My Account Details</button></a>
+<a href=""><button>Create New Group</button></a> <!-- hide if already in a group -->
+<a href=""><button>Join Existing Group</button></a>	<!-- hide if already in a group -->
+
+<h1>Your Group</h1>
+<div>
+	<div>Group Info:</div>
+	<div>info goes here....if empty, guide to creating/joining group</div>
+</div>
+<a href=""><button>Edit Group</button></a> 	<!-- only show for group admin -->
+
+<h1>Your Photos</h1>
+<a href=""><button>Add Photos</button></a>		<!-- show only if they have no photos -->
+<a href=""><button>Add More Photos</button></a>	<!-- show only if they have some photos -->
+<div id="currentApis"></div> <!-- show currently connected APIs & number of photos -->
+
+
+
+<% include ../partials/footer %>

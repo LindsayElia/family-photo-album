@@ -1,7 +1,6 @@
 <% include ../partials/header %>
 
 <p>Looks like you declined to authorize that application.</p>
-<p>You can return to <a href="/user/accounts">your accounts page</a> or go to the <a href="/index">home page</a> for this website.</p>
-<!-- need to make 'user' dynamic later on  -->
+<p>You can return to <a href="/users/<%= user._id %>/myaccount">your account page</a> or go to the <a href="/index">home page</a> for this website.</p>
 
 <% include ../partials/footer %>

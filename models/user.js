@@ -5,10 +5,12 @@ var FacebookPhoto = require('./facebookPhotos');
 var InstagramPhoto = require('./instagramPhotos');
 var FlickrPhoto = require('./flickrPhotos');
 
-var bcrypt = require('bcryptjs');	// NOTE: using bcryptjs instead of bcrypt because bcrypt
+
+// NOTE: using bcryptjs instead of bcrypt because bcrypt
 // had an issue installing on my machine. Trying bcryptjs as a workaround for now.
 // http://stackoverflow.com/questions/29320201/error-installing-bcrypt-with-npm
 // https://www.npmjs.com/package/bcryptjs
+var bcrypt = require('bcryptjs');
 var SALT_WORK_FACTOR = 10;
 
 

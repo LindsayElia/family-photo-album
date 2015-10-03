@@ -4,6 +4,10 @@
 
 <p>Welcome <%=user.firstName %>!</p>
 
+<h1>Your Info</h1>
+<div class="spacey"><a href="/users/<%= user._id %>/myaccount"><button>Edit my User Details</button></a></div>
+
+
 <h1>Facebook</h1>
 <div class="spacey"><a href="/users/<%= user._id %>/authorize/facebook"><button>Go to Facebook Login</button></a></div>
 <div class="spacey"><a href="/users/<%= user._id %>/landing/facebook"><button>Go to Facebook photo stream</button></a></div>

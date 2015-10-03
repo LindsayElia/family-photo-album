@@ -147,7 +147,7 @@ app.post("/signup", function(req, res){
 		} else {
 			console.log(user);
 			req.login(user); // set the session id for this user to be the user's id from our DB
-			res.redirect("/users/" + user._id + "/apiAuthStart");
+			res.redirect("/users/" + user._id + "/myaccount");
 		}
 	});
 });
@@ -167,19 +167,20 @@ app.post("/login", function(req, res){
 	var userLoggingIn = {};
 	userLoggingIn.email = req.body.userEmail;
 	userLoggingIn.password = req.body.userPass;
-	console.log("this user is logging in, user email & pass: ", userLoggingIn);	
+	// console.log("this user is logging in, user email & pass: ", userLoggingIn);	
 
 	db.User.authenticate(userLoggingIn, function(err, user){
 		if (!err && user !== null){
 			// if email & pw match, set the session id to the user id for this user
 			req.login(user);
 			// send the user to their own landing page
-			res.redirect("/users/" + user._id + "/apiAuthStart");
+			res.redirect("/users/" + user._id + "/myaccount");
 		} else {
 			console.log(err);
 			res.render("users/login", {err:err}); 
 // TO DO:
 // add some error messaging to login page if error
+// alert user if input is incorrect
 		}
 	});
 
@@ -360,7 +361,6 @@ app.post('/reset/:user_id/:token', function(req, res){
 }); // close app.post('/reset/:user_id/:token...
 
 
-
 //_______LOGOUT_______
 app.get("/logout", function(req, res){
 	req.logout();
@@ -368,7 +368,88 @@ app.get("/logout", function(req, res){
 });
 
 
+
 //_______USER FLOWS_______
+
+// user show page - user landing page after logging in
+app.get("/users/:user_id/myaccount", function(req, res){
+	db.User.findById(req.params.user_id, function(err, user){
+		if(err){
+			console.log(err);
+			res.render("errors/500");
+		} else {
+			res.render("users/show", {user:user});
+		}
+	});
+});
+
+// user edit page
+app.get("/users/:user_id/edit", function(req, res){
+	db.User.findById(req.params.user_id, function(err, user){
+		if(err){
+			console.log(err);
+			res.render("errors/500");
+		} else {
+			res.render("users/edit", {user:user});
+		}
+	});
+});
+
+
+// TO FIX:
+// add flash messaging for all three routes below on submit
+// make all fields, per form, required to submit
+
+// post - edit form - name details
+app.post("/users/:user_id/edit/name", function(req, res){
+	var user = {
+		firstName: req.body.userFirstName,
+		lastName: req.body.userLastName
+	};
+	db.User.findByIdAndUpdate(req.params.user_id, user, {upsert:true}, function(err, user){
+		if(err){
+			console.log(err);
+			res.render("errors/500");
+		} else {
+			res.render("users/show", {user:user});
+		}
+	});
+});
+
+// post - edit form - email
+app.post("/users/:user_id/edit/email", function(req, res){
+	var user = {
+		email: req.body.userEmail
+	};
+	db.User.findByIdAndUpdate(req.params.user_id, user, {upsert:true}, function(err, user){
+		if(err){
+			console.log(err);
+			res.render("errors/500");
+		} else {
+			res.render("users/show", {user:user});
+		}
+	});
+});
+
+// post - edit form - password
+app.post("/users/:user_id/edit/password", function(req, res){
+	db.User.findById(req.params.user_id, function(err, user){
+		user.password = req.body.userPass;
+		user.save(function(err){
+			if (err){
+				console.log("error in POST /users/:user_id/edit/password route, saving user's new info to user db");
+				res.redirect("errors/500");
+			} else {
+				// send password email confirmation
+				// configure e-mail data
+				console.log("password successfully changed & saved in db");
+				res.render("users/show", {user:user});
+			}
+		}); // close user.save
+	}); // close db.User.findById
+});
+
+
 
 // show the page with buttons for all the APIs
 app.get("/users/:user_id/apiAuthStart", routeHelper.ensureSameUser, function(req, res){
@@ -381,6 +462,7 @@ app.get("/users/:user_id/apiAuthStart", routeHelper.ensureSameUser, function(req
 		}
 	});
 });
+
 
 
 
@@ -427,7 +509,7 @@ app.post("/landing/facebook", function(req, res){
 	console.log("user? >>> ", user);
 
 	// save the user's facebook user id to user db
-	db.User.findByIdAndUpdate(req.session.id, user, function(err, user){
+	db.User.findByIdAndUpdate(req.session.id, user, {upsert:true}, function(err, user){
 		if(err){
 			console.error("error with findByIdAndUpdate in User DB in post to landing/facebook route", err);
 		} else {
@@ -600,7 +682,7 @@ app.get('/landing/instagram', function(req, expressResponse) {
 						// save data to my db
 
 							// save the user's instagram user id & access token to user db
-							db.User.findByIdAndUpdate(req.session.id, user, function(err, user){
+							db.User.findByIdAndUpdate(req.session.id, user, {upsert:true}, function(err, user){
 								if(err){
 									console.error("error with findByIdAndUpdate in User DB in post to /landing/instagram route", err);
 								} else {
@@ -839,7 +921,7 @@ app.get('/handle_flickr_response', function(req, res){
 		user.flickrAccessToken = userFlickrAccessToken;
 		user.flickrAccessSecret = userFlickrAccessSecret;
 		// save the user's flickr user id to user db
-		db.User.findByIdAndUpdate(req.session.id, user, function(err, user){
+		db.User.findByIdAndUpdate(req.session.id, user, {upsert:true}, function(err, user){
 			if(err){
 				console.error("error with findByIdAndUpdate in User DB in get /flickr/callback route", err);
 			} else {
@@ -887,7 +969,7 @@ app.get('/users/:user_id/landing/show/flickr', function(req, res){
 		if (err){
 			console.error("error with findById for User DB in get to /users/:user_id/landing/show/flickr route", err);
 		} else {
-			// connect to instagram photo db to find all photos for this user
+			// connect to flickr photo db to find all photos for this user
 			db.FlickrPhoto.find({owner:user}, function(err, flickrphotodata){
 				if (err){
 					console.error("error with FlickrPhoto.find() in get to /users/:user_id/landing/show/flickr route", err);
@@ -901,7 +983,7 @@ app.get('/users/:user_id/landing/show/flickr', function(req, res){
 					}
 					res.render("users/landingFlickr", {flickrThumbsArray:flickrThumbsArray});
 				} // close else
-			}); // close db.InstagramPhoto.findOne
+			}); // close db.FlickrPhoto.findOne
 		} // close else
 	}); // close db.User.findById
 
@@ -910,11 +992,25 @@ app.get('/users/:user_id/landing/show/flickr', function(req, res){
 
 
 
+// ____________GROUPS____________
+
+// app.get("/")
+
+
+
+
 // ____________ERRORS____________
 
 // if user declines to authorize an application
 app.get("/nope", function(req, res){
-	res.render("errors/nope");
+	db.User.findById(req.params.user_id, function(err, user){
+		if(err){
+			console.log(err);
+			res.render("errors/500");
+		} else {
+			res.render("errors/nope", {user:user});
+		}
+	});
 });
 
 // 500 page

@@ -1,0 +1,44 @@
+<% include ../partials/header %>
+
+<a href="/index"><button>HOME</button></a>
+
+<p>This is an edit landing page for this user: <%= user.firstName %></p>
+
+<div class="spacey"><a href="/users/<%= user._id %>/myaccount"><button>Back to my Account</button></a></div>
+
+<h1>Change Name</h1>
+<form action="/users/<%= user._id %>/edit/name" method="POST">
+	<p>
+		<label for="userEmail">First name </label>
+		<input type="text" id="userFirstName" name="userFirstName" value="<%= user.firstName %>" class="textField" autofocus>
+	</p>
+	<p>
+		<label for="userPass">Last name </label>
+		<input type="text" id="userLastName" name="userLastName" value="<%= user.lastName %>" class="textField">
+	</p>
+	<input type="submit" value="Update Name Details" class="button">
+</form>
+
+
+<h1>Change Email</h1>
+<form action="/users/<%= user._id %>/edit/email" method="POST">
+	<p>
+		<label for="userEmail">Email</label>
+		<input type="text" id="userEmail" name="userEmail" value="<%= user.email %>" class="textField">
+	</p>
+	<input type="submit" value="Update Email" class="button">
+</form>
+
+
+<h1>Change Password</h1>
+<form action="/users/<%= user._id %>/edit/password" method="POST">
+	<p>
+		<label for="userPass">Change Password: </label>
+		<input type="text" id="userPass" name="userPass" placeholder="Enter new password" class="textField">
+	</p>
+	<input type="submit" value="Update Password" class="button">
+</form>
+
+
+
+<% include ../partials/footer %>
