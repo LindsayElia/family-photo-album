@@ -126,6 +126,8 @@ h2.nav-button:hover {
 	padding: 8px 14px 8px 8px;
 	border: 1px solid #DDB84F;
 	border-radius: 5px;
+	position: relative;
+	bottom: 10px;
 }
 
 .logo:hover {
@@ -151,6 +153,39 @@ h2.nav-button:hover {
 	float: right;
 	margin-right: 20px;
 }
+
+.sub-menu {
+	color: #272D2D; /* black-ish */
+}
+
+.sub-menu:hover {
+	background-color: #DDB84F; /* yellow */
+	border-radius: 5px;
+}
+
+.flyout-menu {
+	width: 180px;
+	background-color: #C9C9CA; /* light gray */
+	position: absolute;
+	right: -4px;
+	padding: 1px 30px 36px 18px;
+	margin-top: 30px;
+	visibility: hidden;
+	opacity: .9;
+}
+
+.flyout-menu-logo-nav {
+	width: 180px;
+	background-color: #C9C9CA; /* light gray */
+	position: absolute;
+	right: -4px;
+	padding: 0px 30px 36px 18px;
+	margin-top: 20px;
+	visibility: hidden;
+	opacity: .9;
+}
+
+
 
 
 
@@ -211,9 +246,15 @@ h3 {
 	/*font-family: Roboto;*/
 	font-weight: 100;
 	font-size: 3em;
-	line-height: 4;
-	margin: 0;
-	/*text-align: center;*/
+	line-height: 2;
+	margin: 8% auto;
+	max-width: 70%;
+}
+
+@media screen and (max-width: 900px) {
+	.home-last-div {
+		font-size: 2em;
+	}
 }
 
 #landing-image-photo-collection {
@@ -291,7 +332,7 @@ h3 {
 		transform: scale(1.2);
 	}
 	100% {
-		transform: scale(1.1);
+		transform: scale(1);
 	}
 }
 
@@ -303,7 +344,7 @@ h3 {
 		transform: scale(1.2);
 	}
 	100% {
-		transform: scale(1.1);
+		transform: scale(1);
 	}
 }
 
@@ -393,4 +434,112 @@ p.label-left {
 	width: 500px;
 	margin: auto;
 }
+
+
+/* ============ REQUEST PASSWORD RESET PAGE ============ */
+
+.request-reset-main {
+	padding-top: 60px;
+	text-align: center;
+	min-height: 650px;
+	font-weight: 100;
+	font-size: 1.5em;
+}
+
+#password-reset-request-form {
+	border: 1px solid #C9C9CA; /* light gray */
+	padding-bottom: 30px;
+	width: 500px;
+	margin: auto;
+}
+
+.request-reset-subtitle {
+	font-size: .8em;
+	max-width: 60%;
+	margin: 0 auto 40px auto;
+}
+
+
+/* ============ RESET PASSWORD PAGE ============ */
+
+.reset-password-main {
+	padding-top: 60px;
+	text-align: center;
+	min-height: 650px;
+	font-weight: 100;
+	font-size: 1.5em;
+}
+
+#reset-password-form {
+	border: 1px solid #C9C9CA; /* light gray */
+	padding-bottom: 30px;
+	width: 500px;
+	margin: auto;
+}
+
+
+/* ============ ERROR PAGES ============ */
+
+.error-page-main {
+	padding-top: 60px;
+	text-align: center;
+	min-height: 650px;
+	font-weight: 100;
+	font-size: 1.5em;
+}
+
+a.error-link, a.error-link:visited {
+	color: #DDB84F; /* yellow */
+}
+
+a.error-link:hover {
+	background-color: #C9C9CA; /* light gray */
+	color: #272D2D; /* black-ish */
+}
+
+
+
+/* ============ USER SHOW PAGE ============ */
+
+.user-show-page-main {
+	padding-top: 60px;
+	min-height: 500px;
+}
+
+h4 {
+	font-weight: 100;
+	font-size: 2.2em;
+	line-height: 1;
+}
+
+h5 {
+	font-weight: 100;
+	font-size: 1.8em;
+	line-height: 1;
+}
+
+
+.callout {
+	background-color: #839197; /* blue gray - lighter blue */
+	padding: 2%;
+	width: 80%;
+	position: relative;
+	margin: 0 auto;
+}
+
+i.icon.float-left {
+	float: left;
+	display: block;
+	height: 100vh;
+	padding-left: 15px;
+	padding-right: 15px;
+	padding-top: 15px;
+}
+
+
+
+
+
+
+
 

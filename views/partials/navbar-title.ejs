@@ -17,7 +17,14 @@
 
 			<!-- show this if user IS logged in -->
 			<% if (req.session.id !== null && req.session.id !== undefined) { %>
-				<a href="/users/getuser/myaccount"><h2 class="inline nav-button">MY ACCOUNT</h2></a>
+			<a href="/users/getuser/myaccount"><h2 class="inline nav-button" id="my-account-navbar-button">MY ACCOUNT</h2></a>
+
+			<div class="flyout-menu">
+				<div class="inner-flyout-menu-container">
+					<a href="/users/getuser/myaccount/edit"><h2 class="sub-menu">EDIT ACCOUNT</h2></a>
+					<a href="/logout"><h2 class="sub-menu">LOGOUT</h2></a>
+				</div>
+			</div>
 			<% } %>
 
 		</div>

@@ -1,27 +1,72 @@
 <% include ../partials/header %>
 <% include ../partials/navbar-logo %>
 
-<a href="/index"><button>HOME</button></a>
+<div class="user-show-page-main">
 
-<p>This is a show / landing page for this user: <%= user.firstName %></p>
 
-<h1>You</h1>
-<a href="/users/<%= user._id %>/edit"><button>Edit My Account Details</button></a>
-<a href=""><button>Create New Group</button></a> <!-- hide if already in a group -->
-<a href=""><button>Join Existing Group</button></a>	<!-- hide if already in a group -->
+	<div class="horizontal-line-spacer"></div>
 
-<h1>Your Group</h1>
-<div>
-	<div>Group Info:</div>
-	<div>info goes here....if empty, guide to creating/joining group</div>
-</div>
-<a href=""><button>Edit Group</button></a> 	<!-- only show for group admin -->
+	<h4>My Family Group</h4>
+	<div>
 
-<h1>Your Photos</h1>
-<a href=""><button>Add Photos</button></a>		<!-- show only if they have no photos -->
-<a href=""><button>Add More Photos</button></a>	<!-- show only if they have some photos -->
-<div id="currentApis"></div> <!-- show currently connected APIs & number of photos -->
+		<!-- conditional show -->
+		<div class="callout">
+			<i class="announcement icon big float-left"></i>
+			<p>It looks like you're not a member of a group yet. You can create a new group or join a group you've been invited to.</p>
+		</div>
 
+		<a href=""><button>CREATE NEW GROUP</button></a> <!-- hide if already in a group -->
+		<a href=""><button>JOIN EXISTING GROUP</button></a>	<!-- hide if already in a group -->
+
+		<h5>Group Details</h5>
+		<div>info goes here....if empty, guide to creating/joining group</div>
+
+		<a href=""><button>EDIT GROUP</button></a> 	<!-- only show for group admin -->
+
+	</div>
+	
+
+
+	<div class="horizontal-line-spacer"></div>
+
+	<h4>My Photos</h4>
+
+		<!-- conditional show -->
+		<div class="callout">
+			<i class="announcement icon big float-left"></i>
+			<p>We don't have any photos from you. Please get started by connecting a service.</p>
+		</div>
+
+		<div class="facebook-photos-user-show-page">
+			<h5>Facbook</h5>
+
+			<a href=""><button>CONNECT FACEBOOK</button></a>
+
+			<a href=""><button>VIEW ALL</button></a>
+			<a href=""><button>CONNECT FACEBOOK</button></a>
+		</div>
+
+		<div class="flickr-photos-user-show-page">
+			<h5>Facbook</h5>
+
+			<a href=""><button>CONNECT FLICKR</button></a>
+
+			<a href=""><button>VIEW ALL</button></a>
+			<a href=""><button>CONNECT FACEBOOK</button></a>
+		</div>
+
+		<div class="instagram-photos-user-show-page">
+			<h5>Facbook</h5>
+
+			<a href=""><button>CONNECT INSTAGRAM</button></a>
+
+			<a href=""><button>VIEW ALL</button></a>
+			<a href=""><button>CONNECT FACEBOOK</button></a>
+		</div>
+
+
+
+</div> <!-- <div class="user-show-page-main"> -->
 
 
 <% include ../partials/footer %>

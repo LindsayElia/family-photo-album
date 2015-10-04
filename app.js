@@ -188,7 +188,7 @@ app.post("/login", function(req, res){
 
 // password reset page request page - open to anyone
 app.get('/passwordreset', function(req, res){
-	res.render("users/requestPassReset");
+	res.render("users/requestPassReset", {req:req});
 });
 
 
@@ -217,7 +217,7 @@ app.post('/passwordreset', function(req, res){
 // TO DO:
 // tell user no account with that email address in our system, try again
 			console.log("no user by that email in system");
-			res.render("users/requestPassReset");
+			res.render("users/requestPassReset", {req:req});
 		} else if (user) {
 
 			// set user's info 
@@ -288,7 +288,7 @@ app.get('/reset/:user_id/:token', function(req, res){
 			res.redirect('/passwordreset');
 		} else {
     		// show a password reset form
-			res.render("users/reset", {token:token});
+			res.render("users/reset", {token:token, req:req});
     	}
 	});
 });
@@ -370,7 +370,7 @@ app.get("/logout", function(req, res){
 //_______USER FLOWS_______
 
 
-// getuser - from home page
+// getuser to show user - from home page
 app.get("/users/getuser/myaccount", function(req, res){
 	db.User.findById(req.session.id, function(err, user){
 		if(err){
@@ -391,6 +391,18 @@ app.get("/users/:user_id/myaccount", function(req, res){
 			res.render("errors/500");
 		} else {
 			res.render("users/show", {user:user});
+		}
+	});
+});
+
+// getuser to edit user - from home page
+app.get("/users/getuser/myaccount/edit", function(req, res){
+	db.User.findById(req.session.id, function(err, user){
+		if(err){
+			console.log(err);
+			res.render("errors/500");
+		} else {
+			res.redirect("/users/"+ user._id +"/edit");
 		}
 	});
 });
@@ -1021,7 +1033,7 @@ app.get("/nope", function(req, res){
 			console.log(err);
 			res.render("errors/500");
 		} else {
-			res.render("errors/nope", {user:user});
+			res.render("errors/nope", {user:user, req:req});
 		}
 	});
 });
@@ -1029,12 +1041,12 @@ app.get("/nope", function(req, res){
 // 500 page
 app.get("/500", function(req, res){
 	console.log("in the /errors/500 - oopsie route");
-	res.render("errors/500");
+	res.render("errors/500", {req:req});
 });
 
 // FALLBACK ROUTE
 app.get("*", function(req, res){
-	res.render("errors/404");
+	res.render("errors/404", {req:req});
 });
 
 

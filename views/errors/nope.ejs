@@ -1,6 +1,11 @@
 <% include ../partials/header %>
+<% include ../partials/navbar-title %>
 
-<p>Looks like you declined to authorize that application.</p>
-<p>You can return to <a href="/users/<%= user._id %>/myaccount">your account page</a> or go to the <a href="/index">home page</a> for this website.</p>
+<div class="error-page-main">
+
+	<p>Looks like you declined to authorize that application.</p>
+	<p>You can return to <a href="/users/getuser/myaccount" class="error-link">your account page</a> or go to the <a href="/index" class="error-link">home page</a> for this website.</p>
+
+</div>  <!-- close <div class="error-page-main"> -->
 
 <% include ../partials/footer %>

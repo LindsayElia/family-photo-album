@@ -1,21 +1,30 @@
 <% include ../partials/header %>
+<% include ../partials/navbar-title %>
 
-<h1>Please choose a new password for your account.</h1>
+<div class="reset-password-main">
 
-<form action="/reset/:user_id/:token" method="POST">
-	<p>
+	<h2>Create New Password</h2>
+
+	<p class="request-reset-subtitle">Please choose a new password for your account.</p>
+
+	<form action="/reset/:user_id/:token" method="POST" id="reset-password-form">
+
 		<input type="hidden" id="token" name="token" value="<%= token %>">
-	</p>
-	<p>
-		<label for="userPass">New Password: </label>
-		<input type="password" id="userPass" name="userPass" class="textField">
-	</p>
-	<input type="submit" value="Change Password and Login" class="button">
-</form>
+		
+		<p class="label-left"><label for="userPass">New Password: </label></p>
+		<p><input type="password" id="userPass" name="userPass" class="textField"></p>
+
+		<input type="submit" value="Change Password and Login" class="button">
+	</form>
+
+	<div class="horizontal-line-spacer"></div>
 
 
-<p>Need an account? <a href="/signup"><button class="button">Signup</button></a></p>
+	<div>
+		<p>Need an account?</p>
+		<p><a href="/signup"><button class="button">SIGNUP</button></a></p>
+	</div>
 
-<p><a href="/index"><button class="button home">Go Home</button></a></p>
+</div> <!-- close <div class="request-reset-main"> -->
 
 <% include ../partials/footer %>
