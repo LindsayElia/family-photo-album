@@ -16,6 +16,7 @@ var facebookPhotoSchema = new mongoose.Schema({
 	album: String, 			// build out an object?
 	urlFullSize: String,
 	urlThumbnail: String,
+	urlMidSize: String,
 	place: String, 			// build out an object?
 	tags: String			// build out an object?
 });
