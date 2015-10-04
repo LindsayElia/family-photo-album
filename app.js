@@ -365,6 +365,20 @@ app.get("/logout", function(req, res){
 
 //_______USER FLOWS_______
 
+
+// getuser - from home page
+app.get("/users/getuser/myaccount", function(req, res){
+	db.User.findById(req.session.id, function(err, user){
+		if(err){
+			console.log(err);
+			res.render("errors/500");
+		} else {
+			res.redirect("/users/"+ user._id +"/myaccount");
+		}
+	});
+});
+
+
 // user show page - user landing page after logging in
 app.get("/users/:user_id/myaccount", function(req, res){
 	db.User.findById(req.params.user_id, function(err, user){

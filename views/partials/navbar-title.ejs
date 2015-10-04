@@ -7,7 +7,18 @@
 
 		<div class="inline float-right">
 			<a href="/about"><h2 class="inline nav-button">ABOUT</h2></a>
-			<a href="/login"><h2 class="inline nav-button">LOGIN</h2></a>
+
+			<!-- show this if user is NOT logged in -->
+			<% if (req.session.id === null || req.session.id === undefined) { %>
+				<a href="/login"><h2 class="inline nav-button">LOGIN</h2></a>
+			<% } %>
+
+
+			<!-- show this if user IS logged in -->
+			<% if (req.session.id !== null && req.session.id !== undefined) { %>
+				<a href="/users/getuser/myaccount"><h2 class="inline nav-button">MY ACCOUNT</h2></a>
+			<% } %>
+
 		</div>
 
 	</div>

@@ -1,29 +1,42 @@
 <% include ../partials/header %>
 <% include ../partials/navbar-title %>
 
+<div class="home-first">
+
+	<h3>All of your family’s photos. All in one place.</h3>
+
+	<img src="/img/landing-photo-collage.jpg" alt="collection of photos" height="400px" id="landing-image-photo-collection">
 
 
-<!-- show this if user is NOT logged in -->
-<% if (req.session.id === null || req.session.id === undefined) { %>
-<div>
-<p>New to this site? Sign up for an account.</p>
-<div class="spacey"><a href="/signup"><button>Sign Up</button></a></div>
-<p>Already have an account?</p>	
-<div class="spacey"><a href="/login"><button>Login</button></a></div>
+
+	<div class="horizontal-line-spacer"></div>
+
+	<h3>Use services you know and love.</h3>
+
+	<div class="api-logo-images-container">
+		<img src="/img/logos/FB-f-Logo__blue_144.png" alt="facebook logo image" id="facebook-logo-image" class="api-logo">
+
+		<img src="/img/logos/Instagram_Icon_Large.png" alt="instagram logo image" height="158px" id="instagram-logo-image" class="api-logo">
+
+		<img src="/img/logos/social_flickr_box.png" alt="flickr logo image" height="168px" id="flickr-logo-image" class="api-logo">
+	</div>
+
+	<div class="api-logo-names-container">
+		<span class="api-logo-name name-left">Facebook</span>
+		<span class="api-logo-name name-center">Instagram</span>
+		<span class="api-logo-name name-right">Flickr</span>
+	</div>
+
+	<div class="horizontal-line-spacer"></div>
+
+
+	<h3>Connect. Invite Family. Share.</h3>
+	<h3 class="less-space">Simple.</h3>
+
+	<button id="call-to-action-button">GET STARTED</button>
+
+
 </div>
-<% } %>
-
-
-<!-- show this if user IS logged in -->
-<% if (req.session.id !== null && req.session.id !== undefined) { %>
-<div class="spacey"><a href="/users/<%=req.session.id%>/apiAuthStart"><button>go to buttons!!! </button></a></div>
-
-<p>All done?</p>
-<a href="/logout"><button class="button logout">Logout</button></a>
-
-<% } %>
-
-
 
 
 
