@@ -5,9 +5,10 @@
 			<a href="/index"><h1 class="inline logo-title">EVERYONE'S PHOTOS</h1></a>
 		</div>
 
-		<div class="inline float-right-nav">
-			<a href="/about"><h2 class="inline nav-button">ABOUT</h2></a>
 
+		<div class="inline float-right-nav">
+
+			<a href="/about"><h2 class="inline nav-button">ABOUT</h2></a>
 
 			<!-- show this if user is NOT logged in -->
 			<% if (req.session.id === null || req.session.id === undefined) { %>
@@ -17,17 +18,29 @@
 
 			<!-- show this if user IS logged in -->
 			<% if (req.session.id !== null && req.session.id !== undefined) { %>
-			<a href="/users/getuser/myaccount"><h2 class="inline nav-button" id="my-account-navbar-button">MY ACCOUNT</h2></a>
 
-			<div class="flyout-menu">
+				<a href="/users/getuser/myaccount"><h2 class="inline nav-button" id="my-account-navbar-button">MY ACCOUNT</h2></a>
+			<% } %>
+		
+		</div>
+
+
+		<!-- show this if user IS logged in -->
+		<% if (req.session.id !== null && req.session.id !== undefined) { %>
+
+			<div class="flyout-menu-logo-nav">
 				<div class="inner-flyout-menu-container">
+
 					<a href="/users/getuser/myaccount/edit"><h2 class="sub-menu">EDIT ACCOUNT</h2></a>
 					<a href="/logout"><h2 class="sub-menu">LOGOUT</h2></a>
+
 				</div>
 			</div>
-			<% } %>
 
-		</div>
+		<% } %>
+
+
+
 
 	</div>
 </div>

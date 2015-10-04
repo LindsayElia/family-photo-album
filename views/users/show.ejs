@@ -1,7 +1,7 @@
 <% include ../partials/header %>
 <% include ../partials/navbar-logo %>
 
-<div class="user-show-page-main">
+<div class="general-main-content">
 
 
 	<div class="horizontal-line-spacer"></div>
@@ -15,13 +15,25 @@
 			<p>It looks like you're not a member of a group yet. You can create a new group or join a group you've been invited to.</p>
 		</div>
 
-		<a href=""><button>CREATE NEW GROUP</button></a> <!-- hide if already in a group -->
-		<a href=""><button>JOIN EXISTING GROUP</button></a>	<!-- hide if already in a group -->
+		<div class="center-buttons">
+			<a href="/group/new"><h2 class="float-left inline"><button class="button button-large">CREATE NEW GROUP</button></h2></a> 
 
-		<h5>Group Details</h5>
-		<div>info goes here....if empty, guide to creating/joining group</div>
+			<a href="/group/join"><h2 class="float-right inline"><button class="button button-large">JOIN EXISTING GROUP</button></h2></a>	
+		</div>
 
-		<a href=""><button>EDIT GROUP</button></a> 	<!-- only show for group admin -->
+		<h5 class="heading-underline">Group Details</h5>
+		<div>
+			<p>Group Name</p>
+			<p class="spacey-bottom">placeholder text</p>
+			<p>Public Photo Album Website Address</p>
+			<p class="spacey-bottom">placeholder text</p>
+			<p>Group Memebers</p>
+			<p class="spacey-bottom">placeholder text</p>
+			<p>Group Admin</p>
+			<p class="spacey-bottom">placeholder text</p>
+		</div>
+
+		<a href="group/getgroup/edit"><h2><button class="button float-right">EDIT GROUP</button></h2></a> 	
 
 	</div>
 	
@@ -37,31 +49,31 @@
 			<p>We don't have any photos from you. Please get started by connecting a service.</p>
 		</div>
 
-		<div class="facebook-photos-user-show-page">
-			<h5>Facbook</h5>
+		<div class="photo-area-user-show-page">
+			<h5 class="heading-underline">Facbook</h5>
 
-			<a href=""><button>CONNECT FACEBOOK</button></a>
+			<a href="/users/<%= user._id %>/authorize/facebook"><h2><button class="button">CONNECT FACEBOOK</button></h2></a>
 
-			<a href=""><button>VIEW ALL</button></a>
-			<a href=""><button>CONNECT FACEBOOK</button></a>
+			<a href="/users/<%= user._id %>/landing/facebook"><h2><button class="button">VIEW ALL</button></h2></a>
+			<a href="/users/<%= user._id %>/authorize/facebook"><h2><button class="button">ADD MORE</button></h2></a>
 		</div>
 
-		<div class="flickr-photos-user-show-page">
-			<h5>Facbook</h5>
+		<div class="photo-area-user-show-page">
+			<h5 class="heading-underline">Flickr</h5>
 
-			<a href=""><button>CONNECT FLICKR</button></a>
+			<a href="/users/<%= user._id %>/authorize/flickr"><h2><button class="button">CONNECT FLICKR</button></h2></a>
 
-			<a href=""><button>VIEW ALL</button></a>
-			<a href=""><button>CONNECT FACEBOOK</button></a>
+			<a href="/users/<%= user._id %>/landing/show/flickr"><h2><button class="button">VIEW ALL</button></h2></a>
+			<a href="/users/<%= user._id %>/authorize/flickr"><h2><button class="button">ADD MORE</button></h2></a>
 		</div>
 
-		<div class="instagram-photos-user-show-page">
-			<h5>Facbook</h5>
+		<div class="photo-area-user-show-page">
+			<h5 class="heading-underline">Instagram</h5>
 
-			<a href=""><button>CONNECT INSTAGRAM</button></a>
+			<a href="/users/<%= user._id %>/authorize/instagram"><h2><button class="button">CONNECT INSTAGRAM</button></h2></a>
 
-			<a href=""><button>VIEW ALL</button></a>
-			<a href=""><button>CONNECT FACEBOOK</button></a>
+			<a href="/users/<%= user._id %>/landing/show/instagram"><h2><button class="button">VIEW ALL</button></h2></a>
+			<a href="/users/<%= user._id %>/authorize/instagram"><h2><button class="button">ADD MORE</button></h2></a>
 		</div>
 
 

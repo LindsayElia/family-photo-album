@@ -1,44 +1,49 @@
 <% include ../partials/header %>
+<% include ../partials/navbar-logo %>
 
-<a href="/index"><button>HOME</button></a>
-
-<p>This is an edit landing page for this user: <%= user.firstName %></p>
-
-<div class="spacey"><a href="/users/<%= user._id %>/myaccount"><button>Back to my Account</button></a></div>
-
-<h1>Change Name</h1>
-<form action="/users/<%= user._id %>/edit/name" method="POST">
-	<p>
-		<label for="userEmail">First name </label>
-		<input type="text" id="userFirstName" name="userFirstName" value="<%= user.firstName %>" class="textField" autofocus>
-	</p>
-	<p>
-		<label for="userPass">Last name </label>
-		<input type="text" id="userLastName" name="userLastName" value="<%= user.lastName %>" class="textField">
-	</p>
-	<input type="submit" value="Update Name Details" class="button">
-</form>
+<div class="general-main-content">
 
 
-<h1>Change Email</h1>
-<form action="/users/<%= user._id %>/edit/email" method="POST">
-	<p>
-		<label for="userEmail">Email</label>
-		<input type="email" id="userEmail" name="userEmail" value="<%= user.email %>" class="textField">
-	</p>
-	<input type="submit" value="Update Email" class="button">
-</form>
+	<div class="horizontal-line-spacer"></div>
+
+	<h2>Change Name</h2>
+	<form action="/users/<%= user._id %>/edit/name" method="POST">
+		
+			<p class="label-left-edit-form"><label for="userEmail">First name</label></p>
+			<p><input type="text" id="userFirstName" name="userFirstName" value="<%= user.firstName %>" class="textField" autofocus></p>
+
+		
+			<p class="label-left-edit-form"><label for="userPass">Last name</label></p>
+			<p><input type="text" id="userLastName" name="userLastName" value="<%= user.lastName %>" class="textField"></p>
+		
+		<input type="submit" value="Update Name Details" class="button">
+	</form>
 
 
-<h1>Change Password</h1>
-<form action="/users/<%= user._id %>/edit/password" method="POST">
-	<p>
-		<label for="userPass">Change Password: </label>
-		<input type="password" id="userPass" name="userPass" placeholder="Enter new password" class="textField">
-	</p>
-	<input type="submit" value="Update Password" class="button">
-</form>
+	<div class="horizontal-line-spacer"></div>
+
+	<h2>Change Email</h2>
+	<form action="/users/<%= user._id %>/edit/email" method="POST">
+		
+			<p class="label-left-edit-form"><label for="userEmail">Email</label></p>
+			<p><input type="email" id="userEmail" name="userEmail" value="<%= user.email %>" class="textField"></p>
+		
+		<input type="submit" value="Update Email" class="button">
+	</form>
 
 
+	<div class="horizontal-line-spacer"></div>
+
+	<h2>Change Password</h2>
+	<form action="/users/<%= user._id %>/edit/password" method="POST" id="edit-password-form">
+		
+			<p class="label-left-edit-form"><label for="userPass">Change Password:</label></p>
+			<p><input type="password" id="userPass" name="userPass" placeholder="Enter new password" class="textField"></p>
+		
+		<input type="submit" value="Update Password" class="button">
+	</form>
+
+
+</div> <!-- <div class="user-show-page-main"> -->
 
 <% include ../partials/footer %>

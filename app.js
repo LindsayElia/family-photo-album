@@ -1019,7 +1019,27 @@ app.get('/users/:user_id/landing/show/flickr', function(req, res){
 
 // ____________GROUPS____________
 
-// app.get("/")
+app.get("/group/new", function(req, res){
+	db.User.findById(req.session.id, function(err, user){
+		if(err){
+			console.log(err);
+			res.render("errors/500");
+		} else {
+			res.render("groups/new", {user:user});
+		}
+	});
+});
+
+app.get("/group/join", function(req, res){
+	db.User.findById(req.session.id, function(err, user){
+		if(err){
+			console.log(err);
+			res.render("errors/500");
+		} else {
+			res.render("groups/join", {user:user});
+		}
+	});
+});
 
 
 

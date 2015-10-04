@@ -1,14 +1,15 @@
 <% include ../partials/header %>
+<% include ../partials/navbar-logo %>
 <!-- Flickr API calls -->
-
 <script type="text/javascript" src="/js/flickrFrontend.js"></script>
 
-<a href="/index"><button>HOME</button></a>
+<div class="general-main-content">
 
-<p>Hello! This is the authFlickr page for testing Flickr authentication.</p>
+	<p>Hello! This is the authFlickr page for testing Flickr authentication.</p>
 
-<div class="spacey"><a href="/connect/flickr"><button id="flickrAuthButton">Let this app access my Flickr data</button></a></div>
+	<div class="spacey"><a href="/connect/flickr"><button id="flickrAuthButton">Let this app access my Flickr data</button></a></div>
 
+</div> <!-- close <div class="general-main-content"> -->
 
 
 <% include ../partials/footer %>

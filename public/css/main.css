@@ -57,6 +57,10 @@ input {
    font-size: 1em;
 }
 
+.general-main-content {
+	padding-top: 60px;
+	min-height: 500px;
+}
 
 
 
@@ -166,7 +170,7 @@ h2.nav-button:hover {
 .flyout-menu {
 	width: 180px;
 	background-color: #C9C9CA; /* light gray */
-	position: absolute;
+	positi : absolute;
 	right: -4px;
 	padding: 1px 30px 36px 18px;
 	margin-top: 30px;
@@ -501,11 +505,6 @@ a.error-link:hover {
 
 /* ============ USER SHOW PAGE ============ */
 
-.user-show-page-main {
-	padding-top: 60px;
-	min-height: 500px;
-}
-
 h4 {
 	font-weight: 100;
 	font-size: 2.2em;
@@ -530,16 +529,45 @@ h5 {
 i.icon.float-left {
 	float: left;
 	display: block;
-	height: 100vh;
+	height: 50px;
 	padding-left: 15px;
 	padding-right: 15px;
 	padding-top: 15px;
 }
 
+.button-large {
+	line-height: 4em;
+	padding-left: 30px;
+	padding-right: 30px;
+	margin: 35px 28px;
+}
+
+.center-buttons {
+	text-align: center;
+}
+
+.heading-underline {
+	border-bottom: 1px solid #DDB84F; /* yellow */
+	width: 20%;
+	padding-bottom: 5px;
+}
+
+.spacey-bottom {
+	margin-bottom: 40px;
+}
+
+/* ============ USER EDIT PAGE ============ */
 
 
+#edit-password-form {
+	padding-bottom: 100px;
+}
 
-
+p.label-left-edit-form {
+	line-height: 0;
+	margin-top: 40px;
+	font-weight: 400;
+}
 
 
 
