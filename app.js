@@ -120,20 +120,8 @@ app.get("/signup", routeHelper.loggedInStop, function(req, res){
 // SIGNUP - POST "signup"
 // create a new user and redirect to api auth buttons for now
 app.post("/signup", function(req, res){
-
-	// check email format
-	var thisEmail = req.body.userEmail;
-	console.log("thisEmail 1st: ", thisEmail);
-	// SUPER simple / basic email validation, just checkes that there is an @ symbol between strings
-	// function validateEmail(email) {
- //    	var emailPattern = /\S+@\S+/;
- //    	return emailPattern.test(email);
-	// }
-	// thisEmail = validateEmail(thisEmail);
-	// console.log("thisEmail 2nd: ", thisEmail);
-
 	var newUser = {};
-	newUser.email = thisEmail;
+	newUser.email = req.body.userEmail;
 	newUser.password = req.body.userPass;
 	newUser.firstName = req.body.userFirstName;
 	newUser.lastName = req.body.userLastName;
@@ -527,8 +515,9 @@ app.post("/landing/facebook", function(req, res){
 					owner: user,
 					createdTime: currentPhotoObject.fb_photo_created_time,
 					album: JSON.stringify(currentPhotoObject.fb_photo_album), 		// these may not always exist
-					urlFullSize: JSON.stringify(currentPhotoObject.fb_photo_url_full_size), 
+					urlFullSize: currentPhotoObject.fb_photo_url_full_size, 
 					urlThumbnail: currentPhotoObject.fb_photo_thumbnail,
+					urlMidSize: currentPhotoObject.fb_photo_url_mid_size,
 					place: JSON.stringify(currentPhotoObject.fb_photo_place),		// these may not always exist
 					tags: JSON.stringify(currentPhotoObject.fb_photo_tags)			// these may not always exist
 				};
@@ -568,8 +557,8 @@ app.get('/users/:user_id/landing/facebook', function(req, res){
 					// put all thumbnails into an array to pass to view
 					var fbPhotoThumbsArray = [];
 					for (var i = 0; i < fbphotodata.length; i++){
-						var fbThumbUrl = fbphotodata[i].urlThumbnail;
-						fbPhotoThumbsArray.push(fbThumbUrl);
+						var fbMidSizeUrl = fbphotodata[i].urlMidSize;
+						fbPhotoThumbsArray.push(fbMidSizeUrl);
 					}
 					res.render("users/landingFacebook", {fbPhotoThumbsArray:fbPhotoThumbsArray});
 				} // close else

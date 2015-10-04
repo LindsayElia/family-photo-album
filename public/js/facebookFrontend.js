@@ -129,8 +129,9 @@ function getPhotosAPI(){
 	    					fb_photo_id : thisImage.id,
 	    					fb_photo_created_time : thisImage.created_time,
 	    					fb_photo_album : thisImage.album,
-	    					fb_photo_url_full_size : thisImage.images[0],
-	    					fb_photo_thumbnail : thisImage.picture,
+	    					fb_photo_url_full_size : thisImage.images[0].source,
+	    					fb_photo_thumbnail : thisImage.picture, 			// 100px version
+	    					fb_photo_url_mid_size: thisImage.images[3].source,  // choose whatever is 4th in array of image data
 	    					fb_photo_place : thisImage.place,
 	    					fb_photo_tags : thisImage.tags
 	    				};

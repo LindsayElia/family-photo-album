@@ -1,7 +1,106 @@
+@import url("https://fonts.googleapis.com/css?family=Roboto:400,100,300,500,700,900|Quicksand:400,300,700");
+
+
+/* COLOR PALETTE */
+
+/*waltersmartin@gmail.com
+#DDB84F; /* yellow */
+/*
+/* for accents */
+
+/*
+#272D2D; /* black-ish */
+/* for navbar */
+/*
+
+*/
+
+
+/* ============ GLOBAL ============ */
+
+
 body {
-	font-family: sans-serif;
+	font-family: Helvetica, Arial, sans-serif;
+	margin: 0;
+	padding: 0;
+	font-size: 1em;
+}
+
+a, a:visited, a:hover {
+	text-decoration: none;
 }
 
 .spacey {
 	margin: 20px;
 }
+
+.inline {
+	display: inline;
+}
+
+
+
+/* ============ NAVIGATION ============ */
+
+h1 {
+	font-family: Roboto;
+	font-weight: 100;
+	font-size: 2em;
+	/*font-family: Quicksand;*/  /* buttons maybe? */
+	/*font-weight: 400;*/
+}
+
+h2 {
+	font-family: Roboto;
+	font-weight: 100;
+	font-size: 1.5em;
+}
+
+.logo-title {
+	color: #DDB84F; /* yellow */
+}
+
+ .nav-button {
+ 	color: #DDB84F; /* yellow */
+ 	margin-bottom: 0;
+ 	padding-bottom: 0;
+ 	position: relative;
+ 	top: 8px;
+ 	margin-right: 20px;
+ }
+
+.logo {
+	color: #DDB84F; /* yellow */
+	font-style: italic;
+	padding-bottom: 3px;
+	border-bottom: 4px double #DDB84F;
+}
+
+.navbar-outer {
+	background-color: #272D2D; /* black-ish */
+	height: 100px;
+}
+
+.navbar-inner {
+	padding-top: 42px;
+	/*background-color: red;*/
+}
+
+.float-left {
+	/*float: left;*/
+	margin-left: 42px;
+}
+
+
+.float-right {
+	float: right;
+	margin-right: 22px;
+}
+
+
+
+
+
+
+
+

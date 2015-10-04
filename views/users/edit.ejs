@@ -24,7 +24,7 @@
 <form action="/users/<%= user._id %>/edit/email" method="POST">
 	<p>
 		<label for="userEmail">Email</label>
-		<input type="text" id="userEmail" name="userEmail" value="<%= user.email %>" class="textField">
+		<input type="email" id="userEmail" name="userEmail" value="<%= user.email %>" class="textField">
 	</p>
 	<input type="submit" value="Update Email" class="button">
 </form>
@@ -34,7 +34,7 @@
 <form action="/users/<%= user._id %>/edit/password" method="POST">
 	<p>
 		<label for="userPass">Change Password: </label>
-		<input type="text" id="userPass" name="userPass" placeholder="Enter new password" class="textField">
+		<input type="password" id="userPass" name="userPass" placeholder="Enter new password" class="textField">
 	</p>
 	<input type="submit" value="Update Password" class="button">
 </form>

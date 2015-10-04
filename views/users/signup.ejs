@@ -1,5 +1,5 @@
-<!-- sign up page for new, non-logged-in users -->
 <% include ../partials/header %>
+<% include ../partials/navbar-title %>
 
 <h1>Sign up page</h1>
 
@@ -14,11 +14,11 @@
 	</p>
 	<p>
 		<label for="userEmail">What email would you like to use to sign in with this application? </label>
-		<input type="text" id="userEmail" name="userEmail" placeholder="Enter email" class="textField">
+		<input type="email" id="userEmail" name="userEmail" placeholder="Enter email" class="textField">
 	</p>
 	<p>
 		<label for="userPass">Please choose a password: </label>
-		<input type="text" id="userPass" name="userPass" placeholder="Enter password" class="textField">
+		<input type="password" id="userPass" name="userPass" placeholder="Enter password" class="textField">
 	</p>
 	<input type="submit" value="Create Account" class="button">
 
