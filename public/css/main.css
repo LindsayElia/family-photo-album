@@ -5,20 +5,21 @@
 
 /*
 #DDB84F; /* yellow */
-/*
+
+
 /* for accents */
 
 /*
 #272D2D; /* black-ish */
 /* for navbar */
-/*
+/* for body text */
+
 
 /*
 #FCFAF8; /* off-white */
-*/
 
 
-*/
+
 
 
 /* ============ GLOBAL ============ */
@@ -29,6 +30,7 @@ body {
 	margin: 0;
 	padding: 0;
 	font-size: 1em;
+	color: #272D2D; /* black-ish */
 }
 
 a, a:visited, a:hover {
@@ -107,19 +109,41 @@ h2 {
 /* ============ MAIN CONTENT ============ */
 
 #main-content {
-	background-color: 
+	background-color: #FCFAF8; /* off-white */
+	height: 100vh;
+	padding: 0 10%;
 }
 
 
 
 
 
+/* ============ ABOUT PAGE ============ */
+
+.question {
+	font-weight: 700;
+}
 
 
+.about-spacer {
+	background-color: #DDB84F; /* yellow */
+	height: 1px;
+	margin-top: 50px;
+}
 
 
+.about-spacer-end {
+	height: 1px;
+	margin-top: 80px;
+}
 
+a.about-link, a.about-link:visited {
+	color: #DDB84F; /* yellow */
+}
 
+a.about-link:hover {
+
+}
 
 
 

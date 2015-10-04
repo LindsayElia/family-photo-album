@@ -106,7 +106,7 @@ app.get("/", function(req, res){
 
 // INDEX PAGE
 app.get("/index", function(req, res){
-	res.render("users/index", {req:req});
+	res.render("statics/index", {req:req});
 });
 
 // ABOUT
