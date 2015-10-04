@@ -1,32 +1,45 @@
 <% include ../partials/header %>
 <% include ../partials/navbar-title %>
 
-<h1>Sign up page</h1>
+<div class="signup-main">
 
-<form action="/signup" method="POST">
-	<ul>
-		<li><label for="userEmail">What is your first name? </label></li>
-		<li><input type="text" id="userFirstName" name="userFirstName" placeholder="Enter first name" class="textField" autofocus></li>
+	<h2>Create an account</h2>
 
+	<form action="/signup" method="POST" id="signup-form">
 
-		<li><label for="userPass">What is your last name? </label></li>
-		<li><input type="text" id="userLastName" name="userLastName" placeholder="Enter last name" class="textField"></li>
+			<p class="label-left"><label for="userEmail">What is your first name? </label></p>
+			<p><input type="text" id="userFirstName" name="userFirstName" placeholder="Enter first name" class="textField" autofocus></p>
 
 
-		<li><label for="userEmail">What email would you like to use to sign in with this application? </label></li>
-		<li><input type="email" id="userEmail" name="userEmail" placeholder="Enter email" class="textField"></li>
+			<p class="label-left"><label for="userPass">What is your last name? </label></p>
+			<p><input type="text" id="userLastName" name="userLastName" placeholder="Enter last name" class="textField"></p>
 
 
-		<li><label for="userPass">Please choose a password: </label></li>
-		<li><input type="password" id="userPass" name="userPass" placeholder="Enter password" class="textField" minlength="8"></li>
-	</ul>
-	<input type="submit" value="Create Account" class="button">
+			<p class="label-left"><label for="userEmail">What is your email? </label></p>
+			<p><input type="email" id="userEmail" name="userEmail" placeholder="Enter email" class="textField"></p>
 
-</form>
 
-<p>Already have an account? <a href="/login"><button class="button">Login</button></a></p>
-<p>Forgot password? <a href="/passwordreset"><button class="button">Reset password</button></a></p>
+			<p class="label-left"><label for="userPass">Please choose a password: </label></p>
+			<p><input type="password" id="userPass" name="userPass" placeholder="Enter password" class="textField" minlength="8"></p>
 
-<p><a href="/index"><button class="button">HOME</button></a></p>
+		<input type="submit" value="Create Account" class="button">
+
+	</form>
+
+	<div class="horizontal-line-spacer"></div>
+
+	<div class="float-left-login">
+		<p>Already have an account?</p>
+		<p><a href="/login"><button class="button">Login</button></a></p>
+	</div>
+
+	<div class="float-right-login">
+		<p>Forgot password?</p>
+		<p><a href="/passwordreset"><button class="button">Reset password</button></a></p>
+	</div>
+
+
+</div> <!-- close <div class="signup-main"> -->
+
 
 <% include ../partials/footer %>

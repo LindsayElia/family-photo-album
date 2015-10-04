@@ -377,3 +377,20 @@ p.label-left {
 
 
 
+/* ============ SIGNUP PAGE ============ */
+
+.signup-main {
+	padding-top: 60px;
+	text-align: center;
+	min-height: 500px;
+	font-weight: 100;
+	font-size: 1.5em;
+}
+
+#signup-form {
+	border: 1px solid #C9C9CA; /* light gray */
+	padding-bottom: 30px;
+	width: 500px;
+	margin: auto;
+}
+

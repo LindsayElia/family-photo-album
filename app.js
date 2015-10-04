@@ -124,7 +124,7 @@ app.get("/about", function(req, res){
 // SIGNUP - GET "signup"
 // show the signup page
 app.get("/signup", routeHelper.loggedInStop, function(req, res){
-	res.render("users/signup");
+	res.render("users/signup", {req:req});
 });
 
 // SIGNUP - POST "signup"
