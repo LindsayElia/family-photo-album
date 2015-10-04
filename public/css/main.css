@@ -12,17 +12,17 @@
 /* for navbar */
 /* for body text */
 
-
 /*
 #FCFAF8; /* off-white */
 
 /*
 #C9C9CA; /* light gray */
 
-
 /*
 #839197; /* blue gray - lighter blue */
+/*
 
+*/
 
 
 /* ============ GLOBAL ============ */
@@ -33,7 +33,6 @@ body {
 	margin: 0;
 	padding: 0;
 	font-size: 1em;
-	color: #272D2D; /* black-ish */
 }
 
 a, a:visited, a:hover {
@@ -47,6 +46,7 @@ a, a:visited, a:hover {
 .inline {
 	display: inline;
 }
+
 
 /* ============ MAIN CONTENT ============ */
 
@@ -63,10 +63,10 @@ a, a:visited, a:hover {
 }
 
 
+
 /* ============ NAVIGATION ============ */
 
 h1 {
-	/*font-family: Roboto;*/
 	font-weight: 100;
 	font-size: 2em;
 	/*font-family: Quicksand;*/  /* buttons maybe? */
@@ -111,7 +111,6 @@ h2:hover {
 	color: #DDB84F; /* yellow */
 	font-style: italic;
 	padding-bottom: 3px;
-	/*border-bottom: 4px double #DDB84F;*/
 	padding: 8px 14px 8px 8px;
 	border: 1px solid #DDB84F;
 	border-radius: 5px;
@@ -120,9 +119,6 @@ h2:hover {
 .logo:hover {
 	background-color: #DDB84F; /* yellow */
 	color: #272D2D; /* black-ish */
-	padding: 8px 14px 8px 8px;
-	border: 1px solid #DDB84F;
-	border-radius: 5px;
 }
 
 .navbar-outer {
@@ -144,8 +140,6 @@ h2:hover {
 	float: right;
 	margin-right: 20px;
 }
-
-
 
 
 
