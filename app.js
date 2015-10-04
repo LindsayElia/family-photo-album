@@ -6,6 +6,10 @@ var app = express();
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
 
+// serve-favicon - let's us use a custom image for the favicon
+var favicon = require("serve-favicon");
+app.use(favicon(__dirname + "/public/img/camera-icon.png"));
+
 // bring in our models & database
 var db = require("./models");
 
@@ -152,7 +156,7 @@ app.post("/signup", function(req, res){
 // LOGIN - GET "login"
 // show the login page
 app.get("/login", routeHelper.loggedInStop, function(req, res){
-	res.render("users/login");
+	res.render("users/login", {req:req});
 });
 
 // LOGIN - POST "login"

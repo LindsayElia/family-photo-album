@@ -1,24 +1,37 @@
 <% include ../partials/header %>
 <% include ../partials/navbar-title %>
 
-<h1>Login page</h1>
+<div class="login-main">
 
-<form action="/login" method="POST">
-	<p>
-		<label for="userEmail">Email: </label>
-		<input type="email" id="userEmail" name="userEmail" placeholder="you@email.com" class="textField" autofocus>
-	</p>
-	<p>
-		<label for="userPass">Password: </label>
-		<input type="password" id="userPass" name="userPass" class="textField">
-	</p>
-	<input type="submit" value="Login" class="button">
+	<h2>Login to your account</h2>
 
-</form>
+	<form action="/login" method="POST" id="login-form">
+		
+			<p class="label-left"><label for="userEmail">Email: </label></p>
+			<p><input type="email" id="userEmail" name="userEmail" placeholder="you@email.com" class="textField" autofocus></p>
+		
+		
+			<p class="label-left"><label for="userPass">Password: </label></p>
+			<p><input type="password" id="userPass" name="userPass" class="textField" minlength="8"></p>
+		
+		<input type="submit" value="LOGIN" class="button testingfromlindsay">
 
-<p>Forgot password? <a href="/passwordreset"><button class="button">Reset password</button></a></p>
-<p>Need an account? <a href="/signup"><button class="button">Signup</button></a></p>
+	</form>
 
-<p><a href="/index"><button class="button home">Go Home</button></a></p>
+
+	<div class="horizontal-line-spacer"></div>
+
+	<div class="float-left-login">
+		<p>Need an account?</p>
+		<p><a href="/signup"><button class="button">SIGNUP</button></a></p>
+	</div>
+
+	<div class="float-right-login">
+		<p>Forgot password?</p>
+		<p><a href="/passwordreset"><button class="button">RESET PASSWORD</button></a></p>
+	</div>
+
+</div> <!-- close <div class="login-main"> -->
+
 
 <% include ../partials/footer %>

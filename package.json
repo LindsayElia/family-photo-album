@@ -32,6 +32,7 @@
     "nodemailer": "^1.5.0",
     "nodemailer-smtp-transport": "^1.0.3",
     "pg": "^4.4.1",
-    "request": "^2.61.0"
+    "request": "^2.61.0",
+    "serve-favicon": "^2.3.0"
   }
 }

@@ -4,22 +4,22 @@
 <h1>Sign up page</h1>
 
 <form action="/signup" method="POST">
-	<p>
-		<label for="userEmail">What is your first name? </label>
-		<input type="text" id="userFirstName" name="userFirstName" placeholder="Enter first name" class="textField" autofocus>
-	</p>
-	<p>
-		<label for="userPass">What is your last name? </label>
-		<input type="text" id="userLastName" name="userLastName" placeholder="Enter last name" class="textField">
-	</p>
-	<p>
-		<label for="userEmail">What email would you like to use to sign in with this application? </label>
-		<input type="email" id="userEmail" name="userEmail" placeholder="Enter email" class="textField">
-	</p>
-	<p>
-		<label for="userPass">Please choose a password: </label>
-		<input type="password" id="userPass" name="userPass" placeholder="Enter password" class="textField">
-	</p>
+	<ul>
+		<li><label for="userEmail">What is your first name? </label></li>
+		<li><input type="text" id="userFirstName" name="userFirstName" placeholder="Enter first name" class="textField" autofocus></li>
+
+
+		<li><label for="userPass">What is your last name? </label></li>
+		<li><input type="text" id="userLastName" name="userLastName" placeholder="Enter last name" class="textField"></li>
+
+
+		<li><label for="userEmail">What email would you like to use to sign in with this application? </label></li>
+		<li><input type="email" id="userEmail" name="userEmail" placeholder="Enter email" class="textField"></li>
+
+
+		<li><label for="userPass">Please choose a password: </label></li>
+		<li><input type="password" id="userPass" name="userPass" placeholder="Enter password" class="textField" minlength="8"></li>
+	</ul>
 	<input type="submit" value="Create Account" class="button">
 
 </form>

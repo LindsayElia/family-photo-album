@@ -33,10 +33,12 @@ body {
 	margin: 0;
 	padding: 0;
 	font-size: 1em;
+	background-color: #FCFAF8; /* off-white */
 }
 
 a, a:visited, a:hover {
 	text-decoration: none;
+	color: #272D2D; /* black-ish */
 }
 
 .spacey {
@@ -46,6 +48,16 @@ a, a:visited, a:hover {
 .inline {
 	display: inline;
 }
+
+.textField {
+	line-height: 2;
+}
+
+input {
+   font-size: 1em;
+}
+
+
 
 
 /* ============ MAIN CONTENT ============ */
@@ -87,7 +99,7 @@ h2 {
 	padding: 5px 8px;
 }
 
-h2:hover {
+h2.nav-button:hover {
 	background-color: #DDB84F; /* yellow */
 	color: #272D2D; /* black-ish */
 	padding: 5px 8px;
@@ -131,16 +143,40 @@ h2:hover {
 	/*background-color: red;*/
 }
 
-.float-left {
-	/*float: left;*/
+.float-left-nav {
 	margin-left: 42px;
 }
 
-.float-right {
+.float-right-nav {
 	float: right;
 	margin-right: 20px;
 }
 
+
+
+/* ============ FOOTER ============ */
+
+.footer {
+	background-color: #C9C9CA; /* light gray */
+	height: 200px;
+	text-align: center;
+	padding-top: 20px;
+	clear: both;
+}
+
+.italic {
+	font-style: italic;
+}
+
+.footer a {
+	border: 1px solid #C9C9CA; /* light gray */
+	padding: 5px 1px 8px 4px;
+}
+
+.footer a:hover {
+	color: #839197; /* blue gray - lighter blue */
+	border: 1px solid #DDB84F; /* yellow */
+}
 
 
 /* ============ ABOUT PAGE ============ */
@@ -167,7 +203,7 @@ a.about-link:hover {
 
 /* ============ HOME PAGE ============ */
 
-.home-first {
+.home-main {
 	text-align: center;
 }
 
@@ -240,7 +276,7 @@ h3 {
 	/*font-weight: 100;*/
 	font-weight: 300;
 	font-size: 2.5em;
-	margin: 80px auto;
+	margin: 80px auto 200px auto;
 	padding: 10px 25px;
 	background-color: #DDB84F; /* yellow */
 	border-radius: 10px;
@@ -273,6 +309,7 @@ h3 {
 
 #call-to-action-button:hover {
 	background-color: #839197; 	/* blue gray - lighter blue */
+	border: 3px solid #DDB84F; /* yellow */
 	-webkit-animation: grow .5s;
 	animation: grow .5s;
 	-webkit-animation-fill-mode: forwards;
@@ -280,6 +317,63 @@ h3 {
 }
 
 
+/* ============ LOGIN PAGE ============ */
+
+.login-main {
+	padding-top: 60px;
+	text-align: center;
+	min-height: 500px;
+	font-weight: 100;
+	font-size: 1.5em;
+}
+
+#login-form {
+	border: 1px solid #C9C9CA; /* light gray */
+	padding-bottom: 30px;
+	width: 500px;
+	margin: auto;
+}
+
+/* form input button */
+.button {
+	font-size: .8em;
+	background-color: #C9C9CA; /* light gray */
+	padding: 5px 10px 8px 10px;
+	border-radius: 5px;
+	margin-top: 10px;
+}
+
+.button:hover {
+	background-color: #839197; /* blue gray - lighter blue */
+	border: 2px solid #DDB84F; /* yellow */
+	color: #FCFAF8; /* off-white */
+	font-weight: 100;
+}
+
+p.label-left {
+	line-height: 0;
+	margin-left: 47px;
+	margin-top: 40px;
+	text-align: left;
+	font-size: .7em;
+	font-weight: 400;
+}
+
+.textField {
+	width: 80%;
+}
+
+.float-left-login {
+	float: left;
+	margin-left: 20%;
+	margin-bottom: 70px;
+}
+
+.float-right-login {
+	float: right;
+	margin-right: 20%;
+	margin-bottom: 70px;
+}
 
 
 
