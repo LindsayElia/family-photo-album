@@ -3,10 +3,41 @@
 
 
 <div class="general-main-content">
+<div class="max-width-sixty">
 
-	<p>create a group page</p>
+	<h2 class="center">Create a Group</h2>
+
+	<p>After you create a group, you will be able to add email addresses for other people, to invite them to your group.</p>
+
+	<form action="/group/new" method="POST" id="create-group-form">
+		
+		<p class="label-left-group-form"><label for="groupName">Group Name</label></p>
+
+		<p>This will be shown to other users when you invite them, as well as appear at the top of your FAMILY ALBUM page.</p>
+		<p>You may want to use your family's last name, or a name that everyone in your extended family will recognize.</p>
+
+		<p><input type="text" id="groupName" name="groupName" class="textField" autofocus placeholder="Family Lastname"></p>
+	
+	
+		<p class="label-left-group-form"><label for="groupUrl">Group URL Extension</label></p>
+		<p>This will be part of the address that you type into your browser to view your FAMILY ALBUM.</p>
+		<p class="bold">It should have no spaces.</p>
+		<p>For example, if the name you chose for your Group Name is "Martin Family", then you may want to use "martin-family" for the Group URL Extension.</p>
+		<p>Your FAMILY ALBUM full URL would look like this: www.everyonesphotos.com/groups/martin-family</p>
+		<p><input type="text" id="groupUrl" name="groupUrl" class="textField" placeholder="our-family-lastname-no-spaces"></p>
+		
+		<h2><input type="submit" value="CREATE GROUP" class="button button-group-form"></h2>
+
+	</form>
 
 
+	<div class="horizontal-line-spacer"></div>
+
+	<p>If you have already been invited to join an existing group, please head over to the <a href="/group/join" class="para-link">JOIN GROUP</a> page.</p>
+
+</div> <!-- close <div class="max-width-sixty"> -->
 </div> <!-- close <div class="general-main-content"> -->
+
+<div class="spacey-bottom-footer-padding"></div>
 
 <% include ../partials/footer %>

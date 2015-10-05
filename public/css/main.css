@@ -644,6 +644,48 @@ p.label-left-edit-form {
 }
 
 
+/* ============ GROUP PAGES ============ */
+
+a.para-link, a.para-link:visited {
+	color: #DDB84F; /* yellow */
+}
+
+a.para-link:hover {
+	background-color: #C9C9CA; /* light gray */
+	color: #272D2D; /* black-ish */
+}
+
+#create-group-form {
+	border: 1px solid #C9C9CA; /* light gray */
+	padding: 30px;
+	max-width: 600px;
+	margin: auto;
+}
+
+p.label-left-group-form {
+	font-size: 1.5em;
+	font-weight: 100;
+}
+
+h2.center {
+	margin: 0 auto;
+	width: 30%;
+}
+
+h2.center {
+	margin: 0 auto;
+	width: 30%;
+}
+
+input.button-group-form {
+	margin: 0 auto;
+	width: 40%;
+	display: block;
+}
+
+p.bold {
+	font-weight: 700;
+}
 
 
 

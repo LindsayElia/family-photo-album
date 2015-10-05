@@ -1099,6 +1099,43 @@ app.get("/group/new", function(req, res){
 	});
 });
 
+app.post("/group/new", function(req, res){
+
+	var time = Date.now();
+	var newGroup = {
+		groupUrlName: req.body.groupUrl,
+		groupDisplayName: req.body.groupName,
+		groupCreatedTime: time
+	};
+	console.log("post to /group/new for newGroup: ", newGroup);
+
+	// create group in database
+	db.Group.create(newGroup, function(errGroup, group){
+		if(errGroup){
+			console.log("error in post to new group, group db", errGroup);
+			res.redirect("/500");
+		} else {
+
+			var user = {
+				groupId: group,
+				isGroupAdmin: true
+			};
+
+			// update the user's info
+			db.User.findByIdAndUpdate(req.session.id, user, {upsert:true}, function(errUser, user){
+				if(errUser){
+					console.log("error in post to new group, user db", errUser);
+					res.redirect("/500");
+				} else {
+					res.redirect("/group/" + group._id + "/edit");
+				}
+			});
+
+		} // close else
+	}); // close db.Group.create
+});
+
+
 app.get("/group/join", function(req, res){
 	db.User.findById(req.session.id, function(err, user){
 		if(err){
@@ -1108,6 +1145,24 @@ app.get("/group/join", function(req, res){
 			res.render("groups/join", {user:user});
 		}
 	});
+});
+
+app.get("/group/:group_id/edit", function(req, res){
+	db.Group.findById(req.params.group_id, function(errGroup, group){
+		if(errGroup){
+			console.log("error in get to group edit, group db", errGroup);
+			res.redirect("/500");
+		} else {
+			db.User.findById(req.session.id, function(errUser, user){
+				if(errUser){
+					console.log("error in get to group edit, user db", errUser);
+					res.redirect("/500");
+				} else {
+					res.render("groups/edit", {group:group, user:user});	
+				}
+			}); // close db.User.findById
+		} // close else
+	}); // close db.Group.findById
 });
 
 
