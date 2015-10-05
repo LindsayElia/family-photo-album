@@ -5,9 +5,33 @@
 
 <div class="general-main-content">
 
-	<p>Hello! This is the authFlickr page for testing Flickr authentication.</p>
+	<div class="max-width-sixty">
 
-	<div class="spacey"><a href="/connect/flickr"><button id="flickrAuthButton">Let this app access my Flickr data</button></a></div>
+		<!-- this shows for the first time - currently every time page loads -->
+		<div id="flickrAuthButton">
+
+			<p>Yes! I want this application to access the following information about me, provided by Flickr:</p>
+
+			<ul>
+				<li><span class="para-underline">Public profile information:</span> name, profile picture, and other profile information I have marked as public in my Flickr user settings.</li>
+				<li><span class="para-underline">Photo data:</span> links to all photos on Flickr that I have uploaded, as well as information about the photo, such as location and tags.</li>
+				<li>This app will have read-only permission. It will never post to Flickr on my behalf.</li>
+			</ul>
+
+			<p>I understand that all photos that appear here in my account will also be visible to the public internet on my Family's Shared Album Page.</p>
+
+
+			<h2 class="center-button"><a href="/connect/flickr"><button class="button">Connect to my Flickr account</button></a></h2>
+
+		</div> <!-- close <div id="flickrAuthButton"> -->
+
+
+		<!-- this is always showing -->
+		<p>Currently this application only accesses the 50 most recent photos from the time you click the "Connect to Flickr" button. You can add more photos by returning to this page after you have uploaded more photos to Flickr.</p>
+
+
+
+	</div> <!-- close <div class="max-width-sixty"> -->
 
 </div> <!-- close <div class="general-main-content"> -->
 

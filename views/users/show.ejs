@@ -9,6 +9,8 @@
 	<h4>My Family Group</h4>
 	<div>
 
+<!-- GROUP SIGNUPS -->
+
 		<!-- conditional show -->
 		<div class="callout">
 			<i class="announcement icon big float-left"></i>
@@ -20,6 +22,8 @@
 
 			<a href="/group/join"><h2 class="inline"><button class="button button-large">JOIN EXISTING GROUP</button></h2></a>	
 		</div>
+
+<!-- GROUP DETAILS -->
 
 		<h5 class="heading-underline-bold">Group Details</h5>
 		<div>
@@ -44,7 +48,7 @@
 	<h4>My Photos</h4>
 
 		<!-- show if user does NOT have ANY API user ids -->
-		<% if (!user.facebookId && user.instagramId && user.flickrId ) { %>
+		<% if (!user.facebookId && !user.instagramId && !user.flickrId ) { %>
 			<div class="callout">
 				<i class="announcement icon big float-left"></i>
 				<p>We don't have any photos from you. Please get started by connecting a service.</p>
@@ -53,7 +57,7 @@
 
 
 
-			
+<!-- FACEBOOK DETAILS -->
 
 		<div class="photo-area-user-show-page">
 			<h5 class="heading-underline-bold">Facebook</h5>
@@ -69,11 +73,7 @@
 			<% if (user.facebookId) { %>
 
 
-			<div>
-				<h5 class="inline">Most recent photos</h5>
-
-				
-			</div>
+			<h5 class="inline">Most recent Facebook photos</h5>
 
 			<div class="photo-preview-max-eight float-left" ng-controller="FacebookPhotoPreviewAll">
 				<span ng-repeat="photo in photosEight">
@@ -96,30 +96,81 @@
 
 
 
+<!-- FLICKR DETAILS -->
 
 		<div class="photo-area-user-show-page">
 			<h5 class="heading-underline-bold">Flickr</h5>
 
-			<a href="/users/<%= user._id %>/authorize/flickr"><h2><button class="button">CONNECT FLICKR</button></h2></a>
+			<!-- show if user does NOT have a flickr user id -->
+			<% if (!user.flickrId) { %>
 
-			<a href="/users/<%= user._id %>/landing/show/flickr"><h2><button class="button">VIEW ALL</button></h2></a>
-			<a href="/users/<%= user._id %>/authorize/flickr"><h2><button class="button">ADD MORE</button></h2></a>
+				<a href="/users/<%= user._id %>/authorize/flickr"><h2><button class="button">CONNECT FLICKR</button></h2></a>
+
+			<% } %>
+
+
+			<!-- show if user has a flickr user id -->
+			<% if (user.flickrId) { %>
+
+				<h5 class="inline">Most recent Flickr photos</h5>
+
+				<div class="photo-preview-max-eight float-left">
+					
+					<% for (var i = 0; i < 8; i++){  %>
+						<img src="<%= flickrThumbsArray[i] %>" class="photo-wrapper-flickr">
+					<% } %>
+
+				</div>
+
+				<a href="/users/<%= user._id %>/landing/show/flickr"><h2><button class="button">VIEW ALL</button></h2></a>
+
+				<a href="/users/<%= user._id %>/authorize/flickr"><h2><button class="button">ADD MORE</button></h2></a>
+
+			<% } %>
+
 		</div>
 
 
+
+<!-- INSTAGRAM DETAILS -->
 
 		<div class="photo-area-user-show-page spacey-bottom-footer">
 			<h5 class="heading-underline-bold">Instagram</h5>
 
-			<a href="/users/<%= user._id %>/authorize/instagram"><h2><button class="button">CONNECT INSTAGRAM</button></h2></a>
+			<!-- show if user does NOT have an instagram user id -->
+			<% if (!user.instagramId) { %>
 
-			<a href="/users/<%= user._id %>/landing/show/instagram"><h2><button class="button">VIEW ALL</button></h2></a>
-			<a href="/users/<%= user._id %>/authorize/instagram"><h2><button class="button">ADD MORE</button></h2></a>
+				<a href="/users/<%= user._id %>/authorize/instagram"><h2><button class="button">CONNECT INSTAGRAM</button></h2></a>
+
+			<% } %>
+
+
+			<!-- show if user has an instagram user id -->
+			<% if (user.instagramId) { %>
+
+				<h5 class="inline">Most recent Instagram photos</h5>
+
+				<div class="photo-preview-max-eight float-left">
+					
+					<% for (var j = 0; j < 8; j++){  %>
+						<img src="<%= instaThumbsArray[j] %>" class="photo-wrapper-instagram">
+					<% } %>
+
+				</div>
+
+
+				<a href="/users/<%= user._id %>/landing/show/instagram"><h2><button class="button">VIEW ALL</button></h2></a>
+
+				<a href="/users/<%= user._id %>/authorize/instagram"><h2><button class="button">ADD MORE</button></h2></a>
+
+			<% } %>
+
 		</div>
 
 
-
 </div> <!-- <div class="user-show-page-main"> -->
+
+<div class="spacey-bottom-footer-padding"></div>
 
 
 <% include ../partials/footer %>

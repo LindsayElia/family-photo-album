@@ -37,19 +37,13 @@ var userSchema = new mongoose.Schema({
 	},
 	firstName: String,
 	lastName: String,
-	facebookId: {
-		type: String,
-		unique: true
-	},
+	facebookId: String,
 	facebookAccessToken: String,
 	facebookPhotos: [{		// one user has many facebook photos
 		type: mongoose.Schema.Types.ObjectId,
 		ref: "FacebookPhoto"
 	}],
-	instagramId: {
-		type: String,
-		unique: true
-	},
+	instagramId: String,
 	instagramAccessToken: String,
 	instagramPhotos: [{		// one user has many instagram photos
 		type: mongoose.Schema.Types.ObjectId,

@@ -377,7 +377,7 @@ app.get("/users/getuser/myaccount", function(req, res){
 			console.log(err);
 			res.redirect("/500");
 		} else {
-			res.redirect("/users/"+ user._id +"/myaccount");
+			res.redirect("/users/"+ req.session.id+"/myaccount");
 		}
 	});
 });
@@ -385,33 +385,66 @@ app.get("/users/getuser/myaccount", function(req, res){
 
 // user show page - user landing page after logging in
 app.get("/users/:user_id/myaccount", function(req, res){
-	db.User.findById(req.params.user_id, function(err, user){
-		if(err){
-			console.log(err);
+	// USER DB
+	db.User.findById(req.params.user_id, function(errUser, user){
+		if(errUser){
+			console.log("errUser from users/myaccount with user db", errUser);
 			res.redirect("/500");
 		} else {
 
-			db.FacebookPhoto.find({owner:user}, function(err, fbphotodata){
-				if (err){
-					console.error("error with FacebookPhoto.find() in get to /users/:user_id/landing/facebook route", err);
+			// FLACEBOOK DB
+			db.FacebookPhoto.find({owner:user}, function(errFb, fbphotodata){
+				if (errFb){
+					console.error("error from users/myaccount with fb db", errFb);
 				} else {
-					res.format({
-						'text/html': function(){
-							res.render("users/show", {user:user, req:req});
-						},
-						'application/json': function(){
-							// we can send the data in the same format we received it from our database,
-							// because we want to send as JSON and parse on the client side
-							res.send({fbphotodata:fbphotodata});
-						},
-						'default': function() {
-							// log the request and respond with 406
-							res.status(406).send('Not Acceptable');
-						}
-					});
-				} // close else
-			}); // close db.FacebookPhoto.findOne
-		} // close else
+
+					// FLICKR DB
+					db.FlickrPhoto.find({owner:user}, function(errFlickr, flickrphotodata){
+						if (errFlickr){
+							console.error("error from users/myaccount with flickr db", errFb);
+						} else {
+							// format the flickr data
+							var flickrThumbsArray = [];
+							for (var i = 0; i < flickrphotodata.length; i++){
+								var flickrThumbUrl = flickrphotodata[i].urlThumbnail;
+								flickrThumbsArray.push(flickrThumbUrl);
+							}
+
+							// INSTAGRAM DB
+							db.InstagramPhoto.find({owner:user}, function(errInsta, instaphotodata){
+								if (errInsta){
+									console.error("error from users/myaccount with insta db", errInsta);
+								} else {
+									// format the instagram data
+									var instaThumbsArray = [];
+									for (var i = 0; i < instaphotodata.length; i++){
+										var instaThumbUrl = instaphotodata[i].urlThumbnail;
+										instaThumbsArray.push(instaThumbUrl);
+									}
+
+									// SEND THE DATA!!!
+									res.format({
+										'text/html': function(){
+											res.render("users/show", {user:user, req:req, flickrThumbsArray:flickrThumbsArray, instaThumbsArray:instaThumbsArray});
+										},
+										'application/json': function(){
+											// we can send the data in the same format we received it from our database,
+											// because we want to send as JSON and parse on the client side
+											res.send({fbphotodata:fbphotodata});
+										},
+										'default': function() {
+											// log the request and respond with 406
+											res.status(406).send('Not Acceptable');
+										}
+									}); // close res.format
+
+								} // close else - instagram db
+							}); // close db.InstagramPhoto.find
+						} // close else - flickr db
+					}); // close db.FlickrPhoto.find
+				} // close else - facebook db
+			}); // close db.FacebookPhoto.find
+		} // close else - user db
 	}); // close db.User.findById
 });
 
@@ -732,7 +765,7 @@ app.get('/landing/instagram', function(req, expressResponse) {
 						var instagramApiDataParsed = JSON.parse(apiBody);
 						
 						var instagramApiBodyParsedData = instagramApiDataParsed.data;
-						// console.log("apiBody: ", instagramApiBodyParsedData);
+						console.log("apiBody: ", instagramApiBodyParsedData);
 
 						// format user's user-instagram-id and instagram access token
 						var user = {};

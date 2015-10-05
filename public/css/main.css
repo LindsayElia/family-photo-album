@@ -582,11 +582,12 @@ i.icon.float-left {
 }
 
 .photo-preview-max-eight {
-	max-width: 800px;
+	max-width: 760px;
 	border: 1px solid #C9C9CA; /* light gray */
-	min-height: 380px;
+	/*min-height: 380px;*/
 	margin: 20px;
 	margin-bottom: 50px;
+	padding: 10px;
 }
 
 /* ============ USER EDIT PAGE ============ */

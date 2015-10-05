@@ -6,11 +6,35 @@
 
 <div class="general-main-content">
 
-	<p>Hello! This is the authInstagram page for testing instagram authentication.</p>
+	<div class="max-width-sixty">
 
-	<div class="spacey"><a href="/users/<%= user._id %>/login/instagram"><button id="instagramAuthButton">Let this app access my Instagram data</button></a></div>
+		<!-- this shows for the first time - currently every time page loads -->
+		<div id="instagramAuthButton">
 
-	<div class="spacey"><a href="/users/<%= user._id %>/landing/show/instagram"><button id="goToInstagramLanding">View My Instagram Photos</button></a></div>
+			<p>Yes! I want this application to access the following information about me, provided by Instagram:</p>
+
+			<ul>
+				<li><span class="para-underline">Profile information:</span> name, profile picture, lists of people I follow on Instagram, and other profile information I have enterred in my Instagram user settings.</li>
+				<li><span class="para-underline">Photo data:</span> links to all photos on Instagram that I have uploaded, as well as information about the photo, such as location and tags.</li>
+				<li>This app will have read-only permission. It will never post to Instagram on my behalf.</li>
+			</ul>
+
+			<p>I understand that all photos that appear here in my account will also be visible to the public internet on my Family's Shared Album Page.</p>
+
+			<h2 class="center-button"><a href="/users/<%= user._id %>/login/instagram"><button class="button">Connect to my Instagram account</button></a></h2>
+
+		</div> <!-- close <div id="instagramAuthButton"> -->
+
+		<!-- this is always showing -->
+		<p>Currently this application only accesses the 50 most recent photos from the time you click the "Connect to Instagram" button. You can add more photos by returning to this page after you have uploaded more photos to Instagram.</p>
+
+		<!-- this shows after connecting to instagram -->
+		<div id="goToInstagramLanding">
+			<a href="/users/<%= user._id %>/landing/show/instagram"><h2 class="center-button"><button class="button">View My Instagram Photos</button></h2></a>
+		</div>
+
+
+	</div> <!-- close <div class="max-width-sixty"> -->
 
 </div> <!-- close <div class="general-main-content"> -->
 

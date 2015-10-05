@@ -12,8 +12,9 @@
 
 			<p>Yes! I want this application to access the following information about me, provided by Facebook:</p>
 			<ul>
-				<li><span class="para-underline">Public profile information:</span> name, profile picture, and other profile information I have marked as public in my Facbook user settings..</li>
+				<li><span class="para-underline">Public profile information:</span> name, profile picture, and other profile information I have marked as public in my Facbook user settings.</li>
 				<li><span class="para-underline">Photo data:</span> links to all photos on Facebook that I have uploaded or been tagged in, as well as information about the photo, such as location and tags.</li>
+				<li>This app will have read-only permission. It will never post to Facebook on my behalf.</li>
 			</ul>
 
 			<p>I understand that all photos that appear here in my account will also be visible to the public internet on my Family's Shared Album Page.</p>
@@ -28,7 +29,7 @@
 
 		<!-- this shows after connecting to facebook -->
 		<div id="goToFacebookLanding">
-			<a href="/users/<%= user._id %>/landing/facebook"><h2 class="center-button"><button  class="button">View My Facebook Photos</button></h2></a>
+			<a href="/users/<%= user._id %>/landing/facebook"><h2 class="center-button"><button class="button">View My Facebook Photos</button></h2></a>
 		</div>
 
 	</div> <!-- close <div class="max-width-sixty"> -->
