@@ -100,8 +100,8 @@ userSchema.pre("save", function(next){
 // if it is, call the function to check the user's password
 // class method
 userSchema.statics.authenticate = function(formData, callback){
-	console.log("making it into the authenticate method");
-	console.log(formData);
+	console.log("making it into the authenticate method, in user model");
+	// console.log(formData);
 	this.findOne({
 		email: formData.email	// check that we have a user with this email
 	},
@@ -110,7 +110,7 @@ userSchema.statics.authenticate = function(formData, callback){
 		if(user === null){
 			callback("Invalid email or password, try again.", null); // invalid email
 		} else {
-			console.log("in the authenticate method about to call checkPassword");
+			console.log("in the authenticate method, in user model, about to call checkPassword");
 			user.checkPassword(formData.password, callback); // call the function we define below to check password
 		}
 	});

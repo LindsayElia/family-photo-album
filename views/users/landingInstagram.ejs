@@ -1,12 +1,16 @@
 <% include ../partials/header %>
+<% include ../partials/navbar-logo %>
 
-<a href="/index"><button>HOME</button></a>
+<div class="general-main-content">
 
-<p>This is the landingInstagram page.</p>
+	<h2>My Photos from Instagram</h2>
 
-<% for (var i = 0; i < instaThumbsArray.length; i++){  %>
-	<span class="spacey"><img src="<%= instaThumbsArray[i] %>"></span>
-<% } %>
+	<% for (var i = 0; i < instaThumbsArray.length; i++){  %>
+		<img src="<%= instaThumbsArray[i] %>" class="photo-wrapper-instagram">
+	<% } %>
 
+</div> <!-- close <div class="general-main-content"> -->
+
+<div class="spacey-bottom-footer-padding"></div>
 
 <% include ../partials/footer %>

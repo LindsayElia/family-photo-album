@@ -5,30 +5,33 @@
 
 <div class="general-main-content">
 
-	<p>Hello! This is the authFacebook page.</p>
+	<div class="max-width-sixty">
 
+		<!-- this shows for the first time - currently every time page loads -->
+		<div id="facebookAuthButton">
 
+			<p>Yes! I want this application to access the following information about me, provided by Facebook:</p>
+			<ul>
+				<li><span class="para-underline">Public profile information:</span> name, profile picture, and other profile information I have marked as public in my Facbook user settings..</li>
+				<li><span class="para-underline">Photo data:</span> links to all photos on Facebook that I have uploaded or been tagged in, as well as information about the photo, such as location and tags.</li>
+			</ul>
 
-	<!-- Facebook login button & status. 
-	This button uses the JavaScript SDK to present a graphical Login button that triggers 
-	the FB.login() function when clicked. -->
-	<button id="facebookAuthButton" class="spacey">Let this app access my Facebook data</button>
+			<p>I understand that all photos that appear here in my account will also be visible to the public internet on my Family's Shared Album Page.</p>
 
-	<div id="status"></div>
+			<!-- Facebook login button & status. This button uses the JavaScript SDK to present a graphical Login button that triggers the FB.login() function when clicked. -->
+			<h2 class="center-button"><button class="button">Connect to my Facebook account</button></h2>
 
+		</div>
 
-	<div class="spacey"><a href="/users/<%= user._id %>/landing/facebook"><button id="goToFacebookLanding">View My Facebook Photos</button></a></div>
+		<!-- this is always showing -->
+		<p>Currently this application only accesses the 50 most recent photos from the time you click the "Connect to Facebook" button. You can add more photos by returning to this page after you have uploaded more photos to Facebook.</p>
 
+		<!-- this shows after connecting to facebook -->
+		<div id="goToFacebookLanding">
+			<a href="/users/<%= user._id %>/landing/facebook"><h2 class="center-button"><button  class="button">View My Facebook Photos</button></h2></a>
+		</div>
 
-	<div ng-controller="BaseController">
-
-		<p>Special message... {{message}}</p>
-
-		<!-- <ul>
-			<li ng-repeat="photo in photoArray">{{photo}}</li>
-		</ul> -->
-
-	</div>
+	</div> <!-- close <div class="max-width-sixty"> -->
 
 </div> <!-- close <div class="general-main-content"> -->
 

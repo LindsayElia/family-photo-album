@@ -141,7 +141,7 @@ app.post("/signup", function(req, res){
 	db.User.create(newUser, function(err, user){
 		if(err){
 			console.log(err);
-			res.render("errors/500");
+			res.redirect("/500");
 		} else {
 			console.log(user);
 			req.login(user); // set the session id for this user to be the user's id from our DB
@@ -211,7 +211,7 @@ app.post('/passwordreset', function(req, res){
 	db.User.findOne({email: receipientEmail}, function (err, user){
 		if (err){
 			console.log("error in /forgotpassword route, finding user in db");
-			res.redirect("errors/500");
+			res.redirect("/500");
 		}
 		if (!user) {
 // TO DO:
@@ -227,7 +227,7 @@ app.post('/passwordreset', function(req, res){
         	user.save(function(err){
         		if (err){
 					console.log("error in /forgotpassword route, saving token to user db");
-					res.redirect("errors/500");
+					res.redirect("/500");
 				} else {
 					console.log("saved user reset token to db, sending email...", token);
 					// configure e-mail data
@@ -312,7 +312,7 @@ app.post('/reset/:user_id/:token', function(req, res){
 			user.save(function(err){
 				if (err){
 					console.log("error in POST /reset/:user_id/:token route, saving user's new info to user db");
-					res.redirect("errors/500");
+					res.redirect("/500");
 				} else {
 					// send password email confirmation
 					// configure e-mail data
@@ -375,7 +375,7 @@ app.get("/users/getuser/myaccount", function(req, res){
 	db.User.findById(req.session.id, function(err, user){
 		if(err){
 			console.log(err);
-			res.render("errors/500");
+			res.redirect("/500");
 		} else {
 			res.redirect("/users/"+ user._id +"/myaccount");
 		}
@@ -388,11 +388,31 @@ app.get("/users/:user_id/myaccount", function(req, res){
 	db.User.findById(req.params.user_id, function(err, user){
 		if(err){
 			console.log(err);
-			res.render("errors/500");
+			res.redirect("/500");
 		} else {
-			res.render("users/show", {user:user});
-		}
-	});
+
+			db.FacebookPhoto.find({owner:user}, function(err, fbphotodata){
+				if (err){
+					console.error("error with FacebookPhoto.find() in get to /users/:user_id/landing/facebook route", err);
+				} else {
+					res.format({
+						'text/html': function(){
+							res.render("users/show", {user:user, req:req});
+						},
+						'application/json': function(){
+							// we can send the data in the same format we received it from our database,
+							// because we want to send as JSON and parse on the client side
+							res.send({fbphotodata:fbphotodata});
+						},
+						'default': function() {
+							// log the request and respond with 406
+							res.status(406).send('Not Acceptable');
+						}
+					});
+				} // close else
+			}); // close db.FacebookPhoto.findOne
+		} // close else
+	}); // close db.User.findById
 });
 
 // getuser to edit user - from home page
@@ -400,7 +420,7 @@ app.get("/users/getuser/myaccount/edit", function(req, res){
 	db.User.findById(req.session.id, function(err, user){
 		if(err){
 			console.log(err);
-			res.render("errors/500");
+			res.redirect("/500");
 		} else {
 			res.redirect("/users/"+ user._id +"/edit");
 		}
@@ -412,7 +432,7 @@ app.get("/users/:user_id/edit", function(req, res){
 	db.User.findById(req.params.user_id, function(err, user){
 		if(err){
 			console.log(err);
-			res.render("errors/500");
+			res.redirect("/500");
 		} else {
 			res.render("users/edit", {user:user});
 		}
@@ -433,7 +453,7 @@ app.post("/users/:user_id/edit/name", function(req, res){
 	db.User.findByIdAndUpdate(req.params.user_id, user, {upsert:true}, function(err, user){
 		if(err){
 			console.log(err);
-			res.render("errors/500");
+			res.redirect("/500");
 		} else {
 			res.render("users/show", {user:user});
 		}
@@ -448,7 +468,7 @@ app.post("/users/:user_id/edit/email", function(req, res){
 	db.User.findByIdAndUpdate(req.params.user_id, user, {upsert:true}, function(err, user){
 		if(err){
 			console.log(err);
-			res.render("errors/500");
+			res.redirect("/500");
 		} else {
 			res.render("users/show", {user:user});
 		}
@@ -462,7 +482,7 @@ app.post("/users/:user_id/edit/password", function(req, res){
 		user.save(function(err){
 			if (err){
 				console.log("error in POST /users/:user_id/edit/password route, saving user's new info to user db");
-				res.redirect("errors/500");
+				res.redirect("/500");
 			} else {
 				// send password email confirmation
 				// configure e-mail data
@@ -480,7 +500,7 @@ app.get("/users/:user_id/apiAuthStart", routeHelper.ensureSameUser, function(req
 	db.User.findById(req.params.user_id, function(err, user){
 		if(err){
 			console.log(err);
-			res.render("errors/500");
+			res.redirect("/500");
 		} else {
 			res.render("users/apiAuthStart", {user:user});
 		}
@@ -500,7 +520,7 @@ app.get('/users/:user_id/authorize/facebook', routeHelper.ensureSameUser, functi
 	db.User.findById(req.params.user_id, function(err, user){
 		if(err){
 			console.log(err);
-			res.render("errors/500");
+			res.redirect("/500");
 		} else {
 			res.render("users/authFacebook", {user:user});
 		}
@@ -589,14 +609,30 @@ app.get('/users/:user_id/landing/facebook', function(req, res){
 				if (err){
 					console.error("error with FacebookPhoto.find() in get to /users/:user_id/landing/facebook route", err);
 				} else {
-					console.log("all fbphotodata for this user: ", fbphotodata);
+					// console.log("all fbphotodata for this user: ", fbphotodata);
 					// put all thumbnails into an array to pass to view
 					var fbPhotoThumbsArray = [];
 					for (var i = 0; i < fbphotodata.length; i++){
 						var fbMidSizeUrl = fbphotodata[i].urlMidSize;
 						fbPhotoThumbsArray.push(fbMidSizeUrl);
 					}
-					res.render("users/landingFacebook", {fbPhotoThumbsArray:fbPhotoThumbsArray});
+
+					res.format({
+						'text/html': function(){
+							res.render("users/landingFacebook", {fbPhotoThumbsArray:fbPhotoThumbsArray, user:user});
+						},
+						'application/json': function(){
+							// we can send the data in the same format we received it from our database,
+							// because we want to send as JSON and parse on the client side
+							res.send({fbphotodata:fbphotodata});
+						},
+						'default': function() {
+							// log the request and respond with 406
+							res.status(406).send('Not Acceptable');
+						}
+					});
+
+
 				} // close else
 			}); // close db.FacebookPhoto.findOne
 		} // close else
@@ -621,7 +657,7 @@ app.get('/users/:user_id/authorize/instagram', function(req, res){
 	db.User.findById(req.params.user_id, function(err, user){
 		if(err){
 			console.log(err);
-			res.render("errors/500");
+			res.redirect("/500");
 		} else {
 			res.render("users/authInstagram", {user:user});
 		}
@@ -770,7 +806,7 @@ app.get("/users/:user_id/landing/show/instagram", function(req, res){
 						var instaThumbUrl = instaphotodata[i].urlThumbnail;
 						instaThumbsArray.push(instaThumbUrl);
 					}
-					res.render("users/landingInstagram", {instaThumbsArray:instaThumbsArray});
+					res.render("users/landingInstagram", {instaThumbsArray:instaThumbsArray, user:user});
 				} // close else
 			}); // close db.InstagramPhoto.findOne
 		} // close else
@@ -799,7 +835,7 @@ app.get('/users/:user_id/authorize/flickr', function(req, res){
 	db.User.findById(req.params.user_id, function(err, user){
 		if(err){
 			console.log(err);
-			res.render("errors/500");
+			res.redirect("/500");
 		} else {
 			res.render("users/authFlickr", {user:user});
 		}
@@ -1006,7 +1042,7 @@ app.get('/users/:user_id/landing/show/flickr', function(req, res){
 						var flickrThumbUrl = flickrphotodata[i].urlThumbnail;
 						flickrThumbsArray.push(flickrThumbUrl);
 					}
-					res.render("users/landingFlickr", {flickrThumbsArray:flickrThumbsArray});
+					res.render("users/landingFlickr", {flickrThumbsArray:flickrThumbsArray, user:user});
 				} // close else
 			}); // close db.FlickrPhoto.findOne
 		} // close else
@@ -1023,7 +1059,7 @@ app.get("/group/new", function(req, res){
 	db.User.findById(req.session.id, function(err, user){
 		if(err){
 			console.log(err);
-			res.render("errors/500");
+			res.redirect("/500");
 		} else {
 			res.render("groups/new", {user:user});
 		}
@@ -1034,7 +1070,7 @@ app.get("/group/join", function(req, res){
 	db.User.findById(req.session.id, function(err, user){
 		if(err){
 			console.log(err);
-			res.render("errors/500");
+			res.redirect("/500");
 		} else {
 			res.render("groups/join", {user:user});
 		}
@@ -1051,7 +1087,7 @@ app.get("/nope", function(req, res){
 	db.User.findById(req.params.user_id, function(err, user){
 		if(err){
 			console.log(err);
-			res.render("errors/500");
+			res.redirect("/500");
 		} else {
 			res.render("errors/nope", {user:user, req:req});
 		}

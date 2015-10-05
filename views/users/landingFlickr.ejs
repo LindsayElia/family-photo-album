@@ -1,12 +1,16 @@
 <% include ../partials/header %>
+<% include ../partials/navbar-logo %>
 
-<a href="/index"><button>HOME</button></a>
+<div class="general-main-content">
 
-<p>This is the landingFlickr page.</p>
+	<h2>My Photos from Flickr</h2>
 
-<% for (var i = 0; i < flickrThumbsArray.length; i++){  %>
-	<span class="spacey"><img src="<%= flickrThumbsArray[i] %>"></span>
-<% } %>
+	<% for (var i = 0; i < flickrThumbsArray.length; i++){  %>
+		<img src="<%= flickrThumbsArray[i] %>" class="photo-wrapper-flickr">
+	<% } %>
 
+</div> <!-- close <div class="general-main-content"> -->
+
+<div class="spacey-bottom-footer-padding"></div>
 
 <% include ../partials/footer %>

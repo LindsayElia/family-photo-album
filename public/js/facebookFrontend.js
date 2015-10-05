@@ -56,17 +56,17 @@ function statusChangeCallback(response) {
 	// Full docs on the response object can be found in the documentation
 	// for FB.getLoginStatus().
 	if (response.status === 'connected') {
-		// Logged into your app and Facebook.
+		// User is already logged into your app and Facebook, call the API for data
 		console.log("already logged in, getting data from API");
 		testAPI();
 		getPhotosAPI();
 	} else if (response.status === 'not_authorized') {
-		FB.login(function(){}, {
-			scope: 'user_photos'
-		});
-		console.log("logging user in for first time");
-		testAPI();
-		getPhotosAPI();
+		// Log the user in and call the API for data
+		 FB.login(function(response) {
+   			console.log("logging user in for first time");
+			testAPI();
+			getPhotosAPI();
+ 		}, {scope: 'user_photos'});
 	}
 }
 
@@ -76,7 +76,7 @@ function statusChangeCallback(response) {
 function testAPI() {
 	console.log('Welcome!  Fetching your information.... ');
     FB.api('/me', function(response) {
-    	console.log('Successful login for: ' + response.name);
+    	console.log('testAPI() response: ' + response.name);
     	document.getElementById('status').innerHTML =
         	'Thanks for logging in, ' + response.name + '!';
     });
@@ -120,6 +120,9 @@ function getPhotosAPI(){
 	    			var thisImage = response.data[i];
 	    			// if can_delete is set to false, do not save photo
 	    			// because photo does not belong to this person
+	    			var lastImageUrlPlace = thisImage.images.length - 1 ;
+	    			console.log("lastImageUrlPlace: ", lastImageUrlPlace);
+
 	    			if (thisImage.can_delete === false){
 	    				// do nothing
 	    				console.log("skipping an image");
@@ -131,7 +134,7 @@ function getPhotosAPI(){
 	    					fb_photo_album : thisImage.album,
 	    					fb_photo_url_full_size : thisImage.images[0].source,
 	    					fb_photo_thumbnail : thisImage.picture, 			// 100px version
-	    					fb_photo_url_mid_size: thisImage.images[3].source,  // choose whatever is 4th in array of image data
+	    					fb_photo_url_mid_size: thisImage.images[lastImageUrlPlace].source,  // choose whatever is last image array of image data
 	    					fb_photo_place : thisImage.place,
 	    					fb_photo_tags : thisImage.tags
 	    				};
@@ -148,6 +151,8 @@ function getPhotosAPI(){
 
 	    	} else {
 	    		console.log("problem getting facebook photo data: ", response.error);
+	    		// switch button view
+			redirectToFbLanding();
 	    	}
 	});
 }
@@ -162,7 +167,7 @@ function sendFbUserData(fbUserData){
 		.done(function(data){
 			console.log("successful ajax post request data is: ", data);
 			
-			// redirect the user to the landing page
+			// switch button view
 			redirectToFbLanding();
 		})
 		.fail(function(jqXHR){
@@ -172,9 +177,8 @@ function sendFbUserData(fbUserData){
 }
 
 
-// need to pass in user_id...
 
-// this redirects the user to the landing page when called
+// this hides one button and shows another
 function redirectToFbLanding() {
 	$("#goToFacebookLanding").show();
 	$("#facebookAuthButton").hide();

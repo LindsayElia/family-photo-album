@@ -45,6 +45,20 @@ a, a:visited, a:hover {
 	margin: 20px;
 }
 
+.spacey-bottom {
+	margin-bottom: 40px;
+}
+
+.spacey-bottom-footer {
+	margin-bottom: 100px;
+}
+
+.spacey-bottom-footer-padding {
+	height: 100px;
+	width: 30px;
+	clear: both;
+}
+
 .inline {
 	display: inline;
 }
@@ -62,6 +76,15 @@ input {
 	min-height: 500px;
 }
 
+.float-left {
+	float: left;
+}
+
+.float-right {
+	float: right;
+}
+
+
 
 
 /* ============ MAIN CONTENT ============ */
@@ -77,6 +100,11 @@ input {
 	height: 1px;
 	margin-top: 50px;
 }
+
+/*.horizontal-line {
+	background-color: #DDB84F;
+	height: 1px;
+}*/
 
 
 
@@ -201,6 +229,7 @@ h2.nav-button:hover {
 	text-align: center;
 	padding-top: 20px;
 	clear: both;
+	border-top: 2px solid #DDB84F; /* yellow */
 }
 
 .italic {
@@ -517,7 +546,6 @@ h5 {
 	line-height: 1;
 }
 
-
 .callout {
 	background-color: #839197; /* blue gray - lighter blue */
 	padding: 2%;
@@ -546,14 +574,19 @@ i.icon.float-left {
 	text-align: center;
 }
 
-.heading-underline {
+.heading-underline-bold {
 	border-bottom: 1px solid #DDB84F; /* yellow */
 	width: 20%;
 	padding-bottom: 5px;
+	font-weight: 400;
 }
 
-.spacey-bottom {
-	margin-bottom: 40px;
+.photo-preview-max-eight {
+	max-width: 800px;
+	border: 1px solid #C9C9CA; /* light gray */
+	min-height: 380px;
+	margin: 20px;
+	margin-bottom: 50px;
 }
 
 /* ============ USER EDIT PAGE ============ */
@@ -568,6 +601,52 @@ p.label-left-edit-form {
 	margin-top: 40px;
 	font-weight: 400;
 }
+
+
+/* ============ CONNECT TO AUTH PAGES ============ */
+
+.center-button {
+	text-align: center;
+	margin-bottom: 40px;
+}
+
+.para-underline {
+	border-bottom: 2px solid #DDB84F; /* yellow */
+	/*width: 20%;*/
+	/*padding-bottom: 2px;*/
+}
+
+.max-width-sixty {
+	max-width: 60%;
+	margin: 0 auto;
+}
+
+/* ============ FACEBOOK LANDING ============ */
+
+.photo-wrapper-facebook {
+	float: left;
+	padding: 10px;
+}
+
+/* ============ FLICKR LANDING ============ */
+
+.photo-wrapper-flickr {
+	float: left;
+	padding: 10px;
+}
+
+/* ============ INSTAGRAM LANDING ============ */
+
+.photo-wrapper-instagram {
+	float: left;
+	padding: 10px;
+}
+
+
+
+
+
+
 
 
 

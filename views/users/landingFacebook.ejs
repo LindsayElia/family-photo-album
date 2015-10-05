@@ -1,11 +1,23 @@
 <% include ../partials/header %>
-<a href="/index"><button>HOME</button></a>
+<% include ../partials/navbar-logo %>
 
-<p>This is the landingFacebook page.</p>
+<div class="general-main-content">
 
-<% for (var i = 0; i < fbPhotoThumbsArray.length; i++){  %>
-	<span class="spacey"><img src="<%= fbPhotoThumbsArray[i] %>"></span>
-<% } %>
+	<h2>My Photos from Facebook</h2>
 
+
+	<div ng-controller="FacebookPhotoPreviewAll">
+
+		<div ng-repeat="photo in photos">
+			<div class="photo-wrapper-facebook">
+				<img src="{{ photo }}" height="150" class="inline">
+			</div>
+		</div>
+
+	</div> <!-- close  <div ng-controller="FacebookPhotoPreviewAll"> -->
+
+</div> <!-- close <div class="general-main-content"> -->
+
+<div class="spacey-bottom-footer-padding"></div>
 
 <% include ../partials/footer %>
