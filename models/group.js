@@ -18,6 +18,10 @@ var groupSchema = new mongoose.Schema({
 		type: mongoose.Schema.Types.ObjectId,
 		ref: "User"
 	}],
+	groupAdmin: {			
+		type: mongoose.Schema.Types.ObjectId,
+		ref: "User"
+	},
 	groupCreatedTime: {
 		type: String, 
 		default: dateGroupCreated

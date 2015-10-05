@@ -9,35 +9,50 @@
 	<h4>My Family Group</h4>
 	<div>
 
+
 <!-- GROUP SIGNUPS -->
 
-		<!-- conditional show -->
-		<div class="callout">
-			<i class="announcement icon big float-left"></i>
-			<p>It looks like you're not a member of a group yet. You can create a new group or join a group you've been invited to.</p>
-		</div>
+		<!-- show if user does NOT have a group associated with them -->
+		<% if (!user.groupId) { %>
+			<div class="callout">
+				<i class="announcement icon big float-left"></i>
+				<p>It looks like you're not a member of a group yet. You can create a new group or join a group you've been invited to.</p>
+			</div>
 
-		<div class="center-buttons">
-			<a href="/group/new"><h2 class="inline"><button class="button button-large">CREATE NEW GROUP</button></h2></a> 
+			<div class="center-buttons">
+				<a href="/group/new"><h2 class="inline"><button class="button button-large">CREATE NEW GROUP</button></h2></a> 
 
-			<a href="/group/join"><h2 class="inline"><button class="button button-large">JOIN EXISTING GROUP</button></h2></a>	
-		</div>
+				<a href="/group/join"><h2 class="inline"><button class="button button-large">JOIN EXISTING GROUP</button></h2></a>	
+			</div>
+		<% } %>
+
 
 <!-- GROUP DETAILS -->
 
-		<h5 class="heading-underline-bold">Group Details</h5>
-		<div>
-			<p>Group Name</p>
-			<p class="spacey-bottom">placeholder text</p>
-			<p>Public Photo Album Website Address</p>
-			<p class="spacey-bottom">placeholder text</p>
-			<p>Group Memebers</p>
-			<p class="spacey-bottom">placeholder text</p>
-			<p>Group Admin</p>
-			<p class="spacey-bottom">placeholder text</p>
-		</div>
+		<!-- show if user has a group associated with them -->
+		<% if (user.groupId) { %>
 
-		<a href="group/getgroup/edit"><h2><button class="button">EDIT GROUP</button></h2></a> 	
+			<h5 class="heading-underline-bold">Group Details</h5>
+			<div>
+				<p class="bold">Group Name</p>
+				<p class="spacey-bottom"><%= user.groupId.groupDisplayName %></p>
+
+				<p class="bold">Public Photo Album Website Address</p>
+				<p class="spacey-bottom">www.everyonesphotos.com/groups/<%= user.groupId.groupUrlName %></p>
+
+				<p class="bold">Group Members</p>
+				<p class="spacey-bottom"><%= user.groupId.groupMembers %></p>
+
+				<p class="bold">Group Admin</p>
+				<p class="spacey-bottom"><%= user.groupId.groupAdmin %></p>
+			</div>
+		<% } %>
+
+		<!-- show if user is a group admin -->
+		<% if (user.isGroupAdmin === true) { %>
+			<a href="group/getgroup/edit"><h2><button class="button">EDIT GROUP</button></h2></a> 
+		<% } %>
+		
 
 	</div>
 	

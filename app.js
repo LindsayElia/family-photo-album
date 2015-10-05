@@ -392,6 +392,11 @@ app.get("/users/:user_id/myaccount", function(req, res){
 			res.redirect("/500");
 		} else {
 
+			// populate group data onto user so it's available on show page
+			user.populate('groupId', function (errPop, userPop) {
+				console.log("populating user: >>> ", userPop);
+			});
+
 			// FLACEBOOK DB
 			db.FacebookPhoto.find({owner:user}, function(errFb, fbphotodata){
 				if (errFb){
@@ -421,6 +426,7 @@ app.get("/users/:user_id/myaccount", function(req, res){
 										var instaThumbUrl = instaphotodata[i].urlThumbnail;
 										instaThumbsArray.push(instaThumbUrl);
 									}
+
 
 									// SEND THE DATA!!!
 									res.format({

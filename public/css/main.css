@@ -84,6 +84,9 @@ input {
 	float: right;
 }
 
+p.bold {
+	font-weight: 700;
+}
 
 
 
@@ -683,9 +686,7 @@ input.button-group-form {
 	display: block;
 }
 
-p.bold {
-	font-weight: 700;
-}
+
 
 
 
