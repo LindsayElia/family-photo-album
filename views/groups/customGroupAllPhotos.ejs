@@ -1,8 +1,46 @@
 <% include ../partials/header %>
+<% include ../partials/navbar-public %>
 
-<p>create new css file</p>
+<div class="inner-container-public">
 
-<p>page for custome group...fill in..</p>
-<%= everyonesPhotosArray %>
+	<div class="spacey-public-div"></div>
+
+
+	<div>
+						
+		<% for (var j = 0; j < instaThumbsArray.length; j++){  %>
+			<a href="<%= instaFullSizeArray[j] %>"><img src="<%= instaThumbsArray[j] %>" class="photo-wrapper-instagram"></a>
+		<% } %>
+
+	</div>
+
+	<div>
+						
+		<% for (var i = 0; i < flickrThumbsArray.length; i++){  %>
+			<a href="<%= flickrFullSizeArray[i] %>"><img src="<%= flickrThumbsArray[i] %>" class="photo-wrapper-flickr"></a>
+		<% } %>
+
+	</div>
+
+
+	<div ng-controller="FacebookPhotoPreviewAll">
+
+		<div ng-repeat="photo in photos">
+			<div class="photo-wrapper-facebook">
+				<a href=""><img src="{{ photo }}" height="150" class="inline"></a>
+			</div>
+		</div>
+
+	</div> <!-- close  <div ng-controller="FacebookPhotoPreviewAll"> -->
+
+
+
+
+
+
+	<div class="spacey-bottom-footer-padding"></div>
+
+
+</div> <!-- close class="inner-container-public">  -->
 
 <% include ../partials/footer %>

@@ -32,6 +32,17 @@ app.controller("FacebookPhotoPreviewAll", function($scope, $http, $location){
 		$scope.photosEight = fbPhotoThumbsEight;
 		console.log("$scope.photosEight >> ", $scope.photosEight);
 
+
+		var fbPhotoFullSizeAll = [];
+		for (var i = 0; i < myData.length; i++){
+			var fbFullSizeUrl = myData[i].urlFullSize;
+			fbPhotoFullSizeAll.push(fbFullSizeUrl);
+		}
+
+		$scope.photosFullSize = fbPhotoFullSizeAll;
+		console.log("$scope.photosFullSize >> ", $scope.photosFullSize);
+
+
 	});
 
 

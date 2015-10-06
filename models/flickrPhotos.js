@@ -15,7 +15,10 @@ var flickrPhotoSchema = new mongoose.Schema({
 		type: mongoose.Schema.Types.ObjectId,
         ref: "User"
 	},
-	groupId: String,
+	groupId: {			// user belongs to a single group
+		type: mongoose.Schema.Types.ObjectId,
+        ref: "Group"
+	},
 	createdTime: String,	// default to false?
 	urlFullSize: String,
 	urlThumbnail: String,

@@ -13,7 +13,10 @@ var facebookPhotoSchema = new mongoose.Schema({
 		type: mongoose.Schema.Types.ObjectId,
         ref: "User"
 	},
-	groupId: String,
+	groupId: {			// user belongs to a single group
+		type: mongoose.Schema.Types.ObjectId,
+        ref: "Group"
+	},
 	createdTime: String,	// default to false?
 	album: String, 			// build out an object?
 	urlFullSize: String,

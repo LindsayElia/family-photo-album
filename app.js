@@ -1378,64 +1378,107 @@ app.get("/groups/:group_name", function(req, res){
 		if (errGroup){
 			console.log("error in /groups/:group_name in group db ", errGroup);
 		}
-		db.User.find({groupId:group}, function(errUser, usersAll){
-			if (errUser){
-				console.log("error in /groups/:group_name in user db ", errUser);
-			}
 
-			console.log("usersAll: ", usersAll);
-			
 
-			for(var i = 0; i < usersAll.length; i++){
-				var eachUser = usersAll[i]._id;
+		// nested loops won't work with render...need to save data differently or call it differently
+		// db.User.find({groupId:group}, function(errUser, usersAll){
+		// 	if (errUser){
+		// 		console.log("error in /groups/:group_name in user db ", errUser);
+		// 	}
+		// 	console.log("usersAll: ", usersAll);
+		// 	for(var i = 0; i < usersAll.length; i++){
+		// 		var eachUser = usersAll[i]._id;
+		// 	}
+		// });
 
-				// INSTAGRAM DB
-				db.InstagramPhoto.find({owner:eachUser}, function(errInsta, instaphotodata){
-					if (errInsta){
-						console.error("error in /groups/:group_name with insta db", errInsta);
+
+
+		// USER DB
+		db.User.findById(req.session.id, function(errUser, user){
+			if(errUser){
+				console.log("errUser from /groups/:group_name with user db", errUser);
+				res.redirect("/500");
+			} else {
+
+				// populate group data onto user so it's available on show page
+				// user.populate('groupId', function (errPop, userPop) {
+				// 	console.log("populating user in user edit page: >>> ", userPop);
+				// });
+
+				// FLACEBOOK DB
+				db.FacebookPhoto.find({owner:user}, function(errFb, fbphotodata){
+					if (errFb){
+						console.error("error from /groups/:group_name with fb db", errFb);
 					} else {
-						// format the instagram data
-						// var instaThumbsArray = [];
-						for (var i = 0; i < instaphotodata.length; i++){
-							var instaThumbUrl = instaphotodata[i].urlThumbnail;
-							everyonesPhotosArray.push(instaThumbUrl);
-						}
-					} // close else - instagram db
+
+						// FLICKR DB
+						db.FlickrPhoto.find({owner:user}, function(errFlickr, flickrphotodata){
+							if (errFlickr){
+								console.error("error from /groups/:group_name with flickr db", errFb);
+							} else {
+								// format the flickr data
+								var flickrThumbsArray = [];
+								var flickrFullSizeArray = [];
+								for (var i = 0; i < flickrphotodata.length; i++){
+									var flickrThumbUrl = flickrphotodata[i].urlThumbnail;
+									flickrThumbsArray.push(flickrThumbUrl);
+									var flickrFullSize = flickrphotodata[i].urlFullSize;
+									flickrFullSizeArray.push(flickrFullSize);
+								}
+
+								// INSTAGRAM DB
+								db.InstagramPhoto.find({owner:user}, function(errInsta, instaphotodata){
+									if (errInsta){
+										console.error("error from /groups/:group_name with insta db", errInsta);
+									} else {
+										// format the instagram data
+										var instaThumbsArray = [];
+										var instaFullSizeArray = [];
+										for (var i = 0; i < instaphotodata.length; i++){
+											var instaThumbUrl = instaphotodata[i].urlThumbnail;
+											instaThumbsArray.push(instaThumbUrl);
+											var instaFullSize = instaphotodata[i].urlFullSize;
+											instaFullSizeArray.push(instaFullSize);
+										}
+
+										db.Group.findOne({_id:user.groupId}, function(errGroup, group){
+											if (errGroup){
+												console.error("error from /groups/:group_name with group db", errGroup);
+											} else {
+
+												// populate admin data onto group so it's available on show page
+												// group.populate('groupAdmin', function (errGroupPop, groupPop) {
+												// 	console.log("populating group with admin in user show page: >>> ", errGroupPop);
+												// });
 
 
-					// FLICKR DB
-					db.FlickrPhoto.find({owner:eachUser}, function(errFlickr, flickrphotodata){
-						if (errFlickr){
-							console.error("error in /groups/:group_name with flickr db", errFb);
-						} else {
-							// format the flickr data
-							// var flickrThumbsArray = [];
-							for (var i = 0; i < flickrphotodata.length; i++){
-								var flickrThumbUrl = flickrphotodata[i].urlThumbnail;
-								everyonesPhotosArray.push(flickrThumbUrl);
-							}
-						} // close else - flickr db
+												// SEND THE DATA!!!
+												res.format({
+													'text/html': function(){
+														res.render("groups/customGroupAllPhotos", {user:user, req:req, flickrThumbsArray:flickrThumbsArray, instaThumbsArray:instaThumbsArray, group:group, flickrFullSizeArray:flickrFullSizeArray, instaFullSizeArray:instaFullSizeArray});
+													},
+													'application/json': function(){
+														// we can send the data in the same format we received it from our database,
+														// because we want to send as JSON and parse on the client side
+														res.send({fbphotodata:fbphotodata});
+													},
+													'default': function() {
+														// log the request and respond with 406
+														res.status(406).send('Not Acceptable');
+													}
+												}); // close res.format
 
+											} // close else
+										}); // close db.Group.find
+									} // close else - instagram db
+								}); // close db.InstagramPhoto.find
+							} // close else - flickr db
+						}); // close db.FlickrPhoto.find
+					} // close else - facebook db
+				}); // close db.FacebookPhoto.find
+			} // close else - user db
+		}); // close db.User.findById
 
-						// FLACEBOOK DB
-						// db.FacebookPhoto.find({owner:eachUser}, function(errFb, fbphotodata){
-						// 	if (errFb){
-						// 		console.error("error in /groups/:group_name with fb db", errFb);
-						// 	} 
-						// }); // close db.FacebookPhoto.find
-
-						console.log("everyonesPhotosArray >>> ", everyonesPhotosArray);
-						res.render("groups/customGroupAllPhotos", {everyonesPhotosArray:everyonesPhotosArray});
-						// res.render("groups/customGroupAllPhotos", {user:user, flickrThumbsArray:flickrThumbsArray, instaThumbsArray:instaThumbsArray, group:group});
-
-					}); // close db.FlickrPhoto.find
-
-
-				}); // close db.InstagramPhoto.find
-
-
-			} // close for loop
-		}); // close db.User.find
 	}); // close db.Group.findOne
 }); // close app.get
 

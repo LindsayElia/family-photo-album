@@ -2,6 +2,9 @@
 var mongoose = require("mongoose");
 mongoose.set("debug", true);
 var User = require('./user');
+var InstagramPhoto = require('./instagramPhotos');
+var FlickrPhoto = require('./flickrPhotos');
+var FacebookPhoto = require('./facebookPhotos');
 
 
 var date = new Date();

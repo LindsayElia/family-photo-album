@@ -41,3 +41,56 @@ a, a:visited, a:hover {
 	color: #272D2D; /* black-ish */
 }
 
+
+
+/* ============ NAVIGATION ============ */
+
+.navbar-outer-public {
+	background-color: #FCFAF8; /* off-white */
+	height: 100px;
+	background-color: #DDB84F; /* yellow */
+}
+
+.navbar-inner-public {
+	padding-top: 42px;
+	/*background-color: red;*/
+}
+
+
+h1.group-title {
+	font-weight: 100;
+	font-size: 2em;
+	color: #272D2D; /* black-ish */
+}
+
+h1.group-title:hover {
+	background-color: #FCFAF8; /* off-white */
+	color: #272D2D; /* black-ish */
+	padding: 0;
+	border-radius: 0;
+}
+
+h2.group-title {
+	font-size: 3em;
+	font-weight: 400;
+	position: relative;
+	bottom: 10px;
+}
+
+#main-content-public {
+	background-color: #272D2D; /* black-ish */
+}
+
+.inner-container-public {
+	width: 90%;
+	margin: 0 auto;
+}
+
+.spacey-public-div {
+	height: 60px;
+	width: 30px;
+	clear: both;
+}
+
+
+
