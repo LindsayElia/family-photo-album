@@ -1,0 +1,39 @@
+<% include ../partials/header %>
+<% include ../partials/navbar-logo %>
+
+
+<div class="general-main-content">
+<div class="max-width-sixty">
+
+
+	<h2 class="centerWider">Invite Group Members</h2>
+
+	<form action="/group/<%= user.groupId %>/addMembers" method="POST" id="add-group-member-form">
+		
+		<p class="label-left-group-form"><label for="groupInviteEmail">Email address</label></p>
+
+		<p>Please enter just one email address and return to this page to add more people to your group.</p>
+
+		<p><input type="email" id="groupInviteEmail" name="groupInviteEmail" class="email textField" autofocus placeholder="family.member@email.com"></p>
+	
+	
+		<p class="label-left-group-form"><label for="emailContent">Email to send</label></p>
+		<p>This is the body of email that your family member will receive. You can customize it by editing the text in the box below. There will be a custom invitation link appended to the bottom of the email.</p>
+
+		<p>
+		<textarea id="emailContent" name="emailContent" class="textArea" maxlength="2000" rows="10">Hello!
+
+I signed up for an application called Everyone's Photos, that lets us share family photos all in one place. Please accept this invitation to join my group.</textarea>
+		</p>
+		
+		<h2><input type="submit" value="SEND INVITATION" class="button button-group-form"></h2>
+
+	</form>
+
+
+</div> <!-- close <div class="max-width-sixty"> -->
+</div> <!-- close <div class="general-main-content"> -->
+
+<div class="spacey-bottom-footer-padding"></div>
+
+<% include ../partials/footer %>

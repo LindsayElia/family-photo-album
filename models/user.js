@@ -22,8 +22,9 @@ var userSchema = new mongoose.Schema({
 	 	unique: true,
 	},
 	password: {
-		type: String,
-		required: true
+		type: String
+		// required: true		// removing 'required' for now so new users go into system without a password
+		// and I don't override their password if they're existing users
 	},
 	resetPasswordToken: String,
 	resetPasswordExpires: Date,
@@ -35,6 +36,7 @@ var userSchema = new mongoose.Schema({
 		type: Boolean,	
 		default: false
 	},
+	groupInviteToken: String,
 	firstName: String,
 	lastName: String,
 	facebookId: String,

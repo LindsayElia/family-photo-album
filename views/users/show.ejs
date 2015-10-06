@@ -44,13 +44,14 @@
 				<p class="spacey-bottom"><%= user.groupId.groupMembers %></p>
 
 				<p class="bold">Group Admin</p>
-				<p class="spacey-bottom"><%= user.groupId.groupAdmin %></p>
+				<p class="spacey-bottom"><%= user.groupId.groupAdmin._firstName %> <%= user.groupId.groupAdmin._lastName %></p>
 			</div>
 		<% } %>
 
 		<!-- show if user is a group admin -->
 		<% if (user.isGroupAdmin === true) { %>
-			<a href="group/getgroup/edit"><h2><button class="button">EDIT GROUP</button></h2></a> 
+			<a href="/group/getgroup/new"><h2><button class="button">ADD MEMBERS</button></h2></a> 
+			<a href="/group/getgroup/edit"><h2><button class="button">EDIT GROUP</button></h2></a> 
 		<% } %>
 		
 

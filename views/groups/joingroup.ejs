@@ -1,0 +1,37 @@
+<% include ../partials/header %>
+<% include ../partials/navbar-title %>
+
+
+<div class="general-main-content">
+<div class="max-width-sixty">
+<div class="text-align-center">
+
+	<h2>You've Been Invited to a Family Group!</h2>
+
+	<p>Please choose a password to create your account.</p>
+
+	<form action="/joingroup/<%= inviteToken %>/signup" method="POST" id="join-group-form">
+
+		<input type="hidden" id="inviteToken" name="inviteToken" value="<%= inviteToken %>">
+		
+		<p class="label-left-join-group-form"><label for="userPass">Password: </label></p>
+		<p><input type="password" id="userPass" name="userPass" class="textField"></p>
+
+		<input type="submit" value="Add Password and Login" class="button button-little-bigger">
+	</form>
+
+	<div class="horizontal-line-spacer"></div>
+
+
+	<div>
+		<p>Have an existing account? Login and use the "join group" code from your email instead.</p>
+		<p><a href="/login"><button class="button button-little-bigger">LOGIN</button></a></p>
+	</div>
+
+</div> <!-- close <div class="text-align-center"> -->
+</div> <!-- close <div class="max-width-sixty"> -->
+</div> <!-- close <div class="general-main-content"> -->
+
+<div class="spacey-bottom-footer-padding"></div>
+
+<% include ../partials/footer %>

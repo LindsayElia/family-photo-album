@@ -44,7 +44,8 @@ app.use(cookieSession({
 var loginHelper = require("./middleware/loginHelper");
 var routeHelper = require("./middleware/routeHelper");
 
-// use loginHelpers functions in entire app.js file - before all routes?
+// use loginHelpers functions in entire app.js file - before all routes
+// this lets us use the req.login(user) and req.logout() functions inside of any route
 app.use(loginHelper);
 
 // nodemailer - for password reset emails
@@ -394,7 +395,7 @@ app.get("/users/:user_id/myaccount", function(req, res){
 
 			// populate group data onto user so it's available on show page
 			user.populate('groupId', function (errPop, userPop) {
-				console.log("populating user: >>> ", userPop);
+				console.log("populating user in user edit page: >>> ", userPop);
 			});
 
 			// FLACEBOOK DB
@@ -1111,7 +1112,8 @@ app.post("/group/new", function(req, res){
 	var newGroup = {
 		groupUrlName: req.body.groupUrl,
 		groupDisplayName: req.body.groupName,
-		groupCreatedTime: time
+		groupCreatedTime: time,
+		groupAdmin: req.session.id
 	};
 	console.log("post to /group/new for newGroup: ", newGroup);
 
@@ -1133,7 +1135,7 @@ app.post("/group/new", function(req, res){
 					console.log("error in post to new group, user db", errUser);
 					res.redirect("/500");
 				} else {
-					res.redirect("/group/" + group._id + "/edit");
+					res.redirect("/group/" + group._id + "/addmembers");
 				}
 			});
 
@@ -1153,24 +1155,210 @@ app.get("/group/join", function(req, res){
 	});
 });
 
+
+// getgroup to show group new member form - from show page
+app.get("/group/getgroup/new", function(req, res){
+	db.User.findById(req.session.id, function(err, user){
+		if(err){
+			console.log(err);
+			res.redirect("/500");
+		} else {
+			res.redirect("/group/" + user.groupId + "/addmembers");
+		}
+	});
+});
+
+// form to invite new group members
+app.get("/group/:group_id/addmembers", function(req, res){
+	db.User.findById(req.session.id, function(errUser, user){
+		if(errUser){
+			console.log("errUser from /group/:group_id/addmembers with user db", errUser);
+			res.redirect("/500");
+		} else {
+
+			// populate group data onto user so it's available on show page
+			user.populate('groupId', function (errPop, userPop) {
+				console.log("populating user in user edit page: >>> ", userPop);
+			});
+
+			res.render("groups/addMember", {user:user});	
+		}
+	});
+});
+
+
+// post from invite new group members form
+app.post("/group/:group_id/addmembers", function(req, res){
+
+// TO DO:
+// add flash messaging on successful post
+
+	// generate a token to use in the invitation
+	var inviteToken;
+	crypto.randomBytes(20, function(err, buffer) {
+		inviteToken = buffer.toString('hex');
+		console.log("generated inviteToken in /group/:group_id/addmembers ", inviteToken);
+	});
+
+	// add details to new user being invited
+	var receipientEmail = req.body.groupInviteEmail;
+	var newUser = {};
+	newUser.groupInviteToken = inviteToken;
+	newUser.groupId = req.params.group_id;
+	newUser.email = receipientEmail;
+	
+	// get the current user to pass their name into the email body
+	var invitingUserId = req.session.id;
+	var invitingUser;
+	db.User.findById(invitingUserId, function(err, userResult){
+		if (err){
+			console.log("problem with finding invitingUser in user db", err);
+		} else {
+			invitingUser = userResult;
+		}
+	});
+
+
+	// save new user with invite token
+	db.User.findOneAndUpdate({email:newUser.email}, newUser, {upsert:true}, function (errUser, user) {
+		if (errUser) {
+			console.log("error in post to /group/:group_id/addmembers in User db", errUser);
+			res.redirect("/500");
+		}
+		// console.log("inside!!! user:", user);
+
+			// configure e-mail data
+			var mailOptions = {
+			    from: "Everyone\'s Photos<lindsay@everyonesphotos.com>", // sender address
+			    to: receipientEmail,
+			    subject: "You've been invited to join a Family Group with Everyone\'s Photos ✉", // Subject line
+
+			    // plaintext body
+			    text: "Hello, \n \n " +
+			    invitingUser.firstName + " " + invitingUser.lastName +
+			    " has invited you to join their Family Group with the application " +
+			    "Everyone's Photos.\n \n" + 
+			    "Once you join the group, you can import photos from Facebook, Flickr, or Instagram, " +
+			    "and then share these photos with anyone on the internet. You can get started by clicking " +
+			    "on the following link:\n \n" +
+			    "http://" + domain + "/joingroupfromemail/" + req.params.group_id+ "/" + inviteToken +  "\n \n" +
+			    "<p>~ The Team at Everyone's Photos<p>",
+
+			    // html body
+			    html: "<p>Hello,</p>" + 
+			     "<p>" + invitingUser.firstName + " " + invitingUser.lastName +
+			   	" has invited you to join their Family Group with the application " + 
+			    "Everyone's Photos.</p>" + 
+			    "<p>Once you join the group, you can import photos from Facebook, Flickr, or Instagram, " +
+			    "and then share these photos with anyone on the internet. You can get started by clicking " +
+			    "on the following link:</p>" +
+			    "<p>http://" + domain + "/joingroupfromemail/" + req.params.group_id+ "/" + inviteToken +  "</p>" +
+			    "<p>~ The Team at Everyone's Photos<p>"
+			};
+
+			// send password reset email to user
+			transporter.sendMail(mailOptions, function(error, info){
+			    if (error) {
+			        console.log("error with transporter.sendMail in /addMembers post route", error);
+			        res.redirect("/group/getgroup/new");
+			    } else {
+
+			    	// saving again...because it's not getting attached before saving the first time :(
+			    	var thisuser = {
+			    		groupInviteToken: inviteToken
+			    	};
+					db.User.findOneAndUpdate({email:newUser.email}, thisuser, {upsert:true}, function(){
+						console.log("inside second saving of user with invite token");
+					});
+
+// TO DO:
+// flash confirmation to user
+			        console.log('Message sent: ' + info.response);
+			        res.redirect("/users/"+ req.session.id + "/myaccount");
+
+			    }
+			}); // close transporter.sendMail
+
+
+	}); // close db.User.findOne
+
+});
+
+
+
+// getgroup to show group edit - from show page
+app.get("/group/getgroup/edit", function(req, res){
+	db.User.findById(req.session.id, function(err, user){
+		if(err){
+			console.log(err);
+			res.redirect("/500");
+		} else {
+			res.redirect("/group/" + user.groupId + "/edit");
+		}
+	});
+});
+
+
+// edit details for a group - name and url only
 app.get("/group/:group_id/edit", function(req, res){
 	db.Group.findById(req.params.group_id, function(errGroup, group){
 		if(errGroup){
-			console.log("error in get to group edit, group db", errGroup);
+			console.log("errGroup from /group/:group_id/edit with group db", errGroup);
 			res.redirect("/500");
 		} else {
 			db.User.findById(req.session.id, function(errUser, user){
 				if(errUser){
-					console.log("error in get to group edit, user db", errUser);
+					console.log("errUser from /group/:group_id/edit with user db", errUser);
 					res.redirect("/500");
 				} else {
 					res.render("groups/edit", {group:group, user:user});	
 				}
-			}); // close db.User.findById
+			});
 		} // close else
 	}); // close db.Group.findById
 });
 
+
+
+// user joins group from email invite
+app.get("/joingroupfromemail/:group_id/:invite_token", function(req, res){
+	// pass the token from the requesting url into the page as data, to save in a hidden field
+	var inviteToken = req.params.invite_token;
+	console.log("** get /joingroupfromemail path, one - inviteToken >> ", inviteToken);
+	db.User.findOne({groupInviteToken:inviteToken}, function(err, user) {
+		if (!user) {
+// TO DO:
+// flash message token is invalid
+			// req.flash('error', 'Password reset token is invalid or has expired.');
+			res.redirect('/index');
+		} else {
+    		// show the join group form
+    		console.log("user inside get /joingroupfromemail path: ", user);
+    		console.log("** get /joingroupfromemail path, two - inviteToken >> ", inviteToken);
+			res.render("groups/joingroup", {user:user, req:req, inviteToken:inviteToken});
+    	}
+	});
+});
+
+
+app.post("/joingroup/:invite_token/signup", function(req, res){
+	var newUser = {
+		password: req.body.userPass
+	};
+
+	db.User.findOneAndUpdate({groupInviteToken:req.params.invite_token}, newUser, {upsert:true}, function(err, user){
+		if (err){
+			console.log("error posting to /joingroup in user db ", err);
+		} else {
+			req.login(user); // set the session id for this user to be the user's id from our DB
+			res.redirect("/users/" + user._id + "/myaccount");
+		}
+	});
+});
+
+
+
+// render a group's public page
 
 
 

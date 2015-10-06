@@ -675,21 +675,51 @@ h2.center {
 	width: 30%;
 }
 
-h2.center {
-	margin: 0 auto;
-	width: 30%;
-}
-
 input.button-group-form {
 	margin: 0 auto;
-	width: 40%;
+	width: 80%;
 	display: block;
 }
 
+#add-group-member-form {
+	border: 1px solid #C9C9CA; /* light gray */
+	padding: 30px;
+	max-width: 600px;
+	margin: auto;
+}
 
+h2.centerWider {
+	margin: 0 auto;
+	width: 300px;
+}
 
+.textArea {
+	font-size: .9em;
+	width: 100%;
+}
 
+#join-group-form {
+	border: 1px solid #C9C9CA; /* light gray */
+	padding: 30px;
+	max-width: 600px;
+	margin: auto;
+}
 
+.text-align-center {
+	text-align: center;
+}
+
+.label-left-join-group-form {
+	font-size: 1.5em;
+	font-weight: 100;
+	text-align: left;
+	position: relative;
+	left: 40px;
+}
+
+.button-little-bigger {
+	font-size: 1.1em;
+}
 
 
 
