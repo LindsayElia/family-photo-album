@@ -294,7 +294,10 @@ h3 {
 }
 
 #landing-image-photo-collection {
-	margin-bottom: 20px;
+	position: relative;
+	left: -87px;
+	margin: 0 auto 80px auto;
+	display: block;
 }
 
 .api-logo {
