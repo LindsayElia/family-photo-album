@@ -2,6 +2,7 @@
 var mongoose = require("mongoose");
 mongoose.set("debug", true);
 
+
 //_______DEFINE USER SCHEMA_______
 var facebookPhotoSchema = new mongoose.Schema({
 	facebookPhotoId: { 
@@ -12,6 +13,7 @@ var facebookPhotoSchema = new mongoose.Schema({
 		type: mongoose.Schema.Types.ObjectId,
         ref: "User"
 	},
+	groupId: String,
 	createdTime: String,	// default to false?
 	album: String, 			// build out an object?
 	urlFullSize: String,

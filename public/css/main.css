@@ -593,6 +593,14 @@ i.icon.float-left {
 	padding: 10px;
 }
 
+#family-album-button {
+	position: relative;
+	left: 50px;
+	font-size: 1.2em;
+}
+
+
+
 /* ============ USER EDIT PAGE ============ */
 
 

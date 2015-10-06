@@ -3,6 +3,7 @@ var mongoose = require("mongoose");
 mongoose.set("debug", true);
 var User = require('./user');
 
+
 var date = new Date();
 var dateGroupCreated = (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear().toString().substr(2,2);
 

@@ -2,6 +2,7 @@
 var mongoose = require("mongoose");
 mongoose.set("debug", true);
 
+
 //_______DEFINE USER SCHEMA_______
 var flickrPhotoSchema = new mongoose.Schema({
 	flickrPhotoId: { 
@@ -14,6 +15,7 @@ var flickrPhotoSchema = new mongoose.Schema({
 		type: mongoose.Schema.Types.ObjectId,
         ref: "User"
 	},
+	groupId: String,
 	createdTime: String,	// default to false?
 	urlFullSize: String,
 	urlThumbnail: String,

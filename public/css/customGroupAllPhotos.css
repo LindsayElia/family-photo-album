@@ -1,0 +1,43 @@
+@import url("https://fonts.googleapis.com/css?family=Roboto:400,100,300,500,700,900|Quicksand:400,300,700");
+
+
+/* ============ COLOR PALETTE ============ */
+
+/*
+#DDB84F; /* yellow */
+/* for accents */
+
+/*
+#272D2D; /* black-ish */
+/* for navbar */
+/* for body text */
+
+/*
+#FCFAF8; /* off-white */
+
+/*
+#C9C9CA; /* light gray */
+
+/*
+#839197; /* blue gray - lighter blue */
+/*
+
+*/
+
+
+/* ============ GLOBAL ============ */
+
+
+body {
+	font-family: Roboto, Helvetica, Arial, sans-serif;
+	margin: 0;
+	padding: 0;
+	font-size: 1em;
+	background-color: #FCFAF8; /* off-white */
+}
+
+a, a:visited, a:hover {
+	text-decoration: none;
+	color: #272D2D; /* black-ish */
+}
+

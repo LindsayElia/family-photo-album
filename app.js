@@ -387,7 +387,7 @@ app.get("/users/getuser/myaccount", function(req, res){
 // user show page - user landing page after logging in
 app.get("/users/:user_id/myaccount", function(req, res){
 	// USER DB
-	db.User.findById(req.params.user_id, function(errUser, user){
+	db.User.findById(req.session.id, function(errUser, user){
 		if(errUser){
 			console.log("errUser from users/myaccount with user db", errUser);
 			res.redirect("/500");
@@ -428,23 +428,35 @@ app.get("/users/:user_id/myaccount", function(req, res){
 										instaThumbsArray.push(instaThumbUrl);
 									}
 
+									db.Group.findOne({_id:user.groupId}, function(errGroup, group){
+										if (errGroup){
+											console.error("error from users/myaccount with group db", errGroup);
+										} else {
 
-									// SEND THE DATA!!!
-									res.format({
-										'text/html': function(){
-											res.render("users/show", {user:user, req:req, flickrThumbsArray:flickrThumbsArray, instaThumbsArray:instaThumbsArray});
-										},
-										'application/json': function(){
-											// we can send the data in the same format we received it from our database,
-											// because we want to send as JSON and parse on the client side
-											res.send({fbphotodata:fbphotodata});
-										},
-										'default': function() {
-											// log the request and respond with 406
-											res.status(406).send('Not Acceptable');
-										}
-									}); // close res.format
+											// populate admin data onto group so it's available on show page
+											// group.populate('groupAdmin', function (errGroupPop, groupPop) {
+											// 	console.log("populating group with admin in user show page: >>> ", errGroupPop);
+											// });
 
+
+											// SEND THE DATA!!!
+											res.format({
+												'text/html': function(){
+													res.render("users/show", {user:user, req:req, flickrThumbsArray:flickrThumbsArray, instaThumbsArray:instaThumbsArray, group:group});
+												},
+												'application/json': function(){
+													// we can send the data in the same format we received it from our database,
+													// because we want to send as JSON and parse on the client side
+													res.send({fbphotodata:fbphotodata});
+												},
+												'default': function() {
+													// log the request and respond with 406
+													res.status(406).send('Not Acceptable');
+												}
+											}); // close res.format
+
+										} // close else
+									}); // close db.Group.find
 								} // close else - instagram db
 							}); // close db.InstagramPhoto.find
 						} // close else - flickr db
@@ -1359,6 +1371,74 @@ app.post("/joingroup/:invite_token/signup", function(req, res){
 
 
 // render a group's public page
+app.get("/groups/:group_name", function(req, res){
+	var everyonesPhotosArray = [];
+
+	db.Group.findOne({groupUrlName:req.params.group_name}, function(errGroup, group){
+		if (errGroup){
+			console.log("error in /groups/:group_name in group db ", errGroup);
+		}
+		db.User.find({groupId:group}, function(errUser, usersAll){
+			if (errUser){
+				console.log("error in /groups/:group_name in user db ", errUser);
+			}
+
+			console.log("usersAll: ", usersAll);
+			
+
+			for(var i = 0; i < usersAll.length; i++){
+				var eachUser = usersAll[i]._id;
+
+				// INSTAGRAM DB
+				db.InstagramPhoto.find({owner:eachUser}, function(errInsta, instaphotodata){
+					if (errInsta){
+						console.error("error in /groups/:group_name with insta db", errInsta);
+					} else {
+						// format the instagram data
+						// var instaThumbsArray = [];
+						for (var i = 0; i < instaphotodata.length; i++){
+							var instaThumbUrl = instaphotodata[i].urlThumbnail;
+							everyonesPhotosArray.push(instaThumbUrl);
+						}
+					} // close else - instagram db
+
+
+					// FLICKR DB
+					db.FlickrPhoto.find({owner:eachUser}, function(errFlickr, flickrphotodata){
+						if (errFlickr){
+							console.error("error in /groups/:group_name with flickr db", errFb);
+						} else {
+							// format the flickr data
+							// var flickrThumbsArray = [];
+							for (var i = 0; i < flickrphotodata.length; i++){
+								var flickrThumbUrl = flickrphotodata[i].urlThumbnail;
+								everyonesPhotosArray.push(flickrThumbUrl);
+							}
+						} // close else - flickr db
+
+
+						// FLACEBOOK DB
+						// db.FacebookPhoto.find({owner:eachUser}, function(errFb, fbphotodata){
+						// 	if (errFb){
+						// 		console.error("error in /groups/:group_name with fb db", errFb);
+						// 	} 
+						// }); // close db.FacebookPhoto.find
+
+						console.log("everyonesPhotosArray >>> ", everyonesPhotosArray);
+						res.render("groups/customGroupAllPhotos", {everyonesPhotosArray:everyonesPhotosArray});
+						// res.render("groups/customGroupAllPhotos", {user:user, flickrThumbsArray:flickrThumbsArray, instaThumbsArray:instaThumbsArray, group:group});
+
+					}); // close db.FlickrPhoto.find
+
+
+				}); // close db.InstagramPhoto.find
+
+
+			} // close for loop
+		}); // close db.User.find
+	}); // close db.Group.findOne
+}); // close app.get
+
 
 
 

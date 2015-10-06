@@ -2,6 +2,7 @@
 var mongoose = require("mongoose");
 mongoose.set("debug", true);
 
+
 //_______DEFINE USER SCHEMA_______
 var instagramPhotoSchema = new mongoose.Schema({
 	instagramPhotoId: { 
@@ -12,6 +13,7 @@ var instagramPhotoSchema = new mongoose.Schema({
 		type: mongoose.Schema.Types.ObjectId,
         ref: "User"
 	},
+	groupId: String,
 	createdTime: String,	// default to false?
 	urlFullSize: String,
 	urlThumbnail: String,

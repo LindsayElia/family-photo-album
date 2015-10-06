@@ -38,13 +38,16 @@
 				<p class="spacey-bottom"><%= user.groupId.groupDisplayName %></p>
 
 				<p class="bold">Public Photo Album Website Address</p>
-				<p class="spacey-bottom">www.everyonesphotos.com/groups/<%= user.groupId.groupUrlName %></p>
+				<p class="spacey-bottom inline">www.everyonesphotos.com/groups/<%= group.groupUrlName %></p>
+				<!-- user.groupId.groupUrlName -->
+					<a href="/groups/<%= group.groupUrlName %>" target="blank"><button class="inline button" id="family-album-button">GO TO FAMILY ALBUM</button></a>
 
 				<p class="bold">Group Members</p>
 				<p class="spacey-bottom"><%= user.groupId.groupMembers %></p>
 
 				<p class="bold">Group Admin</p>
-				<p class="spacey-bottom"><%= user.groupId.groupAdmin._firstName %> <%= user.groupId.groupAdmin._lastName %></p>
+				<p class="spacey-bottom"><%= group.groupAdmin.firstName %></p>
+
 			</div>
 		<% } %>
 
