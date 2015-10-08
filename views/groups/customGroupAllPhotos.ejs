@@ -9,7 +9,7 @@
 	<div>
 						
 		<% for (var j = 0; j < instaThumbsArray.length; j++){  %>
-			<a href="<%= instaFullSizeArray[j] %>"><img src="<%= instaThumbsArray[j] %>" class="photo-wrapper-instagram"></a>
+			<a href="<%= instaFullSizeArray[j] %>"><img src="<%= instaThumbsArray[j] %>" class="photo-wrapper-instagram-public"></a>
 		<% } %>
 
 	</div>
@@ -17,7 +17,7 @@
 	<div>
 						
 		<% for (var i = 0; i < flickrThumbsArray.length; i++){  %>
-			<a href="<%= flickrFullSizeArray[i] %>"><img src="<%= flickrThumbsArray[i] %>" class="photo-wrapper-flickr"></a>
+			<a href="<%= flickrFullSizeArray[i] %>"><img src="<%= flickrThumbsArray[i] %>" class="photo-wrapper-flickr-public"></a>
 		<% } %>
 
 	</div>
@@ -26,7 +26,7 @@
 	<div ng-controller="FacebookPhotoPreviewAll">
 
 		<div ng-repeat="photo in photos">
-			<div class="photo-wrapper-facebook">
+			<div class="photo-wrapper-facebook-public">
 				<a href=""><img src="{{ photo }}" height="150" class="inline"></a>
 			</div>
 		</div>

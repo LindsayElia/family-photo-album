@@ -368,7 +368,7 @@ h3 {
 		transform: scale(1);
 	  }
 	60% {
-		transform: scale(1.2);
+		transform: scale(1.05);
 	}
 	100% {
 		transform: scale(1);
@@ -380,7 +380,7 @@ h3 {
 		transform: scale(1);
 	  }
 	60% {
-		transform: scale(1.2);
+		transform: scale(1.05);
 	}
 	100% {
 		transform: scale(1);
@@ -395,6 +395,13 @@ h3 {
 	-webkit-animation-fill-mode: forwards;
 	animation-fill-mode: forwards;
 }
+
+
+
+/*sdafadsf*/
+
+
+
 
 
 /* ============ LOGIN PAGE ============ */

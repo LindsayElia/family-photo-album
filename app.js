@@ -70,8 +70,8 @@ var crypto = require('crypto');
 // CHANGE FOR PRODUCTION
 // CHANGE FOR PRODUCTION
 // base domain
-// var domain = "localhost:3000";
-var domain = "everyonesphotos.com";
+var domain = "localhost:3000";
+// var domain = "everyonesphotos.com";
 
 
 
@@ -327,14 +327,14 @@ app.post('/reset/:user_id/:token', function(req, res){
 					    "This email is to let you know that your password has been changed for your account. \n \n" + 
 					    "We are sending this email as a confirmation and no further action is needed, " + 
 					    "unless you did not reset your password. If this was not you, please go to our " +
-					    "password reset page and request a new password reset. www.everyonesphotos.com/passwordreset\n \n" + 
+					    "password reset page and request a new password reset. " + domain+ "/passwordreset\n \n" + 
 					    "~Lindsay",
 					    // html body
 					    html: "<p>Hello " + user.firstName + ",</p>" + 
 					    "<p>This email is to let you know that your password has been changed for your account.</p>" + 
 					    "<p>We are sending this email as a confirmation and no further action is needed, " +
 					    "unless you did not reset your password. If this was not you, please go to our " +
-					    "<a href='www.everyonesphotos.com/passwordreset'>password reset page</a> and request a new password reset.</p>" + 
+					    "<a href='" + domain + "/passwordreset'>password reset page</a> and request a new password reset.</p>" + 
 					    "<p>~Lindsay<p>"
 					};
 
@@ -1280,7 +1280,7 @@ app.post("/group/:group_id/addmembers", function(req, res){
 			    		groupInviteToken: inviteToken
 			    	};
 					db.User.findOneAndUpdate({email:newUser.email}, thisuser, {upsert:true}, function(){
-						console.log("inside second saving of user with invite token");
+						console.log("inside second saving of user with invite token, ", thisuser);
 					});
 
 // TO DO:

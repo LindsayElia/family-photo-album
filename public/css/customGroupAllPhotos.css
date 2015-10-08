@@ -91,19 +91,25 @@ h2.group-title {
 	clear: both;
 }
 
-.photo-wrapper-instagram {
+.photo-wrapper-instagram-public {
+	float: left;
+	padding: 10px;
 	border: 1px solid #FCFAF8; /* off-white */
 	background-color: #FCFAF8; /* off-white */
 	margin: 15px;
 }
 
-.photo-wrapper-flickr {
+.photo-wrapper-flickr-public {
+	float: left;
+	padding: 10px;
 	border: 1px solid #FCFAF8; /* off-white */
 	background-color: #FCFAF8; /* off-white */
 	margin: 15px;
 }
 
-.photo-wrapper-facebook {
+.photo-wrapper-facebook-public {
+	float: left;
+	padding: 10px;
 	border: 1px solid #FCFAF8; /* off-white */
 	background-color: #FCFAF8; /* off-white */
 	margin: 15px;
