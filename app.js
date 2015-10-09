@@ -1,5 +1,5 @@
 // ____________REQUIRE NODE MODULES & SET MIDDLEWARE____________
-
+var when = require('when');
 // express - lets us use dynamic data within our views
 var express = require("express");
 var app = express();
@@ -395,7 +395,7 @@ app.get("/users/:user_id/myaccount", function(req, res){
 
 			// populate group data onto user so it's available on show page
 			user.populate('groupId', function (errPop, userPop) {
-				console.log("populating user in user edit page: >>> ", userPop);
+				// console.log("populating user in user edit page: >>> ", userPop);
 			});
 
 			// FLACEBOOK DB
@@ -1370,74 +1370,55 @@ app.post("/joingroup/:invite_token/signup", function(req, res){
 
 
 
+// NOTES FOR PROMISES
+
+	// can pass in two functions to a .then()
+	// the first function happens on success
+	// the second function happens on error
+	// can use .catch() at the end, and if any of the promises has an error, 
+	// it immediately kicks out to the catch
+
+	// request(something).then(function(){
+	//     // do stuff
+	// }).then(function(){
+	//     //do more stuff
+	// }).then(){
+	//     // do even more stuff!
+	// }
+
+
 // render a group's public page
 app.get("/groups/:group_name", function(req, res){
 	var everyonesPhotosArray = [];
+	var promisesArray = [];
 
-	db.Group.findOne({groupUrlName:req.params.group_name}, function(errGroup, group){
-		if (errGroup){
-			console.log("error in /groups/:group_name in group db ", errGroup);
+	db.Group.findOne({groupUrlName:req.params.group_name}).exec()
+		.then(function(groupResponse){
+		console.log("groupResponse >>> ", groupResponse);
+		return db.User.find({groupId:groupResponse}).exec();
+	}).then(function(allUsersResponse){
+		console.log("allUsersResponse >>> ", allUsersResponse);
+		var allPromisesArray = [];
+		for (var i = 0; i < allUsersResponse.length; i++){
+			var eachUser = allUsersResponse[i];
+			var instagramPromise = db.InstagramPhoto.find({owner:eachUser}).exec();
+			allPromisesArray.push(instagramPromise);
+			var flickrPromise = db.FlickrPhoto.find({owner:eachUser}).exec();
+			allPromisesArray.push(flickrPromise);
+			var facebookPromise = db.FacebookPhoto.find({owner:eachUser}).exec();
+			allPromisesArray.push(facebookPromise);
 		}
-		db.User.find({groupId:group}, function(errUser, usersAll){
-			if (errUser){
-				console.log("error in /groups/:group_name in user db ", errUser);
-			}
+		// console.log()
+		return when.all(allPromisesArray);
 
-			console.log("usersAll: ", usersAll);
-			
-
-			for(var i = 0; i < usersAll.length; i++){
-				var eachUser = usersAll[i]._id;
-
-				// INSTAGRAM DB
-				db.InstagramPhoto.find({owner:eachUser}, function(errInsta, instaphotodata){
-					if (errInsta){
-						console.error("error in /groups/:group_name with insta db", errInsta);
-					} else {
-						// format the instagram data
-						// var instaThumbsArray = [];
-						for (var i = 0; i < instaphotodata.length; i++){
-							var instaThumbUrl = instaphotodata[i].urlThumbnail;
-							everyonesPhotosArray.push(instaThumbUrl);
-						}
-					} // close else - instagram db
+	}).then(function(allPromiseResponses){
+		console.log("allPromiseResponses >>> ", allPromiseResponses);
+		res.render("groups/customGroupAllPhotos", {allPromiseResponses:allPromiseResponses});
+	});
 
 
-					// FLICKR DB
-					db.FlickrPhoto.find({owner:eachUser}, function(errFlickr, flickrphotodata){
-						if (errFlickr){
-							console.error("error in /groups/:group_name with flickr db", errFb);
-						} else {
-							// format the flickr data
-							// var flickrThumbsArray = [];
-							for (var i = 0; i < flickrphotodata.length; i++){
-								var flickrThumbUrl = flickrphotodata[i].urlThumbnail;
-								everyonesPhotosArray.push(flickrThumbUrl);
-							}
-						} // close else - flickr db
-
-
-						// FLACEBOOK DB
-						// db.FacebookPhoto.find({owner:eachUser}, function(errFb, fbphotodata){
-						// 	if (errFb){
-						// 		console.error("error in /groups/:group_name with fb db", errFb);
-						// 	} 
-						// }); // close db.FacebookPhoto.find
-
-						console.log("everyonesPhotosArray >>> ", everyonesPhotosArray);
-						res.render("groups/customGroupAllPhotos", {everyonesPhotosArray:everyonesPhotosArray});
-						// res.render("groups/customGroupAllPhotos", {user:user, flickrThumbsArray:flickrThumbsArray, instaThumbsArray:instaThumbsArray, group:group});
-
-					}); // close db.FlickrPhoto.find
-
-
-				}); // close db.InstagramPhoto.find
-
-
-			} // close for loop
-		}); // close db.User.find
-	}); // close db.Group.findOne
 }); // close app.get
+
 
 
 
