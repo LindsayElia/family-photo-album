@@ -1,5 +1,5 @@
 // ____________REQUIRE NODE MODULES & SET MIDDLEWARE____________
-
+var when = require('when');
 // express - lets us use dynamic data within our views
 var express = require("express");
 var app = express();
@@ -395,7 +395,7 @@ app.get("/users/:user_id/myaccount", function(req, res){
 
 			// populate group data onto user so it's available on show page
 			user.populate('groupId', function (errPop, userPop) {
-				console.log("populating user in user edit page: >>> ", userPop);
+				// console.log("populating user in user edit page: >>> ", userPop);
 			});
 
 			// FLACEBOOK DB
@@ -1369,118 +1369,37 @@ app.post("/joingroup/:invite_token/signup", function(req, res){
 });
 
 
-
 // render a group's public page
 app.get("/groups/:group_name", function(req, res){
 	var everyonesPhotosArray = [];
+	var promisesArray = [];
 
-	db.Group.findOne({groupUrlName:req.params.group_name}, function(errGroup, group){
-		if (errGroup){
-			console.log("error in /groups/:group_name in group db ", errGroup);
+	db.Group.findOne({groupUrlName:req.params.group_name}).exec()
+		.then(function(groupResponse){
+		console.log("groupResponse >>> ", groupResponse);
+		return db.User.find({groupId:groupResponse}).exec();
+	}).then(function(allUsersResponse){
+		console.log("allUsersResponse >>> ", allUsersResponse);
+		var allPromisesArray = [];
+		for (var i = 0; i < allUsersResponse.length; i++){
+			var eachUser = allUsersResponse[i];
+			var instagramPromise = db.InstagramPhoto.find({owner:eachUser}).exec();
+			allPromisesArray.push(instagramPromise);
+			var flickrPromise = db.FlickrPhoto.find({owner:eachUser}).exec();
+			allPromisesArray.push(flickrPromise);
+			var facebookPromise = db.FacebookPhoto.find({owner:eachUser}).exec();
+			allPromisesArray.push(facebookPromise);
 		}
+		// console.log()
+		return when.all(allPromisesArray);
 
-
-		// nested loops won't work with render...need to save data differently or call it differently
-		// db.User.find({groupId:group}, function(errUser, usersAll){
-		// 	if (errUser){
-		// 		console.log("error in /groups/:group_name in user db ", errUser);
-		// 	}
-		// 	console.log("usersAll: ", usersAll);
-		// 	for(var i = 0; i < usersAll.length; i++){
-		// 		var eachUser = usersAll[i]._id;
-		// 	}
-		// });
-
-
-
-		// USER DB
-		db.User.findById(req.session.id, function(errUser, user){
-			if(errUser){
-				console.log("errUser from /groups/:group_name with user db", errUser);
-				res.redirect("/500");
-			} else {
-
-				// populate group data onto user so it's available on show page
-				// user.populate('groupId', function (errPop, userPop) {
-				// 	console.log("populating user in user edit page: >>> ", userPop);
-				// });
-
-				// FLACEBOOK DB
-				db.FacebookPhoto.find({owner:user}, function(errFb, fbphotodata){
-					if (errFb){
-						console.error("error from /groups/:group_name with fb db", errFb);
-					} else {
-
-						// FLICKR DB
-						db.FlickrPhoto.find({owner:user}, function(errFlickr, flickrphotodata){
-							if (errFlickr){
-								console.error("error from /groups/:group_name with flickr db", errFb);
-							} else {
-								// format the flickr data
-								var flickrThumbsArray = [];
-								var flickrFullSizeArray = [];
-								for (var i = 0; i < flickrphotodata.length; i++){
-									var flickrThumbUrl = flickrphotodata[i].urlThumbnail;
-									flickrThumbsArray.push(flickrThumbUrl);
-									var flickrFullSize = flickrphotodata[i].urlFullSize;
-									flickrFullSizeArray.push(flickrFullSize);
-								}
-
-								// INSTAGRAM DB
-								db.InstagramPhoto.find({owner:user}, function(errInsta, instaphotodata){
-									if (errInsta){
-										console.error("error from /groups/:group_name with insta db", errInsta);
-									} else {
-										// format the instagram data
-										var instaThumbsArray = [];
-										var instaFullSizeArray = [];
-										for (var i = 0; i < instaphotodata.length; i++){
-											var instaThumbUrl = instaphotodata[i].urlThumbnail;
-											instaThumbsArray.push(instaThumbUrl);
-											var instaFullSize = instaphotodata[i].urlFullSize;
-											instaFullSizeArray.push(instaFullSize);
-										}
-
-										db.Group.findOne({_id:user.groupId}, function(errGroup, group){
-											if (errGroup){
-												console.error("error from /groups/:group_name with group db", errGroup);
-											} else {
-
-												// populate admin data onto group so it's available on show page
-												// group.populate('groupAdmin', function (errGroupPop, groupPop) {
-												// 	console.log("populating group with admin in user show page: >>> ", errGroupPop);
-												// });
-
-
-												// SEND THE DATA!!!
-												res.format({
-													'text/html': function(){
-														res.render("groups/customGroupAllPhotos", {user:user, req:req, flickrThumbsArray:flickrThumbsArray, instaThumbsArray:instaThumbsArray, group:group, flickrFullSizeArray:flickrFullSizeArray, instaFullSizeArray:instaFullSizeArray});
-													},
-													'application/json': function(){
-														// we can send the data in the same format we received it from our database,
-														// because we want to send as JSON and parse on the client side
-														res.send({fbphotodata:fbphotodata});
-													},
-													'default': function() {
-														// log the request and respond with 406
-														res.status(406).send('Not Acceptable');
-													}
-												}); // close res.format
-
-											} // close else
-										}); // close db.Group.find
-									} // close else - instagram db
-								}); // close db.InstagramPhoto.find
-							} // close else - flickr db
-						}); // close db.FlickrPhoto.find
-					} // close else - facebook db
-				}); // close db.FacebookPhoto.find
-			} // close else - user db
-		}); // close db.User.findById
-
-	}); // close db.Group.findOne
+	}).then(function(allPromiseResponses){
+		console.log("allPromiseResponses >>> ", allPromiseResponses);
+		res.render("groups/customGroupAllPhotos", {allPromiseResponses:allPromiseResponses});
+	});
+	
 }); // close app.get
+
 
 
 
