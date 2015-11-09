@@ -86,8 +86,12 @@ var domain = "localhost:3000";
 // getting started reference: (written by the module author) https://scotch.io/tutorials/implement-oauth-into-your-express-koa-or-hapi-applications-using-grant
 var expressSession = require('express-session');
 var Grant = require('grant-express');
-var config = require('./config.json'); // bring in the config.json file in the same dirctory
-var grant = new Grant(config['development'||'production']);
+
+// var config = require('./config.json'); // bring in the config.json file in the same dirctory
+// var grant = new Grant(config['development'||'production']);
+
+var grant = new Grant(require('./config.json'));
+
 // REQUIRED: (any session store - see ./example/express-session)
 app.use(expressSession({secret:'grant'}));
 // mount grant
@@ -1373,6 +1377,10 @@ app.post("/joingroup/:invite_token/signup", function(req, res){
 app.get("/groups/:group_name", function(req, res){
 	var everyonesPhotosArray = [];
 	var promisesArray = [];
+	var group;
+
+// go back to the original way I had done this and pass group in to the outer variable
+// the page won't load without a group id in the header partial
 
 	db.Group.findOne({groupUrlName:req.params.group_name}).exec()
 		.then(function(groupResponse){
@@ -1395,9 +1403,9 @@ app.get("/groups/:group_name", function(req, res){
 
 	}).then(function(allPromiseResponses){
 		console.log("allPromiseResponses >>> ", allPromiseResponses);
-		res.render("groups/customGroupAllPhotos", {allPromiseResponses:allPromiseResponses});
+		res.render("groups/customGroupAllPhotos", {allPromiseResponses:allPromiseResponses, group:group});
 	});
-	
+
 }); // close app.get
 
 
