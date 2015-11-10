@@ -205,11 +205,8 @@ app.get('/passwordreset', function(req, res){
 app.post('/passwordreset', function(req, res){
 	
 	// generate the token
-	var token;
-	crypto.randomBytes(20, function(err, buffer) {
-		token = buffer.toString('hex');
-		console.log("curious to see what this generates - token: ", token);
-	});
+	var token = crypto.randomBytes(20).toString('hex'); // 'hex' makes it so that the result is only letters and numbers
+	console.log("token in /passwordreset: ", token);
 	
 	// look for user in our db
 	var receipientEmail = req.body.userEmail;
@@ -883,6 +880,7 @@ app.get("/users/:user_id/landing/show/instagram", function(req, res){
 var flickrApiKey = process.env.FLICKR_API_KEY;
 var flickrClientSecret = process.env.FLICKR_CLIENT_SECRET;
 var flickrRedirectUri = process.env.FLICKR_REDIRECT_URI;
+var flickrRedirectUriEncoded = process.env.FLICKR_REDIRECT_URI_ENCODED;
 // console.log("flickrRedirectUri - ", flickrRedirectUri);
 
 
@@ -906,22 +904,31 @@ app.get('/users/:user_id/login/flickr', function(req, res){
 	// ask flickr for authorization
 	console.log("requesting request_token from flickr - get /users/:user_id/login/flickr");
 
-	var nonce = crypto.randomBytes(20).toString('hex');
-	console.log("outer nonce:", nonce);
+	var nonce = crypto.randomBytes(20).toString('hex'); // 'hex' makes it so that the result is only letters and numbers
+	console.log("nonce #1:", nonce);
 
 	var timestamp = Date.now();
 
-	// replace all ampersands EXCEPT for the two between the three parts: the base string, 
-	var stringToConvertToSignatureForRequestTokenUrl = "GET&" + 
+	// replace all ampersands EXCEPT for the two between the three parts: 
+		// 1 - the HTTP verb
+		// 2 - the request URL
+		// 3 - all of the request parameters (everything else)
+	var baseString = "GET&" + 
 		"https%3A%2F%2Fwww.flickr.com%2Fservices%2Foauth%2Frequest_token&" + 
-		"oauth_callback%3D" + flickrRedirectUri + 
-		"%26oauth_consumer_key%3D" + flickrApiKey + 
+		"oauth_callback%3D" + flickrRedirectUriEncoded + 
+		"%26oauth_consumer_key%3D" + flickrApiKey +
 		"%26oauth_nonce%3D" + nonce + 
 		"%26oauth_signature_method%3DHMAC-SHA1" + 
 		"%26oauth_timestamp%3D" + timestamp + 
-		"%26oauth_version%3D1.0" ; 
+		"%26oauth_version%3D1.0"; 
 
-	console.log("base string - stringToConvertToSignatureForRequestTokenUrl: ", stringToConvertToSignatureForRequestTokenUrl);
+	// :   is   %3A
+	// /   is   %2F
+	// &   is 	%26
+	// =   is 	%3D
+	// ,   is	%2C
+
+	console.log("base string: ", baseString);
 
 	// Our signing key is on this format: CONSUMER_SECRET + "&" + TOKEN_SECRET. 
 	// But since we do not have a token yet, the signing key is JUST the consumer secret and an ampersand.
@@ -929,22 +936,46 @@ app.get('/users/:user_id/login/flickr', function(req, res){
 	var signingKey = flickrClientSecret + "&" ;
 
 	// make the hash
-	var apiSignature = crypto.createHmac("sha1", signingKey).update(stringToConvertToSignatureForRequestTokenUrl).digest('hex');
+	var apiSignature = crypto.createHmac("sha1", signingKey).update(baseString).digest('base64');
 	console.log("my crypto apiSignature for request token: ", apiSignature);
 
 	// combine the apiSignature with the request Url base string
-	var flickrUrlToGet = "https://www.flickr.com/services/oauth/request_token/?" + 
+	var flickrUrlToGet = "https://www.flickr.com/services/oauth/request_token?" + 
 	"oauth_callback=" + flickrRedirectUri + 
 	"&oauth_consumer_key=" + flickrApiKey + 
 	"&oauth_nonce=" + nonce + 
 	"&oauth_signature_method=HMAC-SHA1" + 
 	"&oauth_timestamp=" + timestamp + 
 	"&oauth_version=1.0" + 
-	"&oauth_signature=" + apiSignature ; // our hashed variable 
+	"&oauth_signature=" + apiSignature; // our hashed variable 
+	console.log("flickrUrlToGet --->>>> ", flickrUrlToGet);
 
-	res.redirect(flickrUrlToGet);
+	request.get(flickrUrlToGet, 
+		function(flickrApiRequest, flickrApiResponse){
+			console.log("flickrApiRequest --->>>> ", flickrApiRequest);
+			console.log("flickrApiResponse --->>>> ", flickrApiResponse);
+			console.log("flickrApiResponse.body --->>>> ", flickrApiResponse.body);
+
+
+			var flickrDataReceived = JSON.parse(flickrApiResponse);
+			console.log("flickrDataReceived - ", flickrDataReceived);
+
+			var userFlickrOauthToken = flickrDataReceived.body.oauth_token;
+			var userFlickrOauthTokenSecret = flickrDataReceived.body.oauth_token_secret;
+			console.log("userFlickrOauthToken - ", userFlickrOauthToken);
+			console.log("userFlickrOauthTokenSecret - ", userFlickrOauthTokenSecret);
+
+			res.redirect("/index");
+			// res.redirect("https://www.flickr.com/services/oauth/authorize?oauth_token=" 
+				// + variable with flickr response token thingy
+				 // ); 
+
+	}); // close request.get
 
 });
+
+
+
 
 // path specified by grant module
 // app.get('/connect/flickr/callback', function(req, res){
@@ -989,11 +1020,8 @@ app.get('/handle_flickr_response', function(req, res){
 	// The base string is constructed by concatenating the HTTP verb, the request URL, and all request parameters 
 	// sorted by name, using lexicograhpical byte value ordering, separated by an '&'.
 
-	var nonce;
-	crypto.randomBytes(20, function(err, buffer) {
-		nonce = buffer.toString('hex');
-		console.log("nonce #2: ", nonce);
-	});
+	var nonce = crypto.randomBytes(20).toString('hex'); // 'hex' makes it so that the result is only letters and numbers
+	console.log("nonce #2: ", nonce);
 
 	var timestamp = Date.now();
 
