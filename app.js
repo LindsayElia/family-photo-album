@@ -705,7 +705,7 @@ app.get('/users/:user_id/landing/facebook', function(req, res){
 var instagramClientId = process.env.INSTAGRAM_CLIENT_ID;
 var instagramClientSecret = process.env.INSTAGRAM_CLIENT_SECRET;
 var instagramRedirectUri = process.env.INSTAGRAM_REDIRECT_URI;
-console.log("instagramRedirectUri: ", instagramRedirectUri);
+// console.log("instagramRedirectUri: ", instagramRedirectUri);
 
 
 // displays a page with the instagram authorization via a button
@@ -882,7 +882,7 @@ app.get("/users/:user_id/landing/show/instagram", function(req, res){
 // Flickr credentials
 var flickrApiKey = process.env.FLICKR_API_KEY;
 var flickrClientSecret = process.env.FLICKR_CLIENT_SECRET;
-// var flickrRedirectUri = process.env.FLICKR_REDIRECT_URI;
+var flickrRedirectUri = process.env.FLICKR_REDIRECT_URI;
 // console.log("flickrRedirectUri - ", flickrRedirectUri);
 
 
@@ -901,13 +901,61 @@ app.get('/users/:user_id/authorize/flickr', function(req, res){
 // user clicks on button from the /authorize/flickr page,
 // which gets this route, which starts the authentication process
 // to the flickr API, and redirects to the /landing/flickr route below
-// see https://github.com/simov/grant#typical-flow - step #5
-app.get('/users/:user_id/connect/flickr', function(req, res){
+
+app.get('/users/:user_id/login/flickr', function(req, res){
+	// ask flickr for authorization
+	console.log("requesting request_token from flickr - get /users/:user_id/login/flickr");
+
+	var nonce = crypto.randomBytes(20).toString('hex');
+	console.log("outer nonce:", nonce);
+
+	var timestamp = Date.now();
+
+	// replace all ampersands EXCEPT for the two between the three parts: the base string, 
+	var stringToConvertToSignatureForRequestTokenUrl = "GET&" + 
+		"https%3A%2F%2Fwww.flickr.com%2Fservices%2Foauth%2Frequest_token&" + 
+		"oauth_callback%3D" + flickrRedirectUri + 
+		"%26oauth_consumer_key%3D" + flickrApiKey + 
+		"%26oauth_nonce%3D" + nonce + 
+		"%26oauth_signature_method%3DHMAC-SHA1" + 
+		"%26oauth_timestamp%3D" + timestamp + 
+		"%26oauth_version%3D1.0" ; 
+
+	console.log("base string - stringToConvertToSignatureForRequestTokenUrl: ", stringToConvertToSignatureForRequestTokenUrl);
+
+	// Our signing key is on this format: CONSUMER_SECRET + "&" + TOKEN_SECRET. 
+	// But since we do not have a token yet, the signing key is JUST the consumer secret and an ampersand.
+	// http://stackoverflow.com/questions/9486840/issue-with-oauth-and-flickr-cannot-request-token
+	var signingKey = flickrClientSecret + "&" ;
+
+	// make the hash
+	var apiSignature = crypto.createHmac("sha1", signingKey).update(stringToConvertToSignatureForRequestTokenUrl).digest('hex');
+	console.log("my crypto apiSignature for request token: ", apiSignature);
+
+	// combine the apiSignature with the request Url base string
+	var flickrUrlToGet = "https://www.flickr.com/services/oauth/request_token/?" + 
+	"oauth_callback=" + flickrRedirectUri + 
+	"&oauth_consumer_key=" + flickrApiKey + 
+	"&oauth_nonce=" + nonce + 
+	"&oauth_signature_method=HMAC-SHA1" + 
+	"&oauth_timestamp=" + timestamp + 
+	"&oauth_version=1.0" + 
+	"&oauth_signature=" + apiSignature ; // our hashed variable 
+
+	res.redirect(flickrUrlToGet);
+
 });
 
 // path specified by grant module
-app.get('/connect/flickr/callback', function(req, res){
-	res.end(JSON.stringify(req.query, null, 2));
+// app.get('/connect/flickr/callback', function(req, res){
+// 	res.end(JSON.stringify(req.query, null, 2));
+// });
+
+
+//redirect url - from manual oauth - request_token path
+app.get('/landing/flickr', function(req, res){
+	console.log("inside of /landing/flickr");
+	res.redirect("/users/"+ req.session.id + "/landing/show/flickr");
 });
 
 // path specified by grant module
@@ -944,7 +992,7 @@ app.get('/handle_flickr_response', function(req, res){
 	var nonce;
 	crypto.randomBytes(20, function(err, buffer) {
 		nonce = buffer.toString('hex');
-		console.log("curious to see what this generates - nonce: ", nonce);
+		console.log("nonce #2: ", nonce);
 	});
 
 	var timestamp = Date.now();
@@ -971,15 +1019,20 @@ app.get('/handle_flickr_response', function(req, res){
 	// &user_id=				//--> userFlickrId
 
 	// convert symbols to HTML Character Codes http://www.7is7.com/software/chars.html
+	// :   is   %3A
+	// /   is   %2F
 	// &   is 	%26
 	// =   is 	%3D
 	// ,   is	%2C
 	// &oauth_signature=		//--> what we're creating here, leave out of base string
 
-	// replace all ampersands EXCEPT for the two between the three parts: the base string, 
+	// replace all ampersands EXCEPT for the two between the three parts: 
+		// 1 - the HTTP verb
+		// 2 - the request URL
+		// 3 - all of the request parameters (everything else)
 	var stringToConvertToSignature = "GET&" + 
-		"https%3A%2F%2Fwww.flickr.com%2services%2rest&" + 
-		"%26content_type%3D1&extras%3Ddate_upload%2Coriginal_format%2Cgeo%2Ctags%2Curl_q%2Curl_o" +
+		"https%3A%2F%2Fwww.flickr.com%2Fservices%2Frest&" + 
+		"content_type%3D1&extras%3Ddate_upload%2Coriginal_format%2Cgeo%2Ctags%2Curl_q%2Curl_o" +
 		"%26format%3Djson%26method%3Dflickr.people.getPhotos%26nojsoncallback%3D1" +
 		"%26oauth_consumer_key%3D" + flickrApiKey +
 		"%26oauth_nonce%3D" + nonce + "%26oauth_signature_method%3DHMAC-SHA1" + 
@@ -990,24 +1043,24 @@ app.get('/handle_flickr_response', function(req, res){
 
 	// original, before swapping out & and = and ,
 	// var stringToConvertToSignature = "GET&" + 
-	// 	"https%3A%2F%2Fwww.flickr.com%2services%2rest&" + 
-	//  "&content_type=1&extras=date_upload,original_format,geo,tags,url_q,url_o" +
+	// 	"https%3A%2F%2Fwww.flickr.com%2Fservices%2Frest&" + 
+	//  "content_type=1&extras=date_upload,original_format,geo,tags,url_q,url_o" +
 	// 	"&format=json&method=flickr.people.getPhotos&nojsoncallback=1" +
 	// 	"&oauth_callback=" + flickrRedirectUri + "&oauth_consumer_key=" + flickrApiKey +
 	// 	"&oauth_nonce=" + nonce + "&oauth_signature_method=HMAC-SHA1" + 
 	// 	"&oauth_timestamp=" + timestamp + "&oauth_token=" + userFlickrAccessToken +
 	// 	"&oauth_version=1.0&page=1&per_page=50&user_id=" + userFlickrId ;
 
-	var key = flickrClientSecret + "&" + userFlickrAccessSecret ;
+	var signingKey = flickrClientSecret + "&" + userFlickrAccessSecret ;
 
 	// make the hash
-	var apiSignature = crypto.createHmac("sha1", key).update(stringToConvertToSignature).digest('hex');
+	var apiSignature = crypto.createHmac("sha1", signingKey).update(stringToConvertToSignature).digest('hex');
 	console.log("my crypto apiSignature: ", apiSignature);
 
 	// make call to flickr API for the photos,
 	// using the api signature we generated above
 	var flickrUrlToGet = "https://api.flickr.com/services/rest/?" + 
-	"&content_type=1" + // type=1 is photos only
+	"content_type=1" + // type=1 is photos only
 	"&extras=date_upload,original_format,geo,tags,url_q,url_o" +
 	"&format=json" +
 	"&method=flickr.people.getPhotos" + 
