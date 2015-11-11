@@ -936,8 +936,11 @@ app.get('/users/:user_id/login/flickr', function(req, res){
 	var signingKey = flickrClientSecret + "&" ;
 
 	// make the hash
-	var apiSignature = crypto.createHmac("sha1", signingKey).update(baseString).digest('base64');
+	var apiSignature = crypto.createHmac("sha1", signingKey).update(baseString).digest('base64'); // I read somewhere this is supposed to be in base 64 format ??
 	console.log("my crypto apiSignature for request token: ", apiSignature);
+	// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent
+	var apiSignatureEncoded = encodeURIComponent(apiSignature);
+	console.log("signagure after URI encoding: ", apiSignatureEncoded);
 
 	// combine the apiSignature with the request Url base string
 	var flickrUrlToGet = "https://www.flickr.com/services/oauth/request_token?" + 
@@ -947,23 +950,24 @@ app.get('/users/:user_id/login/flickr', function(req, res){
 	"&oauth_signature_method=HMAC-SHA1" + 
 	"&oauth_timestamp=" + timestamp + 
 	"&oauth_version=1.0" + 
-	"&oauth_signature=" + apiSignature; // our hashed variable 
+	"&oauth_signature=" + apiSignatureEncoded;
+
 	console.log("flickrUrlToGet --->>>> ", flickrUrlToGet);
 
 	request.get(flickrUrlToGet, 
-		function(flickrApiRequest, flickrApiResponse){
+		function(flickrApiRequest, flickrApiResponse, otherThing){
 			console.log("flickrApiRequest --->>>> ", flickrApiRequest);
 			console.log("flickrApiResponse --->>>> ", flickrApiResponse);
 			console.log("flickrApiResponse.body --->>>> ", flickrApiResponse.body);
+			console.log("otherThing --->>>> ", otherThing);
 
+			// var flickrDataReceived = JSON.parse(flickrApiResponse);
+			// console.log("flickrDataReceived - ", flickrDataReceived);
 
-			var flickrDataReceived = JSON.parse(flickrApiResponse);
-			console.log("flickrDataReceived - ", flickrDataReceived);
-
-			var userFlickrOauthToken = flickrDataReceived.body.oauth_token;
-			var userFlickrOauthTokenSecret = flickrDataReceived.body.oauth_token_secret;
-			console.log("userFlickrOauthToken - ", userFlickrOauthToken);
-			console.log("userFlickrOauthTokenSecret - ", userFlickrOauthTokenSecret);
+			// var userFlickrOauthToken = flickrDataReceived.body.oauth_token;
+			// var userFlickrOauthTokenSecret = flickrDataReceived.body.oauth_token_secret;
+			// console.log("userFlickrOauthToken - ", userFlickrOauthToken);
+			// console.log("userFlickrOauthTokenSecret - ", userFlickrOauthTokenSecret);
 
 			res.redirect("/index");
 			// res.redirect("https://www.flickr.com/services/oauth/authorize?oauth_token=" 
@@ -973,6 +977,13 @@ app.get('/users/:user_id/login/flickr', function(req, res){
 	}); // close request.get
 
 });
+
+
+// GET&https%3A%2F%2Fwww.flickr.com%2Fservices%2Foauth%2Frequest_token&oauth_callback%3Dhttp%253A%252F%252Flocalhost%253A3000%252Flanding%252Fflickr%26oauth_consumer_key%3D1f4d919ab508f3d45e53511a0d9cb866%26oauth_nonce%3D1a358ba22c40ec92ea64bc3a6f606157bd68dfc6%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1447204064836%26oauth_version%3D1.0
+// GET&https%3A%2F%2Fwww.flickr.com%2Fservices%2Foauth%2Frequest_token&oauth_callback%3Dhttp%253A%252F%252Flocalhost%253A3000%252Flanding%252Fflickr%26oauth_consumer_key%3D1f4d919ab508f3d45e53511a0d9cb866%26oauth_nonce%3D1a358ba22c40ec92ea64bc3a6f606157bd68dfc6%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1447204064836%26oauth_version%3D1.0
+
+
+
 
 
 
