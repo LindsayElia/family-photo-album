@@ -1,0 +1,20 @@
+<% include ../partials/header %>
+<% include ../partials/navbar-logo %>
+
+<div class="general-main-content">
+
+	<div class="max-width-sixty">
+
+		<!-- this is always showing -->
+		<p>Currently this application only accesses the 50 most recent photos from the time you click the "Connect to Instagram" button. You can add more photos by returning to this page after you have uploaded more photos to Instagram.</p>
+
+		<!-- this shows after connecting to instagram -->
+		<div id="goToInstagramLanding">
+			<a href="/users/<%= user._id %>/landing/show/instagram"><h2 class="center-button"><button class="button">View My Instagram Photos</button></h2></a>
+		</div>
+
+	</div> <!-- close <div class="max-width-sixty"> -->
+
+</div> <!-- close <div class="general-main-content"> -->
+
+<% include ../partials/footer %>

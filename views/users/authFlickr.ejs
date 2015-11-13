@@ -1,7 +1,5 @@
 <% include ../partials/header %>
 <% include ../partials/navbar-logo %>
-<!-- Flickr API calls -->
-<script type="text/javascript" src="/js/flickrFrontend.js"></script>
 
 <div class="general-main-content">
 
@@ -21,14 +19,13 @@
 			<p>I understand that all photos that appear here in my account will also be visible to the public internet on my Family's Shared Album Page.</p>
 
 
-			<h2 class="center-button"><a href="/connect/flickr"><button class="button">Connect to my Flickr account</button></a></h2>
+			<h2 class="center-button"><a href="/users/<%= user._id %>/login/flickr"><button class="button">Connect to my Flickr account</button></a></h2>
 
 		</div> <!-- close <div id="flickrAuthButton"> -->
 
 
 		<!-- this is always showing -->
 		<p>Currently this application only accesses the 50 most recent photos from the time you click the "Connect to Flickr" button. You can add more photos by returning to this page after you have uploaded more photos to Flickr.</p>
-
 
 
 	</div> <!-- close <div class="max-width-sixty"> -->

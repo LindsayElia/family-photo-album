@@ -1,0 +1,21 @@
+<% include ../partials/header %>
+<% include ../partials/navbar-logo %>
+
+<div class="general-main-content">
+
+	<div class="max-width-sixty">
+
+		<!-- this is always showing -->
+		<p>Currently this application only accesses the 50 most recent photos from the time you click the "Connect to Flickr" button. You can add more photos by returning to this page after you have uploaded more photos to Flickr.</p>
+
+		<!-- this shows after connecting to flickr -->
+		<div id="goToFlickrLanding">
+			<a href="/users/<%= user._id %>/landing/show/flickr"><h2 class="center-button"><button class="button">View My Flickr Photos</button></h2></a>
+		</div>
+
+	</div> <!-- close <div class="max-width-sixty"> -->
+
+</div> <!-- close <div class="general-main-content"> -->
+
+
+<% include ../partials/footer %>
