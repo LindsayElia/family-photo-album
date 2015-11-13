@@ -79,33 +79,6 @@ var domain = "localhost:3000";
 
 
 
-// ____________FLICKR OAUTH LOGIN____________
-
-// express-session & grant-express - lets us use OAuth for 100+ APIs
-// 
-// currenlty I'm just using this for Flickr, but it also works with Facebook, Instagram, & Dropbox
-// relies on the express module I already brought in (lines 4 & 5 above)
-// https://github.com/simov/grant
-// https://grant-oauth.herokuapp.com/#/
-// getting started reference: (written by the module author) https://scotch.io/tutorials/implement-oauth-into-your-express-koa-or-hapi-applications-using-grant
-var expressSession = require('express-session');
-var Grant = require('grant-express');
-
-// var config = require('./config.json'); // bring in the config.json file in the same dirctory
-// var grant = new Grant(config['development'||'production']);
-
-var grant = new Grant(require('./config.json'));
-
-// REQUIRED: (any session store - see ./example/express-session)
-app.use(expressSession({secret:'grant'}));
-// mount grant
-app.use(grant);
-// also used the crypto module that we're also using for generating tokens
-// https://nodejs.org/api/crypto.html#crypto_crypto_createhmac_algorithm_key
-// https://docs.nodejitsu.com/articles/cryptography/how-to-use-crypto-module
-
-
-
 
 // ____________ROUTES____________
 
@@ -1237,8 +1210,6 @@ app.get('/landing/flickr', function(req, expressResponse){
 
 	} // close first (outermost) else
 });
-
-
 
 
 
