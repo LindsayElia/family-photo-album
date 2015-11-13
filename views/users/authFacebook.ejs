@@ -8,6 +8,7 @@
 	<div class="max-width-sixty">
 
 		<!-- this shows for the first time - currently every time page loads -->
+		<!-- show and hide using jquery on the front end -->
 		<div id="facebookAuthButton">
 
 			<p>Yes! I want this application to access the following information about me, provided by Facebook:</p>
@@ -28,6 +29,7 @@
 		<p>Currently this application only accesses the 50 most recent photos from the time you click the "Connect to Facebook" button. You can add more photos by returning to this page after you have uploaded more photos to Facebook.</p>
 
 		<!-- this shows after connecting to facebook -->
+		<!-- show and hide using jquery on the front end -->
 		<div id="goToFacebookLanding">
 			<a href="/users/<%= user._id %>/landing/facebook"><h2 class="center-button"><button class="button">View My Facebook Photos</button></h2></a>
 		</div>
