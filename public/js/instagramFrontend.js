@@ -1,11 +1,11 @@
-console.log("hello from instagram frontend js file");
+// console.log("hello from instagram frontend js file");
 
-$(document).ready(function(){
-	$("#goToInstagramLanding").hide();
+// $(document).ready(function(){
+// 	$("#goToInstagramLanding").hide();
 
-	$("#instagramAuthButton").on("click", function(){
-		$("#goToInstagramLanding").show();
-		$("#instagramAuthButton").hide();
-	});
+// 	$("#instagramAuthButton").on("click", function(){
+// 		$("#goToInstagramLanding").show();
+// 		$("#instagramAuthButton").hide();
+// 	});
 
-});
+// });
