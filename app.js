@@ -831,17 +831,30 @@ app.get('/landing/instagram', function(req, expressResponse) {
 													console.error("error with findOneAndUpdate in get /landing/instagram route", err);
 												} else {
 													console.log("successfully saved item to instagramphotos document");
+													
 												}
 											}); // close db.InstagramPhoto.findOneAndUpdate
 
 										} // close if
 									} // close for loop
+
 								} // close else
 							}); // close db.User.findByIdAndUpdate
 
 				}); // close function callback on request.get
 			}); // close function callback on request.post
 	} // close first 'else'
+
+	// render a page with a button that lets the user go to the 'show' page
+	db.User.findById(req.session.id, function(err, user){
+		if(err){
+			console.log(err);
+			res.redirect("/500");
+		} else {
+			expressResponse.render("users/authInstagramGoToShow", {user:user});
+		}
+	});
+
 }); // close app.get ('/landing/instagram'...
 
 
@@ -875,10 +888,6 @@ app.get("/users/:user_id/landing/show/instagram", function(req, res){
 
 // ____________FLICKR____________
 
-// TO FIX: 
-// I'm not handling what happens if the user declines to authorize...they get sent back to my app's home page
-// which is a poor experience
-
 
 // Flickr credentials
 var flickrApiKey = process.env.FLICKR_API_KEY;
@@ -886,6 +895,8 @@ var flickrClientSecret = process.env.FLICKR_CLIENT_SECRET;
 var flickrRedirectUri = process.env.FLICKR_REDIRECT_URI;
 var flickrRedirectUriEncoded = process.env.FLICKR_REDIRECT_URI_ENCODED;
 // console.log("flickrRedirectUri - ", flickrRedirectUri);
+var userFlickrOauthTokenSecret; // this will be assigned when we obtain a request token, below
+// keeping it global so it can be used in another route, exchanging the request token for the access token
 
 
 // displays a page with the flickr authorization via a button
@@ -903,7 +914,7 @@ app.get('/users/:user_id/authorize/flickr', function(req, res){
 // user clicks on button from the /authorize/flickr page,
 // which gets this route, which starts the authentication process
 // to the flickr API, and redirects to the /landing/flickr route below
-
+// get an oauth token from flickr to display the flickr permissions page to the user
 app.get('/users/:user_id/login/flickr', function(req, res){
 	// ask flickr for authorization
 	console.log("requesting request_token from flickr - get /users/:user_id/login/flickr");
@@ -926,11 +937,6 @@ app.get('/users/:user_id/login/flickr', function(req, res){
 		"%26oauth_timestamp%3D" + timestamp + 
 		"%26oauth_version%3D1.0"; 
 
-	// :   is   %3A
-	// /   is   %2F
-	// &   is 	%26
-	// =   is 	%3D
-	// ,   is	%2C
 
 	// console.log("base string: ", baseString);
 
@@ -943,7 +949,7 @@ app.get('/users/:user_id/login/flickr', function(req, res){
 	var apiSignature = crypto.createHmac("sha1", signingKey).update(baseString).digest('base64'); // I read somewhere this is supposed to be in base 64 format ??
 	console.log("my crypto apiSignature for request token: ", apiSignature);
 
-	// need to URL encode the signature before seding it in the 'get' request below
+	// need to URL encode the signature before sending it in the 'get' request below
 	// JavaScript has a built-in method for this
 	// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent
 	var apiSignatureEncoded = encodeURIComponent(apiSignature);
@@ -971,7 +977,7 @@ app.get('/users/:user_id/login/flickr', function(req, res){
 			// console.log("responseData --->>>> ", responseData);
 
 			var userFlickrOauthToken = responseData.oauth_token;
-			var userFlickrOauthTokenSecret = responseData.oauth_token_secret;
+			userFlickrOauthTokenSecret = responseData.oauth_token_secret;
 			console.log("userFlickrOauthToken - ", userFlickrOauthToken);
 			console.log("userFlickrOauthTokenSecret - ", userFlickrOauthTokenSecret);
 
@@ -983,36 +989,119 @@ app.get('/users/:user_id/login/flickr', function(req, res){
 }); // close app.get
 
 
+// redirect url from flickr
+app.get('/landing/flickr', function(req, expressResponse){
+	// if the user declines authorization, handle the error response query from instagram
+	// looks like Flickr has their own redirect if the user declines... :(
+	if (req.query.error){
+		console.log("error requesting user flickr access token, error reason: ", req.query.error_reason);
+		console.log("error requesting user flickr access token, error description: ", req.query.error_description);
+		expressResponse.redirect("errors/nope");
+	} else {
+		// exchange the request token for an access token that we then save to our db
+		console.log("requesting access token from Flickr - get /landing/flickr");
 
-//redirect url - from manual oauth - request_token path
-app.get('/landing/flickr', function(req, res){
-	console.log("inside of /landing/flickr");
-	res.redirect("/users/"+ req.session.id + "/landing/show/flickr");
+		var nonce = crypto.randomBytes(20).toString('hex'); // 'hex' makes it so that the result is only letters and numbers
+		var timestamp = Date.now();
+		var userFlickrOauthToken = req.query.oauth_token;
+		var userFlickrOauthVerifier = req.query.oauth_verifier;
+		// console.log("userFlickrOauthToken --->>> ", userFlickrOauthToken);
+		// console.log("userFlickrOauthVerifier --->>> ", userFlickrOauthVerifier);
+
+		var baseString = "GET&" + 
+		"https%3A%2F%2Fwww.flickr.com%2Fservices%2Foauth%2Faccess_token&" + 
+		"oauth_consumer_key%3D" + flickrApiKey + 
+		"%26oauth_nonce%3D" + nonce + 
+		"%26oauth_signature_method%3DHMAC-SHA1" + 
+		"%26oauth_timestamp%3D" + timestamp + 
+		"%26oauth_token%3D" + userFlickrOauthToken + 
+		"%26oauth_verifier%3D" + userFlickrOauthVerifier + 
+		"%26oauth_version%3D1.0"; 
+
+		console.log("base string in acccess_token route : ", baseString);
+
+		// Our signing key is on this format: CONSUMER_SECRET + "&" + TOKEN_SECRET. 
+		// http://stackoverflow.com/questions/9486840/issue-with-oauth-and-flickr-cannot-request-token
+		console.log("userFlickrOauthTokenSecret in new route - ", userFlickrOauthTokenSecret);
+		var signingKey = flickrClientSecret + "&" + userFlickrOauthTokenSecret;
+
+		// make the hash
+		var apiSignature = crypto.createHmac("sha1", signingKey).update(baseString).digest('base64'); // I read somewhere this is supposed to be in base 64 format ??
+		console.log("my crypto apiSignature, for access token: ", apiSignature);
+
+		// need to URL encode the signature before sending it in the 'get' request below
+		// JavaScript has a built-in method for this
+		// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent
+		var apiSignatureEncoded = encodeURIComponent(apiSignature);
+		console.log("signature after URI encoding, for access token: ", apiSignatureEncoded);
+
+		// combine the apiSignature with the request Url base string
+		var flickrUrlToGet = "https://www.flickr.com/services/oauth/access_token?" + 
+		"oauth_consumer_key=" + flickrApiKey + 
+		"&oauth_nonce=" + nonce + 
+		"&oauth_signature_method=HMAC-SHA1" + 
+		"&oauth_timestamp=" + timestamp + 
+		"&oauth_token=" + userFlickrOauthToken + 
+		"&oauth_verifier=" + userFlickrOauthVerifier + 
+		"&oauth_version=1.0" + 
+		"&oauth_signature=" + apiSignatureEncoded;
+
+
+		request.get(flickrUrlToGet, 
+			function(flickrApiError, flickrApiResponse, flickrApiBody){
+				console.log("flickrApiError --->>>> ", flickrApiError); // -->  null
+				console.log("flickrApiResponse --->>>> ", flickrApiResponse); // --> long thing... 
+				console.log("flickrApiBody in acccess_token route --->>>> ", flickrApiBody); // --> string containing data to parse
+
+				// var responseData = qs.parse(flickrApiBody);
+				// console.log("responseData --->>>> ", responseData);
+
+				// res.redirect("https://www.flickr.com/services/oauth/authorize?oauth_token=" +
+					// userFlickrOauthToken + "&perms=read"); 
+
+		}); // close request.get
+
+
+// GET&https%3A%2F%2Fwww.flickr.com%2Fservices%2Foauth%2Faccess_token&oauth_consumer_key%3D1f4d919ab508f3d45e53511a0d9cb866%26oauth_nonce%3D1ab9e092302b1d21e07791b3a4c8056f67c07881%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1447444397749%26oauth_token%3D72157661099803276-fd8e3a6d4015baf9%26oauth_verifier%3D5e33c05a4118d8ec%26oauth_version%3D1.0
+// GET&https%3A%2F%2Fwww.flickr.com%2Fservices%2Foauth%2Faccess_token&oauth_consumer_key%3D1f4d919ab508f3d45e53511a0d9cb866%26oauth_nonce%3D1ab9e092302b1d21e07791b3a4c8056f67c07881%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1447444397749%26oauth_token%3D72157661099803276-fd8e3a6d4015baf9%26oauth_verifier%3D5e33c05a4118d8ec%26oauth_version%3D1.0
+
+
+
+		// render a page with a button that lets the user go to the 'show' page
+		db.User.findById(req.session.id, function(err, user){
+			if(err){
+				console.log(err);
+				res.redirect("/500");
+			} else {
+				expressResponse.render("users/authInstagramGoToShow", {user:user});
+			}
+		});
+	}
+
 });
 
 
-// route user lands on after granting permission for flickr api auth
-// I make a call to the flickr api after the user grants permission, to get 50 photos
-app.get('/handle_flickr_response', function(req, res){
+// make a call to the flickr api after the user grants permission, to get 50 photos
+app.get('/changethis', function(req, res){
 
 	console.log("logging req.query: ", req.query);
-	console.log("headers sent: ", res.headersSent);
-	// console.log("grant res: ", res);
+	// console.log("headers sent: ", res.headersSent);
+	console.log("grant res: ", res);
 
 	// save the user data, access token, that we get from the grant auth process
-	var userFlickrAccessToken = req.query.access_token;
-	var userFlickrAccessSecret = req.query.access_secret;
-	var userFlickrOauthToken = req.query.raw.oauth_token;
-	var userFlickrOauthTokenSecret = req.query.raw.oauth_token_secret;
-	var userFlickrId = req.query.raw.user_nsid;
-	var userFlickrUsername = req.query.raw.username;
+	// var userFlickrAccessToken = req.query.access_token;
+	// var userFlickrAccessSecret = req.query.access_secret;
+	// var userFlickrOauthToken = req.query.raw.oauth_token;
+	// var userFlickrOauthTokenSecret = req.query.raw.oauth_token_secret;
+	// var userFlickrId = req.query.raw.user_nsid;
+	// var userFlickrUsername = req.query.raw.username;
 
-	console.log("all the things1: ", userFlickrAccessToken);
-	console.log("all the things2: ", userFlickrAccessSecret);
-	console.log("all the things3: ", userFlickrOauthToken);	 // this appears to be the same as the userFlickrAccessToken
-	console.log("all the things4: ", userFlickrOauthTokenSecret);  // this appears to be the same as the userFlickrAccessSecret
-	console.log("all the things5: ", userFlickrId);
-	console.log("all the things6: ", userFlickrUsername);
+	// console.log("all the things1: ", userFlickrAccessToken);
+	// console.log("all the things2: ", userFlickrAccessSecret);
+	// console.log("all the things3: ", userFlickrOauthToken);	 // this appears to be the same as the userFlickrAccessToken
+	// console.log("all the things4: ", userFlickrOauthTokenSecret);  // this appears to be the same as the userFlickrAccessSecret
+	// console.log("all the things5: ", userFlickrId);
+	// console.log("all the things6: ", userFlickrUsername);
 
 	// generate an api signature; required by flickr API
 
