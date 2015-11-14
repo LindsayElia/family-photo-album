@@ -74,8 +74,8 @@ var crypto = require('crypto');
 // CHANGE FOR PRODUCTION
 // CHANGE FOR PRODUCTION
 // base domain
-var domain = "localhost:3000";
-// var domain = "everyonesphotos.com";
+// var domain = "localhost:3000";
+var domain = "everyonesphotos.com";
 
 
 
