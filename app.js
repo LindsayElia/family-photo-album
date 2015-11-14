@@ -918,7 +918,7 @@ app.get('/users/:user_id/login/flickr', function(req, res){
 		"%26oauth_version%3D1.0"; 
 
 
-	// console.log("base string: ", baseString);
+	console.log("base string from first request to flickr for request_token: ", baseString);
 
 	// Our signing key is on this format: CONSUMER_SECRET + "&" + TOKEN_SECRET. 
 	// But since we do not have a token yet, the signing key is JUST the consumer secret and an ampersand.
