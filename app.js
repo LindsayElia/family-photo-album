@@ -891,6 +891,7 @@ app.get('/users/:user_id/authorize/flickr', function(req, res){
 	});
 });
 
+
 // user clicks on button from the /authorize/flickr page,
 // which gets this route, which starts the authentication process
 // to the flickr API, and redirects to the /landing/flickr route below
