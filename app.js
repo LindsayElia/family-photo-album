@@ -1509,7 +1509,7 @@ app.post("/joingroup/:invite_token/signup", function(req, res){
 app.get("/groups/:group_name", function(req, res){
 	var everyonesPhotosArray = [];
 	var promisesArray = [];
-	var group;
+	var groupDisplayName;
 
 // go back to the original way I had done this and pass group in to the outer variable
 // the page won't load without a group id in the header partial
@@ -1517,6 +1517,7 @@ app.get("/groups/:group_name", function(req, res){
 	db.Group.findOne({groupUrlName:req.params.group_name}).exec()
 		.then(function(groupResponse){
 		console.log("groupResponse >>> ", groupResponse);
+		groupDisplayName = groupResponse.groupDisplayName;
 		return db.User.find({groupId:groupResponse}).exec();
 	}).then(function(allUsersResponse){
 		console.log("allUsersResponse >>> ", allUsersResponse);
@@ -1535,7 +1536,7 @@ app.get("/groups/:group_name", function(req, res){
 
 	}).then(function(allPromiseResponses){
 		console.log("allPromiseResponses >>> ", allPromiseResponses);
-		res.render("groups/customGroupAllPhotos", {allPromiseResponses:allPromiseResponses, group:group});
+		res.render("groups/customGroupAllPhotos", {allPromiseResponses:allPromiseResponses, groupDisplayName:groupDisplayName});
 	});
 
 }); // close app.get

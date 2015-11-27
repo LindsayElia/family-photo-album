@@ -6,35 +6,24 @@
 
 	<div class="spacey-public-div"></div>
 
-	<%= allPromiseResponses %>
 
 	<div>
-						
-		<% for (var j = 0; j < instaThumbsArray.length; j++){  %>
-			<a href="<%= instaFullSizeArray[j] %>"><img src="<%= instaThumbsArray[j] %>" class="photo-wrapper-instagram-public"></a>
+		
+		<ul>				
+		<!-- allPromises contains an array of three arrays, one for each service -->
+		<!-- TO FIX: -->
+		<!-- I'm dividing the length of the array allPromiseResponses by three, because for some reason there are 9 instead of 3
+		arrays contained in it. There should only be 3. Three is hard coded and could change if I add more APIs. -->
+		<% for (var outerArray = 0; outerArray < allPromiseResponses.length/3; outerArray++){  %>
+			<% var eachInnerArray = allPromiseResponses[outerArray]; %>
+			<% for (var count = 0; count < eachInnerArray.length; count++){  %>
+				<li><img src="<%= eachInnerArray[count].urlThumbnail %>"></a></li>
+				<li><%= eachInnerArray[count].urlThumbnail %></li>
+			<% } %>
 		<% } %>
+		</ul>
 
 	</div>
-
-	<div>
-						
-		<% for (var i = 0; i < flickrThumbsArray.length; i++){  %>
-			<a href="<%= flickrFullSizeArray[i] %>"><img src="<%= flickrThumbsArray[i] %>" class="photo-wrapper-flickr-public"></a>
-		<% } %>
-
-	</div>
-
-
-	<div ng-controller="FacebookPhotoPreviewAll">
-
-		<div ng-repeat="photo in photos">
-			<div class="photo-wrapper-facebook-public">
-				<a href=""><img src="{{ photo }}" height="150" class="inline"></a>
-			</div>
-		</div>
-
-	</div> <!-- close  <div ng-controller="FacebookPhotoPreviewAll"> -->
-
 
 
 
