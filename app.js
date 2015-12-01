@@ -1519,21 +1519,31 @@ app.get("/groups/:group_name", function(req, res){
 		return db.User.find({groupId:groupResponse}).exec();
 	}).then(function(allUsersResponse){
 		console.log("allUsersResponse >>> ", allUsersResponse);
-		var allPromisesArray = [];
+		console.log("length of allUsersResponse >>> ", allUsersResponse.length);
+
+		var allPromisesArray = [allUsersResponse];
 		for (var i = 0; i < allUsersResponse.length; i++){
 			var eachUser = allUsersResponse[i];
+
 			var instagramPromise = db.InstagramPhoto.find({owner:eachUser}).exec();
 			allPromisesArray.push(instagramPromise);
+			console.log("pushing from instagram into allPromisesArray");
+
 			var flickrPromise = db.FlickrPhoto.find({owner:eachUser}).exec();
 			allPromisesArray.push(flickrPromise);
+			console.log("pushing from flickr into allPromisesArray");
+
 			var facebookPromise = db.FacebookPhoto.find({owner:eachUser}).exec();
 			allPromisesArray.push(facebookPromise);
+			console.log("pushing from facebook into allPromisesArray");
+
 		}
 		// console.log()
 		return when.all(allPromisesArray);
 
 	}).then(function(allPromiseResponses){
 		console.log("allPromiseResponses >>> ", allPromiseResponses);
+		// console.log("looking for first name >>>", allPromiseResponses[0][0].firstName);
 		res.render("groups/customGroupAllPhotos", {allPromiseResponses:allPromiseResponses, groupDisplayName:groupDisplayName});
 	});
 

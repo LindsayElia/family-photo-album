@@ -8,24 +8,62 @@
 
 
 	<div>
-		
-		<ul>				
-		<!-- allPromises contains an array of three arrays, one for each service -->
-		<!-- TO FIX: -->
-		<!-- I'm dividing the length of the array allPromiseResponses by three, because for some reason there are 9 instead of 3
-		arrays contained in it. There should only be 3. Three is hard coded and could change if I add more APIs. -->
-		<% for (var outerArray = 0; outerArray < allPromiseResponses.length/3; outerArray++){  %>
-			<% var eachInnerArray = allPromiseResponses[outerArray]; %>
-			<% for (var count = 0; count < eachInnerArray.length; count++){  %>
-				<a href="<%= eachInnerArray[count].urlFullSize %>"><img src="<%= eachInnerArray[count].urlThumbnail %>" class="photo-wrapper"></a>
-			<% } %>
-			<div class="clearfix"></div>
-		<% } %>
-		</ul>
+						
+		<!-- allPromises contains an array of arrays, one for each service per user, plus -->
+		<!-- the first array is an array of user info, not photo info -->
+
+		<!-- start at index 1, because index 0 is allUsersResponse -->
+		<% for (var outerArray = 1; outerArray < allPromiseResponses.length; outerArray++){  %>
+
+			<!-- skip over any arrays inside of allPromiseResponses that are empty -->
+			<!-- empty arrays are photo arrays for users that have not connected to APIs -->
+			<% if (allPromiseResponses[outerArray].length !== 0) { %>
+
+				<!-- variable used for API displaying name and looping through each API array -->
+				<% var eachInnerArray = allPromiseResponses[outerArray]; %>
+
+				<!-- add a break between each array of photos -->
+				<div class="clearfix"></div>
+				<div class="all-photos-page-subheading">
+					<!-- display the user's name for each user object inside the first array which contains just the user info -->
+					<% for (var userCountInFirstArray = 0; userCountInFirstArray < allPromiseResponses[0].length; userCountInFirstArray++){ %>
+						<% var thisUser = allPromiseResponses[0][userCountInFirstArray]; %>
+						<% if (thisUser.firstName !== undefined){ %>
+							<div>Photos by: <%= thisUser.firstName %> <%= thisUser.lastName %></div>
+						<% } %>
+					<% } %>
+
+
+					<!-- display the API name for each photo array -->
+					<% if (eachInnerArray[0].instagramPhotoId !== undefined){ %>
+						<div>Shared originally via: Instagram</div>
+					<% } %>
+					<% if (eachInnerArray[0].flickrPhotoId !== undefined){ %>
+						<div>Shared originally via: Flickr</div>
+					<% } %>
+					<% if (eachInnerArray[0].facebookPhotoId !== undefined){ %>
+						<div>Shared originally via: Facebook</div>
+					<% } %>
+				</div> <!-- close all-photos-page-subheading -->
+
+				<!-- Loop through each array of photos -->
+				<% for (var count = 0; count < eachInnerArray.length; count++){  %>
+					<a href="<%= eachInnerArray[count].urlFullSize %>"><img src="<%= eachInnerArray[count].urlThumbnail %>" class="photo-wrapper"></a>
+					<!-- If the item is divisible by 4 with no remainder, insert a div clearfix 
+					so that there are a max of 4 items in a row
+					skip first item because it's at index 0 and add one to item we're dividing because
+					the count starts at zero, not at one -->
+					<% if (count !== 0 && (count+1)%4 === 0){ %>
+						<div class="clearfix"></div>
+					<% } %>
+				<% } %>
+
+
+			<% } %> <!-- close if (allPromiseResponses[outerArray].length !== 0) -->
+
+		<% } %> <!-- close for (var outerArray -->
 
 	</div>
-
-
 
 
 
