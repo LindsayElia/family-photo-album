@@ -28,6 +28,9 @@
 					<!-- display the user's name for each user object inside the first array which contains just the user info -->
 					<% for (var userCountInFirstArray = 0; userCountInFirstArray < allPromiseResponses[0].length; userCountInFirstArray++){ %>
 						<% var thisUser = allPromiseResponses[0][userCountInFirstArray]; %>
+<!-- TO TEST: -->
+<!-- will this break if user has no lastName ????? -->
+
 						<% if (thisUser.firstName !== undefined){ %>
 							<div>Photos by: <%= thisUser.firstName %> <%= thisUser.lastName %></div>
 						<% } %>
