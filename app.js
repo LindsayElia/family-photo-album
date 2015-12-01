@@ -1511,12 +1511,10 @@ app.get("/groups/:group_name", function(req, res){
 	var promisesArray = [];
 	var groupDisplayName;
 
-// go back to the original way I had done this and pass group in to the outer variable
-// the page won't load without a group id in the header partial
-
 	db.Group.findOne({groupUrlName:req.params.group_name}).exec()
 		.then(function(groupResponse){
 		console.log("groupResponse >>> ", groupResponse);
+		// need to pass in group name / group id, so that the navbar on the group's page will load
 		groupDisplayName = groupResponse.groupDisplayName;
 		return db.User.find({groupId:groupResponse}).exec();
 	}).then(function(allUsersResponse){
