@@ -91,7 +91,7 @@ h2.group-title {
 	clear: both;
 }
 
-.photo-wrapper-instagram-public {
+.photo-wrapper {
 	float: left;
 	padding: 10px;
 	border: 1px solid #FCFAF8; /* off-white */
@@ -99,19 +99,9 @@ h2.group-title {
 	margin: 15px;
 }
 
-.photo-wrapper-flickr-public {
-	float: left;
-	padding: 10px;
-	border: 1px solid #FCFAF8; /* off-white */
-	background-color: #FCFAF8; /* off-white */
-	margin: 15px;
-}
-
-.photo-wrapper-facebook-public {
-	float: left;
-	padding: 10px;
-	border: 1px solid #FCFAF8; /* off-white */
-	background-color: #FCFAF8; /* off-white */
-	margin: 15px;
+.clearfix::after {
+	content: "";
+	display: table;
+	clear: both;
 }
 

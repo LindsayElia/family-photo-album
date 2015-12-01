@@ -17,9 +17,9 @@
 		<% for (var outerArray = 0; outerArray < allPromiseResponses.length/3; outerArray++){  %>
 			<% var eachInnerArray = allPromiseResponses[outerArray]; %>
 			<% for (var count = 0; count < eachInnerArray.length; count++){  %>
-				<li><img src="<%= eachInnerArray[count].urlThumbnail %>"></a></li>
-				<li><%= eachInnerArray[count].urlThumbnail %></li>
+				<a href="<%= eachInnerArray[count].urlFullSize %>"><img src="<%= eachInnerArray[count].urlThumbnail %>" class="photo-wrapper"></a>
 			<% } %>
+			<div class="clearfix"></div>
 		<% } %>
 		</ul>
 
