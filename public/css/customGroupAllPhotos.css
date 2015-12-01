@@ -52,8 +52,9 @@ a, a:visited, a:hover {
 }
 
 .navbar-inner-public {
-	padding-top: 42px;
+	margin-top: 42px;
 	/*background-color: red;*/
+	width: 100%;
 }
 
 
@@ -83,7 +84,9 @@ h2.group-title {
 
 .all-photos-page-subheading {
 	background-color: #C9C9CA; /* light gray */
-	padding: 10px;
+	padding: 20px 30px;
+	margin: 15px;
+	font-size: 1.25em;
 }
 
 .inner-container-public {

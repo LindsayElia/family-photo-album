@@ -27,6 +27,9 @@
 
 /* ============ GLOBAL ============ */
 
+* {
+	box-sizing: border-box;
+}
 
 body {
 	font-family: Roboto, Helvetica, Arial, sans-serif;
@@ -61,6 +64,10 @@ a, a:visited, a:hover {
 
 .inline {
 	display: inline;
+}
+
+.inline-block {
+	display: inline-block;
 }
 
 .textField {
@@ -201,7 +208,7 @@ h2.nav-button:hover {
 .flyout-menu {
 	width: 180px;
 	background-color: #C9C9CA; /* light gray */
-	positi : absolute;
+	position : absolute;
 	right: -4px;
 	padding: 1px 30px 36px 18px;
 	margin-top: 30px;
