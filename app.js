@@ -1,5 +1,8 @@
 // ____________REQUIRE NODE MODULES & SET MIDDLEWARE____________
+
+// when is for ?
 var when = require('when');
+
 // express - lets us use dynamic data within our views
 var express = require("express");
 var app = express();
