@@ -21,7 +21,7 @@ There are 3 kinds of users:
 
 #### Technologies used
 
-- Front End: JavaScript, HTML, CSS, jQuery, 
+- Front End: JavaScript, HTML, CSS, jQuery
 - Back End: NodeJS, ExpressJS, Mongoose, MongoDB, AngularJS, JavaScript
 
 #### API integrations
